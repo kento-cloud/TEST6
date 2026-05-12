@@ -20,6 +20,18 @@ dist/
 .vscode/
 .idea/
 
+# database
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# uploads
+uploads/
+
+# drizzle
+drizzle/
+
 # generated mirrors (large data, keep mirror-tool/output only)
 pivot-clone-study/pivot-mirror/
 pivot-clone-study/local-site/
