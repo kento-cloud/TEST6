@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS thumbnails (
   width           INTEGER,
   height          INTEGER,
   file_size       INTEGER,
-  model           TEXT,                      -- dall-e-3, stable-diffusion, etc.
+  model           TEXT,                      -- gpt-image-1 (OpenAI Images API)
   created_at      TEXT DEFAULT (datetime('now'))
 );
 
