@@ -1,243 +1,106 @@
-@AGENTS.md
+# CLAUDE.md
 
-# PIVOT Clone - 完全再現プロジェクト
+## このプロジェクトでの基本ルール
 
-## 目的
+このプロジェクトでは、一般的なWeb制作のように「良い感じに改善する」ことを目的にしない。
+最優先事項は、「本家との差分を減らすこと」である。
 
-https://pivotmedia.co.jp/ と見た目・動作・構造が完全に同一のサイトを Next.js で新規構築する。
-ミラーリング（本家HTML保存）ではなく、本家の構造を理解した上でゼロから再実装する。
+そのため、以下のルールを必ず守る。
 
-## 技術スタック
+- 勝手にデザインを変えない
+- 勝手に余白を増やさない
+- 勝手に角丸を変更しない
+- 勝手に色を変更しない
+- 勝手にフォントを変更しない
+- 勝手にアニメーションを追加しない
+- 「もっと見やすく」ではなく、「本家との差分を減らす」ことが目的。
 
-- **Framework**: Next.js 16 (App Router) + TypeScript
-- **Styling**: Tailwind CSS 4
-- **Icons**: @iconify/react (Material Icons, Material Symbols)
-- **Carousel**: Swiper 12
-- **Video**: Uliza HTML5 Player (外部スクリプト埋め込み)
-- **Font**: Noto Sans JP (system fallback)
-- **Package Manager**: npm
+## 「PIVOT風」にしない
 
-## 本家サイト構造
+「似た雰囲気」を作るのは禁止。
+本家のUI/UXに限りなく近づけることを目的とする。
 
-### ページ一覧（全ルート）
+## 一括修正禁止
 
-| ルート | 説明 | 優先度 |
-|--------|------|--------|
-| `/` | トップページ（メイン動画 + カテゴリタブ + セクション群） | P0 |
-| `/category?category_code=xxx` | カテゴリ別一覧（business, money, career, life, technology, global） | P0 |
-| `/movie/[episodeId]` | 動画詳細・再生ページ | P0 |
-| `/program/[id]` | 番組詳細（エピソード一覧） | P1 |
-| `/program/list` | 番組一覧 | P1 |
-| `/playlist/[playlistId]` | プレイリスト詳細 | P1 |
-| `/playlist/staff/recommend` | スタッフおすすめプレイリスト | P1 |
-| `/search` | 検索ページ | P2 |
-| `/new_arrival/episode` | 新着エピソード一覧 | P2 |
-| `/mylist` | マイリスト | P2 |
-| `/action` | アクション/ミッション | P2 |
-| `/account` | アカウント設定 | P3 |
-| `/ranking/overall` | ランキング詳細 | P2 |
+1回の修正で複数箇所を同時に触らない。
 
-### レイアウト構造
+必ず以下を守る。
 
-```
-┌──────────────────────────────────────────────┐
-│ [Sidebar 72px]  [Main Content Area]          │
-│                                              │
-│  PIVOTロゴ       ┌─ Header (88px) ──────────┐│
-│  ホーム          │ タブ: トップ|ビジネス|... ││
-│  さがす          │         ログイン|会員登録 ││
-│  アクション      └──────────────────────────┘│
-│  マイリスト      ┌─ Featured Video ─────────┐│
-│  アカウント      │ Uliza Player + 番組情報   ││
-│                  └──────────────────────────┘│
-│                  ┌─ Program Banners ────────┐│
-│                  │ 横スクロール番組アイコン   ││
-│                  └──────────────────────────┘│
-│                  ┌─ Content Sections ───────┐│
-│                  │ 新着 / ランキング / etc.  ││
-│                  └──────────────────────────┘│
-└──────────────────────────────────────────────┘
-```
+1. 1差分だけ修正
+2. before / after を比較
+3. 差分改善を確認
+4. レポートを残す
 
-SP (390px以下):
-- サイドバー → 画面下部の BottomNavigation に変化
-- Header タブは横スクロール
-- カードは2列表示
+## 修正前に比較する
 
-### デザイントークン
+感覚で直さない。以下を比較してから修正する。
 
-```
-背景グラデーション: linear-gradient(135deg, #3d084a, #092638)
-                    background-size: 200% 200%
-                    animation: pivotgradient 10s ease infinite
+- font-size
+- line-height
+- spacing
+- width
+- opacity
+- border-radius
+- transform
+- transition
+- responsive layout
 
-色:
-  --neutral-dark:       #0e1226  (最暗背景)
-  --neutral-night:      #1d2030  (サイドバー背景)
-  --neutral-mid:        #303240  (カード背景)
-  --neutral-border:     #606370  (ボーダー)
-  --neutral-pale:       #a9abb8  (非アクティブテキスト)
-  --neutral-bright:     #ffffff  (メインテキスト)
-  --neutral-subtext:    #999999  (サブテキスト)
-  --accent-purple:      #cd1cfa  (PIVOTパープル)
-  --accent-blue:        #1e82be  (PIVOTブルー)
-  --brand-gradient:     linear-gradient(90deg, #cd1cfa, #1e82be)
-  --card-bg:            rgba(14, 18, 38, 0.5)
+## 本家リンク禁止
 
-フォント: Noto Sans JP
-  - Regular 400
-  - Medium 500
-  - Bold 700
+内部リンクは必ずローカルルーティングを使う。
+クリック時に本家へ遷移させない。
 
-間隔:
-  - セクション間: 40px (PC), 24px (SP)
-  - カード間: 10px
-  - サイドバー幅: 72px (PC), 非表示 (SP)
-  - ヘッダー高さ: 88px
-  - BottomNav高さ: 60px (SP)
-```
+## placeholder禁止
 
-### PIVOTロゴ
+placeholder画像や雑な仮UIで誤魔化さない。
 
-本家ロゴは SVG で以下の形状:
-- "PIVOT" のテキスト
-- P: パープル (#cd1cfa)
-- I: パープル
-- V: パープルからブルーへのグラデーション
-- O: ブルー (#1e82be)
-- T: ブルー
-- フォント: カスタム（太字サンセリフ）
-- サイドバーでは小さいアイコン版（22x25px）を使用
+## scriptを安易に削除しない
 
-### コンポーネント一覧
+スライダー・hover・menu・animationなどの動作を壊す可能性があるため、JSを安易に削除しない。
 
-| コンポーネント | ファイル | 説明 |
-|---------------|---------|------|
-| Sidebar | `components/Sidebar.tsx` | 左サイドバー (PC) / BottomNav (SP) |
-| HeaderTabs | `components/HeaderTabs.tsx` | カテゴリタブバー |
-| FeaturedVideo | `components/FeaturedVideo.tsx` | メイン動画プレーヤー + 番組情報 |
-| ProgramBannerList | `components/ProgramBannerList.tsx` | 番組バナー横スクロール |
-| EpisodeCard | `components/EpisodeCard.tsx` | エピソードカード（サムネ+タイトル+メタ） |
-| EpisodeSection | `components/EpisodeSection.tsx` | エピソード一覧セクション（Swiper） |
-| RankingSection | `components/RankingSection.tsx` | ランキングセクション（タブ切替） |
-| ProgramGrid | `components/ProgramGrid.tsx` | 番組一覧グリッド |
-| PlaylistSection | `components/PlaylistSection.tsx` | プレイリストセクション |
-| SectionHeader | `components/SectionHeader.tsx` | セクションタイトル + すべて表示リンク |
-| VideoPlayer | `components/VideoPlayer.tsx` | Uliza動画プレーヤー |
-| CategoryPage | `app/category/page.tsx` | カテゴリ別ページ |
-| MoviePage | `app/movie/[episodeId]/page.tsx` | 動画詳細ページ |
+## レスポンシブを後回しにしない
 
-### エピソードカード構造
+PCだけ合わせて終わりにしない。以下を必ず確認する。
 
-```
-┌─────────────────────┐
-│ [サムネイル画像]     │  aspect-ratio: 16/9 (1029/540)
-│              15:32  │  右下: 再生時間バッジ
-├─────────────────────┤
-│ タイトル（2行max）   │  font-size: 14px, bold
-│ 1.4万回視聴 · 3か月前│  font-size: 12px, #999
-│ □0  ★4.5           │  コメント数 + 評価
-└─────────────────────┘
-カード幅: calc(25% - 7.5px) (PC), calc(50% - 5px) (SP)
-角丸: 0.5vw (PC), 1vw (SP)
-```
+- Desktop
+- Tablet
+- Mobile
 
-### ランキングカード構造
+特にモバイル時の密度・余白・BottomNavを重視する。
 
-```
-┌─────────────────────┐
-│ 1 [サムネイル画像]   │  左上に大きなランク番号
-│              15:32  │
-├─────────────────────┤
-│ タイトル             │
-│ メタ情報             │
-└─────────────────────┘
-ランク番号: 64px bold, 影付き
-上位3位: ゴールド(1), シルバー(2), ブロンズ(3)
-```
+## 今後のAI機能を前提に設計する
 
-## データソース
+現在はUI再現フェーズだが、将来的に以下が追加される前提で設計する。
 
-本家APIレスポンスは `/Users/kazumaogata/TEST5/mirror-tool/output/api-responses/` に347件保存済み。
-これらをJSON化して `src/data/` に配置し、静的データとして使用する。
+- AI要約
+- AI記事生成
+- AIチャプター生成
+- AI推薦
+- 動画投稿
+- 管理画面
 
-### 主要データ
+そのため、将来的にデータ化しやすい構造を意識する。
+ただし、今はまだCMS化を優先しない。
 
-- `/api/v1/web/home` → トップページのフィーチャード動画、セクション構成
-- `/api/v1/chapter/movie/new_arrival` → 新着エピソード
-- `/api/v1/chapter/movie/ranking` → ランキング
-- `/connect/content/.../ListPrograms` → 番組一覧
-- `/connect/content/.../ListStaffPlaylists` → スタッフプレイリスト
-- `/connect/content/.../BatchGetEpisodeMetrics` → 視聴数・評価
+## 現在の最重要目標
 
-### 画像
+現在の最重要目標は以下。
 
-本家画像は以下から取得済み:
-- `mirror-tool/output/assets/images/` — 番組サムネイル、OGP画像
-- `pivot-clone-study/pivotmedia.co.jp/images/` — 追加画像
+- トップページの高精度再現
+- スライダー一致
+- インジケーター一致
+- ヘッダー一致
+- セクションタイトル一致
+- カード密度一致
+- レスポンシブ一致
+- interaction一致
 
-画像パスの形式:
-- サムネイル: `/images/static/converted/chapter/{id}/ogp/{id}.webp`
-- 番組ロゴ: `/images/programs/thumbnail_vertical/{hash}.png`
-- 番組メインロゴ: `/images/programs/logo_main/{hash}.svg`
+新機能追加より、UI品質を優先する。
 
-## 開発ルール
+## 最後に
 
-### ファイル構成
+このプロジェクトは、単なる模写サイトではない。
 
-```
-src/
-  app/
-    layout.tsx              # ルートレイアウト（Sidebar含む）
-    page.tsx                # トップページ
-    category/page.tsx       # カテゴリページ
-    movie/[episodeId]/page.tsx  # 動画詳細
-    program/[id]/page.tsx   # 番組詳細
-    program/list/page.tsx   # 番組一覧
-    playlist/[playlistId]/page.tsx
-    search/page.tsx
-    globals.css
-  components/               # 共通コンポーネント
-  data/                     # 静的JSONデータ
-  types/                    # 型定義
-  lib/                      # ユーティリティ
-public/
-  images/                   # 画像アセット
-  favicon/                  # ファビコン
-```
+将来的に、AIを前提とした次世代メディアCMSへ発展させるための基盤である。
 
-### コーディング規約
-
-- Tailwind CSS のユーティリティクラスを使用（本家は `tw-` プレフィックス付きだが、クローンでは標準Tailwindを使用）
-- コンポーネントは `"use client"` を必要な場合のみ付与
-- データは `src/data/` にJSON配置、import で読み込み
-- 型定義は `src/types/` に集約
-- 画像は `public/images/` に配置、`<Image>` コンポーネントで表示
-- レスポンシブは `md:` ブレークポイント（768px）で PC/SP 切替
-- アニメーション付きグラデーション背景は `animate-gradient` クラス
-
-### 本家との一致確認
-
-各コンポーネント実装後、以下を確認:
-1. PC (1440px) でのレイアウトが本家スクリーンショットと一致
-2. SP (390px) でのレイアウトが本家と一致
-3. hover/active 状態の色・アニメーション
-4. Swiper カルーセルの挙動（ドラッグ、ナビゲーション矢印）
-5. フォントサイズ・ウェイト・行間
-
-### 参照ファイル
-
-- 本家PC スクリーンショット: `mirror-tool/output/screenshots/live-pc.png`
-- 本家SP スクリーンショット: `mirror-tool/output/screenshots/live-sp.png`
-- 本家HTML (raw): `mirror-tool/output/raw-rendered.html`
-- 本家CSS: `mirror-tool/output/assets/_next/static/css/*.css`
-- APIレスポンス: `mirror-tool/output/api-responses/`
-- APIマニフェスト: `mirror-tool/output/api-manifest.json`
-
-## コマンド
-
-```bash
-npm run dev    # 開発サーバー起動 (localhost:3000)
-npm run build  # プロダクションビルド
-npm run lint   # ESLint実行
-```
+そのため、今は「見た目の完成度」を最優先とし、妥協せず差分を詰めていく。
