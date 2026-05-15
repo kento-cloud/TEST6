@@ -1,106 +1,139 @@
 # CLAUDE.md
 
-## このプロジェクトでの基本ルール
+## 現在のフェーズ
 
-このプロジェクトでは、一般的なWeb制作のように「良い感じに改善する」ことを目的にしない。
-最優先事項は、「本家との差分を減らすこと」である。
+**バックエンド構築フェーズ**
 
-そのため、以下のルールを必ず守る。
+フロントエンドUI（PIVOT級再現）は完成済み。
+現在は、AI動画メディアCMSとして実際に動作するバックエンドを構築するフェーズである。
 
-- 勝手にデザインを変えない
-- 勝手に余白を増やさない
-- 勝手に角丸を変更しない
-- 勝手に色を変更しない
-- 勝手にフォントを変更しない
-- 勝手にアニメーションを追加しない
-- 「もっと見やすく」ではなく、「本家との差分を減らす」ことが目的。
+## プロジェクト構造
 
-## 「PIVOT風」にしない
+```
+フロント: src/app/(front)/     — PIVOTクローンUI（完成済み、触らない）
+管理画面: src/app/admin/        — CMS管理画面（完成済み、必要時のみ拡張）
+API:     src/app/api/           — バックエンドAPI（構築中）
+DB:      src/db/                — SQLite + Drizzle ORM
+AI:      src/lib/ai/            — Whisper / Claude / Images API
+データ:  src/lib/data-source.ts — 全データ取得の集約層（★バックエンドの中核）
+```
 
-「似た雰囲気」を作るのは禁止。
-本家のUI/UXに限りなく近づけることを目的とする。
+## 最重要ルール
 
-## 一括修正禁止
+### 1. フロントUIを壊さない
 
-1回の修正で複数箇所を同時に触らない。
+フロントのUI品質は既に本家PIVOTに近い水準で完成している。
+バックエンド構築時に以下を絶対に壊さない。
 
-必ず以下を守る。
+- コンポーネントのレイアウト・スタイル
+- レスポンシブ挙動（PC/SP）
+- ヘッダー・サイドバー・BottomNav
+- フィーチャードスライダー
+- カードのホバー・アニメーション
+- セクション間の余白・フォントサイズ
 
-1. 1差分だけ修正
-2. before / after を比較
-3. 差分改善を確認
-4. レポートを残す
+### 2. data-source.ts を中核にする
 
-## 修正前に比較する
+全データ取得は `src/lib/data-source.ts` に集約されている。
+バックエンドDB化する際は、**このファイルの関数内部だけを変更する**。
 
-感覚で直さない。以下を比較してから修正する。
+```
+getPublishedEpisodes()  → DB公開動画
+getAllEpisodes()         → 全エピソード
+getRankings()           → ランキング
+getFeaturedItems()      → フィーチャード
+getCategoryEpisodes()   → カテゴリ別新着
+getCategoryFeatured()   → カテゴリ別フィーチャード
+getPlaylists()          → プレイリスト
+getPrograms()           → 番組一覧
+getVideoDetail()        → 動画詳細+AI生成コンテンツ
+```
 
-- font-size
-- line-height
-- spacing
-- width
-- opacity
-- border-radius
-- transform
-- transition
-- responsive layout
+コンポーネントは全てpropsでデータを受け取る。
+コンポーネントからdata/*.tsを直接importすることは禁止。
 
-## 本家リンク禁止
+### 3. 型を壊さない
 
-内部リンクは必ずローカルルーティングを使う。
-クリック時に本家へ遷移させない。
+`Episode.id` は `string` 型。DB動画のULIDもそのまま使える。
+型定義は `src/types/index.ts` と `src/types/admin.ts` に集約。
+型を変更する場合は影響範囲を必ず確認する。
 
-## placeholder禁止
+### 4. APIの認証を維持する
 
-placeholder画像や雑な仮UIで誤魔化さない。
+管理系API（POST/PUT/DELETE）は `requireAdmin()` で認証必須。
+公開API（GET /api/videos, GET /api/search等）は認証不要。
+この分離を壊さない。
 
-## scriptを安易に削除しない
+### 5. publish_status / processing_step を使う
 
-スライダー・hover・menu・animationなどの動作を壊す可能性があるため、JSを安易に削除しない。
+旧 `status` カラムは @deprecated。
+読み書きは `publishStatus` と `processingStep` のみ使用する。
 
-## レスポンシブを後回しにしない
+### 6. テスト後にコミット
 
-PCだけ合わせて終わりにしない。以下を必ず確認する。
+変更後は必ず以下を確認してからコミットする。
 
-- Desktop
-- Tablet
-- Mobile
+```bash
+npx tsc --noEmit    # 型チェック
+npm run build       # ビルド
+# ブラウザで / と /admin を確認
+```
 
-特にモバイル時の密度・余白・BottomNavを重視する。
+## DB設計
 
-## 今後のAI機能を前提に設計する
+9テーブル: videos, programs, transcriptions, ai_contents, thumbnails, thumbnail_style_presets, ai_generation_logs, job_queue, metrics
 
-現在はUI再現フェーズだが、将来的に以下が追加される前提で設計する。
+テーブル間リレーション:
+```
+videos (1) → (0..1) transcriptions
+videos (1) → (0..1) ai_contents
+videos (1) → (0..N) thumbnails
+videos (1) → (0..1) metrics
+videos (1) → (0..N) ai_generation_logs
+videos (N) → (0..1) programs
+```
 
-- AI要約
-- AI記事生成
-- AIチャプター生成
-- AI推薦
-- 動画投稿
-- 管理画面
+FOREIGN KEY制約はSQLiteレベルではなし。アプリケーション層で管理。
+DELETE時はカスケード削除を実装済み。
 
-そのため、将来的にデータ化しやすい構造を意識する。
-ただし、今はまだCMS化を優先しない。
+## AIパイプライン
 
-## 現在の最重要目標
+```
+動画アップロード or YouTube URL登録
+  → 文字起こし（Whisper or 手動入力）
+  → AI生成（Claude: 要約/チャプター/記事/タグ — 個別再生成可能）
+  → サムネイル生成（gpt-image-1 — 手動アップロードも可能）
+  → 公開チェック（title + transcript + thumbnail 必須）
+  → 公開 → フロント反映
+```
 
-現在の最重要目標は以下。
+pipeline.ts で個別生成関数に分離済み。タイムアウト120秒。ログ記録。
 
-- トップページの高精度再現
-- スライダー一致
-- インジケーター一致
-- ヘッダー一致
-- セクションタイトル一致
-- カード密度一致
-- レスポンシブ一致
-- interaction一致
+## 環境変数
 
-新機能追加より、UI品質を優先する。
+```
+ADMIN_PASSWORD          — 管理画面ログイン
+OPENAI_API_KEY          — Whisper + Images API
+ANTHROPIC_API_KEY       — Claude
+SUPABASE_ACCESS_TOKEN   — Supabase（将来用）
+```
 
-## 最後に
+## 禁止事項
 
-このプロジェクトは、単なる模写サイトではない。
+- フロントUIの見た目を変更する
+- コンポーネントにdata/*.tsのimportを追加する
+- Episode.idをnumberに戻す
+- requireAdmin()を削除する
+- publish_statusではなく旧statusを使う
+- SELECT * でデータコピーする（カラム順ずれの原因）
+- .nextキャッシュを消さずに新ルートを追加する
 
-将来的に、AIを前提とした次世代メディアCMSへ発展させるための基盤である。
+## コマンド
 
-そのため、今は「見た目の完成度」を最優先とし、妥協せず差分を詰めていく。
+```bash
+npm run dev          # 開発サーバー (localhost:3000)
+npm run build        # ビルド
+npm run db:migrate   # DBマイグレーション
+npm run db:seed      # サンプルデータ投入
+npm run db:studio    # Drizzle Studio
+```
