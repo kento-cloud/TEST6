@@ -88,6 +88,9 @@ export function Sidebar() {
             </Link>
           ))}
         </div>
+        <div className="mt-auto mb-4 flex justify-center">
+          <Link href="/admin" className="w-6 h-6 opacity-0 hover:opacity-30 transition-opacity" aria-label="Admin" />
+        </div>
       </aside>
 
       {/* SP Bottom Navigation */}
