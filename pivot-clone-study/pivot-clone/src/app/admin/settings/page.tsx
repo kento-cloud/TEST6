@@ -1,0 +1,234 @@
+"use client"
+
+import { useState, useEffect } from "react"
+
+interface KeyStatus {
+  set: boolean
+  masked: string
+}
+
+interface SettingsData {
+  OPENAI_API_KEY?: KeyStatus
+  ADMIN_PASSWORD?: KeyStatus
+  AI_TEXT_MODEL?: string
+  AI_IMAGE_MODEL?: string
+  AI_TRANSCRIBE_MODEL?: string
+}
+
+const TEXT_MODELS = [
+  { id: "gpt-5.5", label: "GPT-5.5（最新・最強）" },
+  { id: "gpt-5.5-pro", label: "GPT-5.5 Pro（精度重視）" },
+  { id: "gpt-5.4", label: "GPT-5.4（バランス）" },
+  { id: "gpt-5.4-mini", label: "GPT-5.4 Mini（軽量）" },
+  { id: "gpt-5.4-nano", label: "GPT-5.4 Nano（最安）" },
+  { id: "gpt-4.1", label: "GPT-4.1（コスパ推奨）" },
+  { id: "gpt-4.1-mini", label: "GPT-4.1 Mini（高速）" },
+  { id: "gpt-4.1-nano", label: "GPT-4.1 Nano（最速）" },
+]
+
+const IMAGE_MODELS = [
+  { id: "gpt-image-2", label: "GPT Image 2（最新・高品質）" },
+  { id: "gpt-image-1-mini", label: "GPT Image 1 Mini（軽量）" },
+]
+
+const TRANSCRIBE_MODELS = [
+  { id: "gpt-4o-transcribe", label: "GPT-4o Transcribe（高品質）" },
+  { id: "gpt-4o-mini-transcribe", label: "GPT-4o Mini Transcribe（軽量）" },
+  { id: "whisper-1", label: "Whisper-1（従来版）" },
+]
+
+export default function AdminSettingsPage() {
+  const [settings, setSettings] = useState<SettingsData>({})
+  const [openaiKey, setOpenaiKey] = useState("")
+  const [adminPassword, setAdminPassword] = useState("")
+  const [textModel, setTextModel] = useState("gpt-4.1")
+  const [imageModel, setImageModel] = useState("gpt-image-2")
+  const [transcribeModel, setTranscribeModel] = useState("gpt-4o-transcribe")
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState("")
+  const [ffmpegOk, setFfmpegOk] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then((data: SettingsData) => {
+        setSettings(data)
+        setTextModel(data.AI_TEXT_MODEL ?? "gpt-4.1")
+        setImageModel(data.AI_IMAGE_MODEL ?? "gpt-image-2")
+        setTranscribeModel(data.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe")
+      })
+      .catch(() => {})
+
+    fetch("/api/admin/settings/ffmpeg")
+      .then((r) => r.json())
+      .then((data) => setFfmpegOk(data.installed))
+      .catch(() => setFfmpegOk(false))
+  }, [])
+
+  async function handleSave() {
+    setSaving(true)
+    setMessage("")
+    const body: Record<string, string> = {}
+    if (openaiKey) body.OPENAI_API_KEY = openaiKey
+    if (adminPassword) body.ADMIN_PASSWORD = adminPassword
+    body.AI_TEXT_MODEL = textModel
+    body.AI_IMAGE_MODEL = imageModel
+    body.AI_TRANSCRIBE_MODEL = transcribeModel
+
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      setMessage(data.message ?? "保存しました")
+      setOpenaiKey("")
+      setAdminPassword("")
+      const updated = await fetch("/api/admin/settings").then((r) => r.json())
+      setSettings(updated)
+    } catch {
+      setMessage("保存に失敗しました")
+    }
+    setSaving(false)
+  }
+
+  return (
+    <div>
+      <h1 className="text-[24px] font-bold text-gray-900 mb-6">設定</h1>
+
+      {/* Environment Status */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">環境ステータス</h2>
+        </div>
+        <div className="divide-y divide-gray-50">
+          <StatusRow label="OPENAI_API_KEY" desc="文字起こし・AI生成・画像生成に使用" status={settings.OPENAI_API_KEY} />
+          <StatusRow label="ADMIN_PASSWORD" desc="管理画面ログインパスワード" status={settings.ADMIN_PASSWORD} />
+          <div className="px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-[14px] font-semibold text-gray-900">ffmpeg</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">動画処理・音声抽出に使用</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[13px] text-gray-500 font-mono">{ffmpegOk === null ? "確認中..." : ffmpegOk ? "インストール済み" : "未インストール"}</span>
+              <span className={`w-2.5 h-2.5 rounded-full ${ffmpegOk ? "bg-green-500" : ffmpegOk === false ? "bg-red-400" : "bg-gray-300"}`} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* AI Model Selection */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">AIモデル設定</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">使用するOpenAIモデルを選択します。全てOpenAI APIキー1つで動作します。</p>
+        </div>
+        <div className="p-5 space-y-4">
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">テキスト生成モデル</label>
+            <select
+              value={textModel}
+              onChange={(e) => setTextModel(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+            >
+              {TEXT_MODELS.map((m) => (
+                <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
+              ))}
+            </select>
+            <p className="text-[11px] text-gray-400 mt-1">要約・チャプター・記事・タグ生成に使用</p>
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">画像生成モデル</label>
+            <select
+              value={imageModel}
+              onChange={(e) => setImageModel(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+            >
+              {IMAGE_MODELS.map((m) => (
+                <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
+              ))}
+            </select>
+            <p className="text-[11px] text-gray-400 mt-1">サムネイル画像の生成に使用</p>
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">文字起こしモデル</label>
+            <select
+              value={transcribeModel}
+              onChange={(e) => setTranscribeModel(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+            >
+              {TRANSCRIBE_MODELS.map((m) => (
+                <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
+              ))}
+            </select>
+            <p className="text-[11px] text-gray-400 mt-1">動画の音声→テキスト変換に使用</p>
+          </div>
+        </div>
+      </div>
+
+      {/* API Key & Password */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px]">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">APIキー・パスワード</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">入力して保存すると .env.local に書き込まれます。空欄のまま保存すると変更されません。</p>
+        </div>
+        <div className="p-5 space-y-4">
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">OpenAI API Key</label>
+            <input
+              type="password"
+              value={openaiKey}
+              onChange={(e) => setOpenaiKey(e.target.value)}
+              placeholder={settings.OPENAI_API_KEY?.set ? "設定済み（変更する場合のみ入力）" : "sk-..."}
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] font-mono"
+            />
+            <p className="text-[11px] text-gray-400 mt-1">Whisper（文字起こし）・テキスト生成・画像生成の全てに使用</p>
+          </div>
+
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">管理者パスワード</label>
+            <input
+              type="password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="変更する場合のみ入力"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+            />
+          </div>
+
+          {message && (
+            <p className={`text-[13px] ${message.includes("失敗") ? "text-red-500" : "text-green-600"}`}>{message}</p>
+          )}
+
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+          >
+            {saving ? "保存中..." : "保存する"}
+          </button>
+
+          <p className="text-[12px] text-orange-500">⚠ APIキー・モデル変更後はサーバー再起動が必要です（npm run dev を再実行）</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StatusRow({ label, desc, status }: { label: string; desc: string; status?: KeyStatus }) {
+  return (
+    <div className="px-5 py-4 flex items-center justify-between">
+      <div>
+        <p className="text-[14px] font-semibold text-gray-900">{label}</p>
+        <p className="text-[12px] text-gray-400 mt-0.5">{desc}</p>
+      </div>
+      <div className="flex items-center gap-3 ml-4 shrink-0">
+        <span className="text-[13px] text-gray-500 font-mono">{status?.set ? status.masked : "未設定"}</span>
+        <span className={`w-2.5 h-2.5 rounded-full ${status?.set ? "bg-green-500" : "bg-red-400"}`} />
+      </div>
+    </div>
+  )
+}

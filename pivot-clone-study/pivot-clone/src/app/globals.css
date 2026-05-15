@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-pivot-darkest: #0e1226;
+  --color-pivot-dark: #1d2030;
+  --color-pivot-mid: #303240;
+  --color-pivot-border: #606370;
+  --color-pivot-pale: #a9abb8;
+  --color-pivot-accent: #cd1cfa;
+  --color-pivot-blue: #1e82be;
+  --color-pivot-text: #ffffff;
+  --color-pivot-subtext: #999999;
+  --color-pivot-card-bg: rgba(14, 18, 38, 0.5);
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("Noto Sans JP Regular"), local("NotoSansJP-Regular");
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("Noto Sans JP Medium"), local("NotoSansJP-Medium");
+}
+
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("Noto Sans JP Bold"), local("NotoSansJP-Bold");
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Noto Sans JP", sans-serif;
+  background: #0e1226;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+@keyframes pivotgradient {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-gradient {
+  background: linear-gradient(135deg, #3d084a, #092638);
+  background-size: 200% 200%;
+  animation: pivotgradient 10s ease infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #cd1cfa, #764fdc 60%, #1e82be);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-button {
+  background: linear-gradient(90deg, #cd1cfa, #764fdc 60%, #1e82be);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Header tab scroll - scrollbar inside the tab bar, not overflowing */
+.tab-scroll {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  /* Scrollbar overlays content instead of adding height */
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.tab-scroll::-webkit-scrollbar {
+  height: 3px;
+  background: transparent;
+}
+.tab-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tab-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+/* Hover: show scrollbar thumb */
+.group\/tabs:hover .tab-scroll {
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.group\/tabs:hover .tab-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+}
+.group\/tabs:hover .tab-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
+}

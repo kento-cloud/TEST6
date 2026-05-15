@@ -1,0 +1,43 @@
+import OpenAI from "openai"
+import fs from "fs"
+import { getAIModels } from "@/lib/ai/models"
+
+interface WhisperResult {
+  readonly text: string
+  readonly segments: readonly {
+    readonly start: number
+    readonly end: number
+    readonly text: string
+  }[]
+  readonly language: string
+}
+
+export async function transcribeAudio(audioPath: string): Promise<WhisperResult> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new Error("OPENAI_API_KEY が設定されていません。管理画面の設定ページから登録してください。")
+  }
+
+  const models = getAIModels()
+  const openai = new OpenAI({ apiKey })
+
+  const response = await openai.audio.transcriptions.create({
+    file: fs.createReadStream(audioPath),
+    model: models.transcribe,
+    language: "ja",
+    response_format: "verbose_json",
+    timestamp_granularities: ["segment"],
+  })
+
+  const segments = (response as unknown as { segments?: Array<{ start: number; end: number; text: string }> }).segments ?? []
+
+  return {
+    text: response.text,
+    segments: segments.map((s) => ({
+      start: s.start,
+      end: s.end,
+      text: s.text.trim(),
+    })),
+    language: "ja",
+  }
+}
