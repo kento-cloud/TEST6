@@ -14,9 +14,10 @@ export async function POST(req: NextRequest) {
   }
 
   const cookieStore = await cookies()
+  const isProduction = process.env.NODE_ENV === "production"
   cookieStore.set("admin_session", "authenticated", {
     httpOnly: true,
-    secure: false,
+    secure: isProduction,
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24, // 24時間
