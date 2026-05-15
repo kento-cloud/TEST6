@@ -211,7 +211,6 @@ export default function AdminSettingsPage() {
             {saving ? "保存中..." : "保存する"}
           </button>
 
-          <p className="text-[12px] text-orange-500">⚠ APIキー・モデル変更後はサーバー再起動が必要です（npm run dev を再実行）</p>
         </div>
       </div>
     </div>
