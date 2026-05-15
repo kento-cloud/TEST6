@@ -38,10 +38,7 @@ export default function GatePage() {
     <div className="min-h-screen bg-gradient-to-br from-[#3d084a] to-[#092638] flex items-center justify-center px-4">
       <main className="w-full max-w-[360px] text-center">
         <div className="mb-8">
-          <h1 className="text-[32px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">
-            PIVOT
-          </h1>
-          <p className="text-[14px] text-gray-400 mt-2">閲覧にはパスワードが必要です</p>
+          <p className="text-[14px] text-gray-400">閲覧にはパスワードが必要です</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
