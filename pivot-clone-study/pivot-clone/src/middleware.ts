@@ -1,23 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // /admin-login はスキップ（認証不要、レイアウト外）
-  if (pathname === "/admin-login") {
+function handleAdminAuth(request: NextRequest, pathname: string) {
+  if (pathname === "/admin-login" || pathname === "/api/admin/login") {
     return NextResponse.next()
   }
 
-  // /api/admin/login もスキップ（ログイン処理用）
-  if (pathname === "/api/admin/login") {
-    return NextResponse.next()
-  }
-
-  // /admin/* へのアクセスにcookie認証を要求
   if (pathname.startsWith("/admin")) {
-    const session = request.cookies.get("admin_session")
-    if (!session || session.value !== "authenticated") {
-      // API系はJSONで401を返す
+    const adminSession = request.cookies.get("admin_session")
+    if (!adminSession || adminSession.value !== "authenticated") {
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "認証が必要です" }, { status: 401 })
       }
@@ -25,13 +15,44 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // /api/videos, /api/programs 等の管理系APIも保護
-  // ※ GET は公開APIとしても使えるが、mutation(POST/PUT/DELETE)はrequireAdmin()でも保護済み
-  // ※ ここでは /admin/* 以外の /api/ は通す（requireAdmin()で個別保護）
-
   return NextResponse.next()
 }
 
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // ゲート関連・静的アセットはスキップ
+  if (pathname === "/gate" || pathname === "/api/gate/login") {
+    return NextResponse.next()
+  }
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/images") ||
+    pathname.startsWith("/assets") ||
+    pathname.startsWith("/favicon")
+  ) {
+    return NextResponse.next()
+  }
+
+  // SITE_PASSWORD 未設定ならゲートなし
+  const sitePassword = process.env.SITE_PASSWORD
+  if (!sitePassword) {
+    return handleAdminAuth(request, pathname)
+  }
+
+  // サイト閲覧認証
+  const siteSession = request.cookies.get("site_session")
+  if (!siteSession || siteSession.value !== "authenticated") {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "サイト認証が必要です" }, { status: 401 })
+    }
+    return NextResponse.redirect(new URL("/gate", request.url))
+  }
+
+  // 管理画面認証
+  return handleAdminAuth(request, pathname)
+}
+
 export const config = {
-  matcher: ["/admin/:path*", "/admin-login"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 }
