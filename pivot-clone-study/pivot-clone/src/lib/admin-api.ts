@@ -28,11 +28,11 @@ export async function uploadVideo(formData: FormData) {
   return res.json()
 }
 
-export async function importYouTube(url: string, categoryCode?: string) {
+export async function importYouTube(url: string, categoryCode?: string, aiPrompt?: string) {
   const res = await fetch("/api/videos/import-youtube", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url, categoryCode }),
+    body: JSON.stringify({ url, categoryCode, aiPrompt }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))

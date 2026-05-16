@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { resetVideo, generateAll } from "@/lib/admin-api"
 
 interface Props {
   readonly videoId: string
@@ -28,18 +29,28 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   })
   const [promptMode, setPromptMode] = useState<"append" | "override">("append")
 
-  async function handleAction(url: string, _successMessage: string, body?: Record<string, unknown>) {
+  async function handleReset() {
+    setState("processing")
+    setError("")
+    try {
+      await resetVideo(videoId)
+      setState("done")
+      setTimeout(() => {
+        router.refresh()
+        setState("idle")
+      }, 1500)
+    } catch (e) {
+      setState("error")
+      setError(e instanceof Error ? e.message : "エラーが発生しました")
+    }
+  }
+
+  async function handleGenerate(instructionData?: Record<string, string>, mode?: "append" | "override") {
     setState("processing")
     setError("")
     setShowPrompt(false)
     try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: body ? { "Content-Type": "application/json" } : undefined,
-        body: body ? JSON.stringify(body) : undefined,
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? "処理に失敗しました")
+      await generateAll(videoId, instructionData, mode)
       setState("done")
       setTimeout(() => {
         router.refresh()
@@ -99,7 +110,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   if (processingStep === "error") {
     return (
       <button
-        onClick={() => handleAction(`/api/videos/${videoId}/reset`, "リセットしました")}
+        onClick={() => handleReset()}
         className="px-4 py-2 bg-orange-600 text-white rounded-lg text-[14px] font-semibold hover:bg-orange-700 cursor-pointer"
       >
         エラーをリセット
@@ -167,8 +178,8 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
               <button
                 onClick={() => {
                   const hasAny = Object.values(instructions).some(Boolean)
-                  const filtered = hasAny ? Object.fromEntries(Object.entries(instructions).filter(([, v]) => v)) : undefined
-                  handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", filtered ? { instructions: filtered, promptMode } : undefined)
+                  const filtered = hasAny ? Object.fromEntries(Object.entries(instructions).filter(([, v]) => v)) as Record<string, string> : undefined
+                  handleGenerate(filtered, hasAny ? promptMode : undefined)
                 }}
                 className="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-[13px] font-semibold hover:bg-purple-700 cursor-pointer"
               >

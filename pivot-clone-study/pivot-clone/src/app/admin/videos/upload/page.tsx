@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { importYouTube } from "@/lib/admin-api"
 
 const categories = [
   { code: "", label: "カテゴリを選択" },
@@ -168,13 +169,7 @@ function YouTubeImportForm() {
     setError(""); setLoading(true)
 
     try {
-      const res = await fetch("/api/videos/import-youtube", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, categoryCode, aiPrompt: aiPrompt || undefined }),
-      })
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? "インポート失敗") }
-      const data = await res.json()
+      const data = await importYouTube(url, categoryCode, aiPrompt || undefined)
       router.push(`/admin/videos/${data.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "エラー"); setLoading(false)

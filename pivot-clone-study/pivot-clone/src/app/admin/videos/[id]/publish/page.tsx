@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { StatusBadge } from "@/components/StatusBadge"
+import { unpublishVideo, publishVideo } from "@/lib/admin-api"
 
 interface VideoData {
   id: string
@@ -64,9 +65,7 @@ export default function PublishPage() {
   async function handlePublish() {
     setState((prev) => ({ ...prev, publishing: true, error: null }))
     try {
-      const res = await fetch(`/api/videos/${id}/publish`, { method: "POST" })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? "公開に失敗しました")
+      await publishVideo(id)
       router.push(`/admin/videos/${id}`)
       router.refresh()
     } catch (err) {
@@ -81,19 +80,14 @@ export default function PublishPage() {
   async function handleUnpublish() {
     setState((prev) => ({ ...prev, publishing: true, error: null }))
     try {
-      const res = await fetch(`/api/videos/${id}/publish`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "unpublish" }),
-      })
-      if (!res.ok) throw new Error("非公開に失敗しました")
+      await unpublishVideo(id)
       router.push(`/admin/videos/${id}`)
       router.refresh()
-    } catch {
+    } catch (err) {
       setState((prev) => ({
         ...prev,
         publishing: false,
-        error: "非公開処理に失敗しました",
+        error: err instanceof Error ? err.message : "非公開処理に失敗しました",
       }))
     }
   }

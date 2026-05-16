@@ -1,3 +1,7 @@
+import type { GenerationStep } from "./ai"
+
+export type GenerationStepType = GenerationStep
+
 // === Entity Types ===
 
 export interface Video {
@@ -111,8 +115,6 @@ export type TranscriptSource = "whisper" | "youtube_caption" | "manual" | "exter
 export type ThumbnailSource = "manual" | "ffmpeg" | "ai" | "youtube"
 
 export type StepStatus = "pending" | "processing" | "done" | "error"
-
-export type GenerationStepType = "transcribe" | "summary" | "chapters" | "article" | "tags" | "thumbnail" | "full_generate"
 
 // === UI State Types ===
 

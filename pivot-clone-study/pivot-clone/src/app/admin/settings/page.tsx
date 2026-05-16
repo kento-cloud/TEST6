@@ -69,7 +69,9 @@ export default function AdminSettingsPage() {
         setArticleBasePrompt(data.AI_ARTICLE_BASE_PROMPT ?? "")
         setTagsBasePrompt(data.AI_TAGS_BASE_PROMPT ?? "")
       })
-      .catch(() => {})
+      .catch(() => {
+        setMessage("設定データの取得に失敗しました")
+      })
 
     fetch("/api/admin/settings/ffmpeg")
       .then((r) => r.json())
