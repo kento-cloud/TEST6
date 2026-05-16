@@ -199,8 +199,8 @@ async function setStep(videoId: string, step: string) {
 
 // --- 個別生成関数 ---
 
-export async function generateSummary(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
-  await setStep(videoId, "generating_summary")
+export async function generateSummary(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean): Promise<string> {
+  if (!skipStepUpdate) await setStep(videoId, "generating_summary")
   const basePrompt = await getConfigValue("AI_SUMMARY_BASE_PROMPT")
   const prompt = summaryPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
@@ -229,18 +229,18 @@ export async function generateSummary(videoId: string, transcript: string, title
     }
 
     await logGeneration(videoId, "summary", "done", { prompt, resultPreview: result.content, processingMs: result.processingMs })
-    await setStep(videoId, "none")
+    if (!skipStepUpdate) await setStep(videoId, "none")
     return result.content
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error"
     await logGeneration(videoId, "summary", "error", { prompt, errorMessage: msg })
-    await setStep(videoId, "error")
+    if (!skipStepUpdate) await setStep(videoId, "error")
     throw error
   }
 }
 
-export async function generateChapters(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
-  await setStep(videoId, "generating_chapters")
+export async function generateChapters(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean): Promise<string> {
+  if (!skipStepUpdate) await setStep(videoId, "generating_chapters")
   const basePrompt = await getConfigValue("AI_CHAPTERS_BASE_PROMPT")
   const prompt = chaptersPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
@@ -272,18 +272,18 @@ export async function generateChapters(videoId: string, transcript: string, titl
     }
 
     await logGeneration(videoId, "chapters", "done", { prompt, resultPreview: chaptersJson, processingMs: result.processingMs })
-    await setStep(videoId, "none")
+    if (!skipStepUpdate) await setStep(videoId, "none")
     return chaptersJson
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error"
     await logGeneration(videoId, "chapters", "error", { prompt, errorMessage: msg })
-    await setStep(videoId, "error")
+    if (!skipStepUpdate) await setStep(videoId, "error")
     throw error
   }
 }
 
-export async function generateArticle(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
-  await setStep(videoId, "generating_article")
+export async function generateArticle(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean): Promise<string> {
+  if (!skipStepUpdate) await setStep(videoId, "generating_article")
   const basePrompt = await getConfigValue("AI_ARTICLE_BASE_PROMPT")
   const prompt = articlePrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
@@ -312,18 +312,18 @@ export async function generateArticle(videoId: string, transcript: string, title
     }
 
     await logGeneration(videoId, "article", "done", { prompt, resultPreview: result.content, processingMs: result.processingMs })
-    await setStep(videoId, "none")
+    if (!skipStepUpdate) await setStep(videoId, "none")
     return result.content
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error"
     await logGeneration(videoId, "article", "error", { prompt, errorMessage: msg })
-    await setStep(videoId, "error")
+    if (!skipStepUpdate) await setStep(videoId, "error")
     throw error
   }
 }
 
-export async function generateTags(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string[]> {
-  await setStep(videoId, "generating_tags")
+export async function generateTags(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean): Promise<string[]> {
+  if (!skipStepUpdate) await setStep(videoId, "generating_tags")
   const basePrompt = await getConfigValue("AI_TAGS_BASE_PROMPT")
   const prompt = tagsPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
@@ -356,12 +356,12 @@ export async function generateTags(videoId: string, transcript: string, title: s
     }
 
     await logGeneration(videoId, "tags", "done", { prompt, resultPreview: tagsJson, processingMs: result.processingMs })
-    await setStep(videoId, "none")
+    if (!skipStepUpdate) await setStep(videoId, "none")
     return tags
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error"
     await logGeneration(videoId, "tags", "error", { prompt, errorMessage: msg })
-    await setStep(videoId, "error")
+    if (!skipStepUpdate) await setStep(videoId, "error")
     throw error
   }
 }
@@ -405,12 +405,12 @@ export async function generateAll(videoId: string, transcript: string, title: st
     const mode = options?.promptMode
     const ins = options?.instructions
 
-    // 並列実行
+    // 並列実行（skipStepUpdate=true: generateAllがステップを管理する）
     const [summary, chapters, article, tags] = await Promise.all([
-      generateSummary(videoId, transcript, title, ins?.summary, mode),
-      generateChapters(videoId, transcript, title, ins?.chapters, mode),
-      generateArticle(videoId, transcript, title, ins?.article, mode),
-      generateTags(videoId, transcript, title, ins?.tags, mode),
+      generateSummary(videoId, transcript, title, ins?.summary, mode, true),
+      generateChapters(videoId, transcript, title, ins?.chapters, mode, true),
+      generateArticle(videoId, transcript, title, ins?.article, mode, true),
+      generateTags(videoId, transcript, title, ins?.tags, mode, true),
     ])
 
     await supabase.from("ai_contents").update({

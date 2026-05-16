@@ -7,9 +7,13 @@ import { generateThumbnailImages } from "@/lib/ai/images"
 import { extractAudio } from "@/lib/ffmpeg"
 import { transcribeAudio } from "@/lib/ai/whisper"
 import { downloadYouTubeAudio } from "@/lib/youtube"
+import { insertMockAIContents } from "@/lib/ai/mock-fallback"
 import path from "path"
 import { existsSync } from "fs"
 import { mkdir, unlink } from "fs/promises"
+
+// 長時間処理のためタイムアウトを延長
+export const maxDuration = 300 // 5分
 
 /**
  * 自動処理パイプライン: 文字起こし → AI生成 を一気通貫で実行
@@ -108,6 +112,24 @@ export async function POST(
     })
 
     transcriptText = result.text
+
+    // durationを推定して更新（0の場合のみ）
+    if (!video.duration || video.duration === 0) {
+      let estimatedDuration = 0
+      if (result.segments.length > 0) {
+        const lastSeg = result.segments[result.segments.length - 1]
+        estimatedDuration = Math.ceil(lastSeg.end)
+      } else {
+        // セグメントなし: 文字数から推定（日本語は1分あたり約300文字）
+        estimatedDuration = Math.ceil(result.text.length / 300 * 60)
+      }
+      if (estimatedDuration > 0) {
+        await supabase.from("videos").update({
+          duration: estimatedDuration,
+          updated_at: new Date().toISOString(),
+        }).eq("id", id)
+      }
+    }
 
     // 一時音声ファイルを削除
     try { await unlink(audioPath) } catch { /* ignore */ }
@@ -237,9 +259,8 @@ export async function POST(
       }).eq("id", id)
 
       thumbnailCount = imgResults.length
-    } catch (thumbError) {
+    } catch {
       // サムネイル生成失敗は全体を止めない（API未設定時等）
-      console.error(`[auto-process:thumbnail] Error:`, thumbError instanceof Error ? thumbError.message : thumbError)
     }
 
     await supabase.from("videos").update({
@@ -258,65 +279,25 @@ export async function POST(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
-    console.error(`[auto-process:generate] Error for video ${id}:`, message)
     const isConfigError = message.includes("設定されていません")
 
     if (isConfigError) {
-      // モックフォールバック: API未設定時にモックAIコンテンツを挿入
-      const now = new Date().toISOString()
-      const mockSummary = "[モック] AI APIが未接続のため、モックデータです。接続後に再生成してください。"
-      const mockChapters = JSON.stringify([
-        { title: "イントロダクション", startTime: 0, endTime: 120, summary: "動画の導入部分です。" },
-        { title: "メインコンテンツ", startTime: 120, endTime: 360, summary: "主要なトピックについて解説します。" },
-        { title: "まとめ", startTime: 360, endTime: 480, summary: "内容の振り返りと結論です。" },
-      ])
-      const mockArticle = "## モック記事\n\nAI API接続後に本番の記事が生成されます。\n\n### 概要\n\nこの記事はモックデータです。"
-      const mockTags = JSON.stringify(["モック", "テスト", "AI未接続"])
-
-      const { data: existing } = await supabase
-        .from("ai_contents")
-        .select("id")
-        .eq("video_id", id)
-        .single()
-
-      if (existing) {
-        await supabase.from("ai_contents").update({
-          summary: mockSummary,
-          chapters: mockChapters,
-          article: mockArticle,
-          tags: mockTags,
-          status: "done",
-          updated_at: now,
-        }).eq("video_id", id)
-      } else {
-        await supabase.from("ai_contents").insert({
-          id: ulid(),
-          video_id: id,
-          summary: mockSummary,
-          chapters: mockChapters,
-          article: mockArticle,
-          tags: mockTags,
-          status: "done",
-          created_at: now,
-          updated_at: now,
-        })
-      }
-
-      await supabase.from("videos").update({
-        publish_status: "review",
-        processing_step: "none",
-        updated_at: now,
-      }).eq("id", id)
+      const mock = await insertMockAIContents(id)
 
       return NextResponse.json({
         status: "done",
         mock: true,
         transcriptLength: transcriptText.length,
-        summaryLength: mockSummary.length,
-        articleLength: mockArticle.length,
+        summaryLength: mock.summary.length,
+        articleLength: mock.article.length,
         tagCount: 3,
       })
     }
+
+    await supabase.from("videos").update({
+      processing_step: "error",
+      updated_at: new Date().toISOString(),
+    }).eq("id", id)
 
     return NextResponse.json({
       error: "AI生成処理中にエラーが発生しました",

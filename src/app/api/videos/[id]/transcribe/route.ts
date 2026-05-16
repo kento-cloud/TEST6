@@ -9,6 +9,8 @@ import { existsSync } from "fs"
 import { mkdir } from "fs/promises"
 import { requireAdmin } from "@/lib/auth"
 
+export const maxDuration = 300 // 5分
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -127,7 +129,6 @@ export async function POST(
       created_at: new Date().toISOString(),
     })
 
-    console.error(`[transcribe] Error for video ${id}:`, message)
     const isConfigError = message.includes("設定されていません")
     return NextResponse.json({
       error: isConfigError ? message : "文字起こし処理中にエラーが発生しました",

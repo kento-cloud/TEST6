@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   // /admin/* へのアクセスにcookie認証を要求
   if (pathname.startsWith("/admin")) {
     const session = request.cookies.get("admin_session")
-    if (!session || session.value !== "authenticated") {
+    if (!session || !session.value) {
       // API系はJSONで401を返す
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "認証が必要です" }, { status: 401 })

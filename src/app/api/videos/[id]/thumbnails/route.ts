@@ -49,6 +49,16 @@ export async function POST(
     return NextResponse.json({ error: "ファイルが必要です" }, { status: 400 })
   }
 
+  const MAX_THUMB_SIZE = 10 * 1024 * 1024 // 10MB
+  if (file.size > MAX_THUMB_SIZE) {
+    return NextResponse.json({ error: "ファイルサイズが10MBを超えています" }, { status: 413 })
+  }
+
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+  if (!allowedMimeTypes.includes(file.type)) {
+    return NextResponse.json({ error: "対応していない画像形式です（JPEG, PNG, WebP, GIF）" }, { status: 400 })
+  }
+
   const thumbId = ulid()
   const ext = file.name.split(".").pop() ?? "webp"
   const fileName = `${thumbId}.${ext}`

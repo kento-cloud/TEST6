@@ -2,18 +2,37 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 import { existsSync, unlinkSync } from "fs"
 import path from "path"
-import { requireAdmin } from "@/lib/auth"
+import { requireAdmin, isAdmin } from "@/lib/auth"
 import { snakeToCamel } from "@/lib/case-convert"
+
+const PUBLIC_COLUMNS = "id, title, description, thumbnail_path, duration, published_at, category_code"
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
+  const admin = await isAdmin()
+
+  if (admin) {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("*")
+      .eq("id", id)
+      .single()
+
+    if (error || !data) {
+      return NextResponse.json({ error: "動画が見つかりません" }, { status: 404 })
+    }
+    return NextResponse.json(snakeToCamel(data))
+  }
+
+  // Public: only published videos with limited columns
   const { data, error } = await supabase
     .from("videos")
-    .select("*")
+    .select(PUBLIC_COLUMNS)
     .eq("id", id)
+    .eq("publish_status", "published")
     .single()
 
   if (error || !data) {

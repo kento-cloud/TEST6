@@ -4,14 +4,32 @@ import { ulid } from "ulid"
 import { writeFile, mkdir } from "fs/promises"
 import { existsSync } from "fs"
 import path from "path"
-import { requireAdmin } from "@/lib/auth"
+import { requireAdmin, isAdmin } from "@/lib/auth"
 import { snakeToCamelArray } from "@/lib/case-convert"
 
+const PUBLIC_COLUMNS = "id, title, description, thumbnail_path, duration, published_at, category_code"
+
 export async function GET() {
+  const admin = await isAdmin()
+
+  if (admin) {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+    return NextResponse.json(snakeToCamelArray(data ?? []))
+  }
+
+  // Public: only published videos with limited columns
   const { data, error } = await supabase
     .from("videos")
-    .select("*")
-    .order("created_at", { ascending: false })
+    .select(PUBLIC_COLUMNS)
+    .eq("publish_status", "published")
+    .order("published_at", { ascending: false })
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
@@ -47,7 +65,11 @@ export async function POST(req: NextRequest) {
     }
 
     const id = ulid()
-    const ext = file.name.split(".").pop() ?? "mp4"
+    const ext = (file.name.split(".").pop() ?? "").toLowerCase()
+    const allowedExtensions = ["mp4", "webm", "mov", "avi", "mkv"]
+    if (!allowedExtensions.includes(ext)) {
+      return NextResponse.json({ error: `対応していない拡張子です。許可: ${allowedExtensions.join(", ")}` }, { status: 400 })
+    }
     const fileName = `${id}.${ext}`
     const uploadDir = path.join(process.cwd(), "uploads", "videos")
 

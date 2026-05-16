@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
-import { ulid } from "ulid"
 import { requireAdmin } from "@/lib/auth"
 import { generateAll } from "@/lib/ai/pipeline"
+import { insertMockAIContents } from "@/lib/ai/mock-fallback"
 
 export async function POST(
   req: NextRequest,
@@ -85,61 +85,16 @@ export async function POST(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
-    console.error(`[generate] Error for video ${id}:`, message)
     const isConfigError = message.includes("設定されていません")
 
     if (isConfigError) {
-      // モックフォールバック: API未設定時にモックデータを挿入
-      const now = new Date().toISOString()
-      const mockSummary = "[モック] AI APIが未接続のため、モックデータです。接続後に再生成してください。"
-      const mockChapters = JSON.stringify([
-        { title: "イントロダクション", startTime: 0, endTime: 120, summary: "動画の導入部分です。" },
-        { title: "メインコンテンツ", startTime: 120, endTime: 360, summary: "主要なトピックについて解説します。" },
-        { title: "まとめ", startTime: 360, endTime: 480, summary: "内容の振り返りと結論です。" },
-      ])
-      const mockArticle = "## モック記事\n\nAI API接続後に本番の記事が生成されます。\n\n### 概要\n\nこの記事はモックデータです。"
-      const mockTags = JSON.stringify(["モック", "テスト", "AI未接続"])
-
-      const { data: existing } = await supabase
-        .from("ai_contents")
-        .select("id")
-        .eq("video_id", id)
-        .single()
-
-      if (existing) {
-        await supabase.from("ai_contents").update({
-          summary: mockSummary,
-          chapters: mockChapters,
-          article: mockArticle,
-          tags: mockTags,
-          status: "done",
-          updated_at: now,
-        }).eq("video_id", id)
-      } else {
-        await supabase.from("ai_contents").insert({
-          id: ulid(),
-          video_id: id,
-          summary: mockSummary,
-          chapters: mockChapters,
-          article: mockArticle,
-          tags: mockTags,
-          status: "done",
-          created_at: now,
-          updated_at: now,
-        })
-      }
-
-      await supabase.from("videos").update({
-        publish_status: "review",
-        processing_step: "none",
-        updated_at: now,
-      }).eq("id", id)
+      const mock = await insertMockAIContents(id)
 
       return NextResponse.json({
         status: "done",
         mock: true,
-        summaryLength: mockSummary.length,
-        articleLength: mockArticle.length,
+        summaryLength: mock.summary.length,
+        articleLength: mock.article.length,
         tagCount: 3,
       })
     }
