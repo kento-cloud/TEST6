@@ -93,6 +93,21 @@ export async function regenerateStep(id: string, step: GenerationStepType, custo
   return res.json()
 }
 
+// === AI Contents (Edit) ===
+
+export async function updateAIContent(id: string, data: { summary?: string; chapters?: string; article?: string; tags?: string }) {
+  const res = await fetch(`/api/videos/${id}/ai-contents`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error ?? "保存に失敗しました")
+  }
+  return res.json()
+}
+
 // === Publish ===
 
 export async function publishVideo(id: string) {
