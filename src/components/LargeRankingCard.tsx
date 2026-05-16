@@ -1,7 +1,10 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import type { Episode } from "@/types"
 import { rankColors } from "@/lib/constants"
+import { AuthPrompt } from "@/components/AuthPrompt"
 
 interface LargeRankingCardProps {
   readonly episode: Episode
@@ -10,6 +13,7 @@ interface LargeRankingCardProps {
 
 export function LargeRankingCard({ episode, rank }: LargeRankingCardProps) {
   return (
+    <AuthPrompt>
     <Link
       href={`/movie/${episode.id}`}
       className="group block shrink-0 w-[calc(50%-8px)] md:w-[438px]"
@@ -53,5 +57,6 @@ export function LargeRankingCard({ episode, rank }: LargeRankingCardProps) {
         </div>
       </div>
     </Link>
+    </AuthPrompt>
   )
 }

@@ -1,7 +1,10 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import type { Episode } from "@/types"
 import { rankColors } from "@/lib/constants"
+import { AuthPrompt } from "@/components/AuthPrompt"
 
 interface EpisodeCardProps {
   readonly episode: Episode
@@ -10,6 +13,7 @@ interface EpisodeCardProps {
 
 export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
   return (
+    <AuthPrompt>
     <Link
       href={`/movie/${episode.id}`}
       className="group block shrink-0 w-[calc(50%-5px)] md:w-[calc(16.666%-8.33px)]"
@@ -78,5 +82,6 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
         </div>
       </div>
     </Link>
+    </AuthPrompt>
   )
 }
