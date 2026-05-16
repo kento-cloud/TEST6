@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "render-build": "bash scripts/install-binaries.sh && next build",
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "npx tsx src/db/migrate.ts",

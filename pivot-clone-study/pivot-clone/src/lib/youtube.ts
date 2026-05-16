@@ -6,6 +6,12 @@ import path from "path"
 
 const execFileAsync = promisify(execFile)
 
+function getYtDlpPath(): string {
+  const homeBin = path.join(process.env.HOME ?? "", ".local", "bin", "yt-dlp")
+  if (existsSync(homeBin)) return homeBin
+  return "yt-dlp" // PATH上のものを使う
+}
+
 interface YouTubeMetadata {
   readonly videoId: string
   readonly title: string
@@ -90,7 +96,7 @@ export async function downloadYouTubeAudio(videoId: string, savePath: string): P
 
   const url = `https://www.youtube.com/watch?v=${videoId}`
 
-  await execFileAsync("yt-dlp", [
+  await execFileAsync(getYtDlpPath(), [
     "-x",
     "--audio-format", "mp3",
     "--audio-quality", "5",
