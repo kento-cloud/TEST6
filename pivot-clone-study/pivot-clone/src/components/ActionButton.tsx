@@ -19,12 +19,19 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   const router = useRouter()
   const [state, setState] = useState<ActionState>("idle")
   const [error, setError] = useState("")
+  const [showPrompt, setShowPrompt] = useState(false)
+  const [articleInstruction, setArticleInstruction] = useState("")
 
-  async function handleAction(url: string, successMessage: string) {
+  async function handleAction(url: string, _successMessage: string, body?: Record<string, unknown>) {
     setState("processing")
     setError("")
+    setShowPrompt(false)
     try {
-      const res = await fetch(url, { method: "POST" })
+      const res = await fetch(url, {
+        method: "POST",
+        headers: body ? { "Content-Type": "application/json" } : undefined,
+        body: body ? JSON.stringify(body) : undefined,
+      })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? "処理に失敗しました")
       setState("done")
@@ -104,12 +111,41 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   }
   if (hasTranscript && !hasAI) {
     return (
-      <button
-        onClick={() => handleAction(`/api/videos/${videoId}/generate`, "AI生成完了")}
-        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-[14px] font-semibold hover:bg-purple-700 cursor-pointer"
-      >
-        AI生成開始
-      </button>
+      <div className="relative">
+        <button
+          onClick={() => setShowPrompt(!showPrompt)}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg text-[14px] font-semibold hover:bg-purple-700 cursor-pointer"
+        >
+          AI生成開始
+        </button>
+        {showPrompt && (
+          <div className="absolute right-0 top-full mt-2 w-[400px] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50">
+            <p className="text-[13px] font-semibold text-gray-700 mb-2">記事への指示（任意）</p>
+            <textarea
+              value={articleInstruction}
+              onChange={(e) => setArticleInstruction(e.target.value)}
+              placeholder="例: 初心者向けにわかりやすく書いて、箇条書き多めで"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              rows={3}
+            />
+            <p className="text-[11px] text-gray-400 mt-1 mb-3">ベースの指示は設定画面で変更できます。ここでは動画ごとの追加指示を入力できます。</p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowPrompt(false)}
+                className="px-3 py-1.5 text-[13px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer"
+              >
+                キャンセル
+              </button>
+              <button
+                onClick={() => handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", articleInstruction ? { articleInstruction } : undefined)}
+                className="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-[13px] font-semibold hover:bg-purple-700 cursor-pointer"
+              >
+                生成開始
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     )
   }
   if (hasAI && publishStatus !== "published") {

@@ -67,8 +67,12 @@ export async function transcribeVideo(id: string, manualText?: string) {
 
 // === AI Generation ===
 
-export async function generateAll(id: string) {
-  const res = await fetch(`/api/videos/${id}/generate`, { method: "POST" })
+export async function generateAll(id: string, articleInstruction?: string) {
+  const res = await fetch(`/api/videos/${id}/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ articleInstruction }),
+  })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
     throw new Error(data.error ?? "AI生成に失敗しました")
@@ -76,11 +80,11 @@ export async function generateAll(id: string) {
   return res.json()
 }
 
-export async function regenerateStep(id: string, step: GenerationStepType) {
+export async function regenerateStep(id: string, step: GenerationStepType, articleInstruction?: string) {
   const res = await fetch(`/api/videos/${id}/regenerate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ step }),
+    body: JSON.stringify({ step, articleInstruction }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))

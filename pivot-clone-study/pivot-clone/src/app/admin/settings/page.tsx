@@ -13,6 +13,7 @@ interface SettingsData {
   AI_TEXT_MODEL?: string
   AI_IMAGE_MODEL?: string
   AI_TRANSCRIBE_MODEL?: string
+  AI_ARTICLE_BASE_PROMPT?: string
 }
 
 const TEXT_MODELS = [
@@ -44,6 +45,7 @@ export default function AdminSettingsPage() {
   const [textModel, setTextModel] = useState("gpt-4.1")
   const [imageModel, setImageModel] = useState("gpt-image-2")
   const [transcribeModel, setTranscribeModel] = useState("gpt-4o-transcribe")
+  const [articleBasePrompt, setArticleBasePrompt] = useState("")
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [ffmpegOk, setFfmpegOk] = useState<boolean | null>(null)
@@ -56,6 +58,7 @@ export default function AdminSettingsPage() {
         setTextModel(data.AI_TEXT_MODEL ?? "gpt-4.1")
         setImageModel(data.AI_IMAGE_MODEL ?? "gpt-image-2")
         setTranscribeModel(data.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe")
+        setArticleBasePrompt(data.AI_ARTICLE_BASE_PROMPT ?? "")
       })
       .catch(() => {})
 
@@ -74,6 +77,7 @@ export default function AdminSettingsPage() {
     body.AI_TEXT_MODEL = textModel
     body.AI_IMAGE_MODEL = imageModel
     body.AI_TRANSCRIBE_MODEL = transcribeModel
+    body.AI_ARTICLE_BASE_PROMPT = articleBasePrompt
 
     try {
       const res = await fetch("/api/admin/settings", {
@@ -166,6 +170,24 @@ export default function AdminSettingsPage() {
             </select>
             <p className="text-[11px] text-gray-400 mt-1">動画の音声→テキスト変換に使用</p>
           </div>
+        </div>
+      </div>
+
+      {/* Article Base Prompt */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">記事生成ベースプロンプト</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">全記事生成に共通で適用される指示です。動画ごとの個別指示はAI生成時に追加できます。</p>
+        </div>
+        <div className="p-5">
+          <textarea
+            value={articleBasePrompt}
+            onChange={(e) => setArticleBasePrompt(e.target.value)}
+            placeholder="例: ビジネスパーソン向けにわかりやすく、具体的な数字やデータを含めて書いてください。"
+            className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+            rows={4}
+          />
+          <p className="text-[11px] text-gray-400 mt-1">空欄の場合はデフォルトのプロンプトのみで生成されます</p>
         </div>
       </div>
 

@@ -43,6 +43,7 @@ export async function GET() {
     AI_TEXT_MODEL: env.AI_TEXT_MODEL ?? "gpt-4.1",
     AI_IMAGE_MODEL: env.AI_IMAGE_MODEL ?? "gpt-image-2",
     AI_TRANSCRIBE_MODEL: env.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe",
+    AI_ARTICLE_BASE_PROMPT: env.AI_ARTICLE_BASE_PROMPT ?? "",
   })
 }
 
@@ -59,6 +60,7 @@ export async function PUT(req: NextRequest) {
     "AI_TEXT_MODEL",
     "AI_IMAGE_MODEL",
     "AI_TRANSCRIBE_MODEL",
+    "AI_ARTICLE_BASE_PROMPT",
   ]
 
   for (const key of allowedKeys) {

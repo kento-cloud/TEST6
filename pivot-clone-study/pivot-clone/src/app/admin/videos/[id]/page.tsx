@@ -251,7 +251,7 @@ function PipelineRow({ label, done, active, error, children }: { label: string; 
   const icon = active ? "⏳" : error ? "❌" : done ? "✅" : "⬜"
   const textColor = active ? "text-blue-600" : error ? "text-red-600" : done ? "text-green-600" : "text-gray-400"
   return (
-    <div className="flex items-center justify-between py-1">
+    <div className="flex items-center justify-between py-1 relative">
       <div className="flex items-center gap-2">
         <span className="text-[14px]">{icon}</span>
         <span className={`text-[13px] font-medium ${textColor}`}>{label}</span>

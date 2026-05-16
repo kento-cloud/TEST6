@@ -4,13 +4,15 @@ import { requireAdmin } from "@/lib/auth"
 import { generateAll } from "@/lib/ai/pipeline"
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const authError = await requireAdmin()
   if (authError) return authError
 
   const { id } = await params
+  const body = await req.json().catch(() => ({})) as { articleInstruction?: string }
+
   const { data: video, error: videoErr } = await supabase
     .from("videos")
     .select("*")
@@ -32,7 +34,7 @@ export async function POST(
   }
 
   try {
-    const result = await generateAll(id, transcript.full_text, video.title)
+    const result = await generateAll(id, transcript.full_text, video.title, body.articleInstruction)
 
     return NextResponse.json({
       status: "done",
