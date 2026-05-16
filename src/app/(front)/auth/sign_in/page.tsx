@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { createBrowserClient } from "@/lib/supabase"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -11,7 +12,7 @@ export default function SignInPage() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError("")
     if (!email || !password) {
@@ -19,10 +20,30 @@ export default function SignInPage() {
       return
     }
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+
+    try {
+      const supabase = createBrowserClient()
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (authError) {
+        const msg = authError.message.includes("Invalid login credentials")
+          ? "メールアドレスまたはパスワードが正しくありません"
+          : authError.message.includes("Email not confirmed")
+            ? "メールアドレスの確認が完了していません"
+            : authError.message
+        setError(msg)
+        setLoading(false)
+        return
+      }
+
       router.push("/")
-    }, 1000)
+    } catch {
+      setError("ログイン中にエラーが発生しました")
+      setLoading(false)
+    }
   }
 
   return (

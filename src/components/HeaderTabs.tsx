@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { Suspense } from "react"
+import { useAuth } from "@/contexts/AuthContext"
 
 const tabs = [
   { label: "トップ", href: "/", code: null },
@@ -17,6 +18,7 @@ const tabs = [
 function HeaderTabsInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const { user } = useAuth()
   const currentCode = searchParams.get("category_code")
 
   function isActive(tab: (typeof tabs)[number]): boolean {
@@ -26,7 +28,7 @@ function HeaderTabsInner() {
 
   return (
     <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
-      {/* SP Header: PIVOTロゴ + ログイン (48px) */}
+      {/* SP Header: PIVOTロゴ + ログイン/アカウント (48px) */}
       <div className="md:hidden flex items-center justify-between h-[48px] px-4">
         <Link href="/">
           <svg width="60" height="16" viewBox="0 0 80 18" fill="none">
@@ -43,15 +45,18 @@ function HeaderTabsInner() {
             </defs>
           </svg>
         </Link>
-        <Link
-          href="/auth/sign_in"
-          className="text-[14px] font-bold text-white"
-        >
-          ログイン
-        </Link>
+        {user ? (
+          <Link href="/account" className="text-[14px] font-bold text-white">
+            {user.user_metadata?.display_name || "アカウント"}
+          </Link>
+        ) : (
+          <Link href="/auth/sign_in" className="text-[14px] font-bold text-white">
+            ログイン
+          </Link>
+        )}
       </div>
 
-      {/* PC Header: タブ + 認証ボタン (88px) */}
+      {/* PC Header: タブ + 認証ボタン/アカウント (88px) */}
       <div className="hidden md:flex items-center justify-between h-[88px] px-10">
         {/* Category Tabs */}
         <div className="flex-1 relative overflow-hidden group/tabs h-[60px] flex items-center">
@@ -75,20 +80,34 @@ function HeaderTabsInner() {
           </div>
         </div>
 
-        {/* Auth Buttons */}
+        {/* Auth Buttons / User Info */}
         <div className="flex items-center gap-3 ml-6 shrink-0">
-          <Link
-            href="/auth/sign_in"
-            className="flex items-center justify-center w-[96px] h-[40px] text-[15px] font-bold text-white border border-white/30 rounded-full hover:bg-white/10 transition-colors"
-          >
-            ログイン
-          </Link>
-          <Link
-            href="/auth/sign_up"
-            className="flex items-center justify-center w-[96px] h-[40px] text-[15px] font-bold text-white gradient-button rounded-full hover:brightness-90 transition-all"
-          >
-            会員登録
-          </Link>
+          {user ? (
+            <Link
+              href="/account"
+              className="flex items-center gap-2 h-[40px] px-4 text-[14px] font-bold text-white border border-white/30 rounded-full hover:bg-white/10 transition-colors"
+            >
+              <span className="w-6 h-6 rounded-full bg-[#cd1cfa] flex items-center justify-center text-[12px] font-bold">
+                {(user.user_metadata?.display_name || user.email || "U")[0].toUpperCase()}
+              </span>
+              {user.user_metadata?.display_name || "アカウント"}
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth/sign_in"
+                className="flex items-center justify-center w-[96px] h-[40px] text-[15px] font-bold text-white border border-white/30 rounded-full hover:bg-white/10 transition-colors"
+              >
+                ログイン
+              </Link>
+              <Link
+                href="/auth/sign_up"
+                className="flex items-center justify-center w-[96px] h-[40px] text-[15px] font-bold text-white gradient-button rounded-full hover:brightness-90 transition-all"
+              >
+                会員登録
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

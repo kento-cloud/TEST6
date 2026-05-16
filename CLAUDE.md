@@ -16,6 +16,7 @@ API:     src/app/api/           — バックエンドAPI（構築中）
 DB:      src/db/                — SQLite + Drizzle ORM
 AI:      src/lib/ai/            — Whisper / Claude / Images API
 データ:  src/lib/data-source.ts — 全データ取得の集約層（★バックエンドの中核）
+認証:    src/contexts/AuthContext.tsx — Supabase Auth（ユーザー認証）
 ```
 
 ## 最重要ルール
@@ -47,6 +48,8 @@ getCategoryFeatured()   → カテゴリ別フィーチャード
 getPlaylists()          → プレイリスト
 getPrograms()           → 番組一覧
 getVideoDetail()        → 動画詳細+AI生成コンテンツ
+searchEpisodes()        → 全文検索（スタブ、将来DB対応）
+getUserPlaylists()      → マイリスト（スタブ、将来ユーザー認証連携）
 ```
 
 コンポーネントは全てpropsでデータを受け取る。
@@ -58,11 +61,21 @@ getVideoDetail()        → 動画詳細+AI生成コンテンツ
 型定義は `src/types/index.ts` と `src/types/admin.ts` に集約。
 型を変更する場合は影響範囲を必ず確認する。
 
-### 4. APIの認証を維持する
+### 4. 認証の分離を維持する
 
-管理系API（POST/PUT/DELETE）は `requireAdmin()` で認証必須。
-公開API（GET /api/videos, GET /api/search等）は認証不要。
-この分離を壊さない。
+**ユーザー認証（Supabase Auth）:**
+- `src/contexts/AuthContext.tsx` — AuthProvider + useAuth フック
+- `src/lib/supabase.ts` の `createBrowserClient()` を使用（anon key）
+- sign_up / sign_in ページで `supabase.auth.signUp()` / `signInWithPassword()`
+- HeaderTabs: ログイン状態でボタン切替（ログイン/会員登録 ⇔ アカウント名）
+- AuthGate: 未ログイン時にコンテンツをブロックし、ログイン誘導を表示
+- 動画詳細ページ: サムネイル+タイトルは全員表示、フルコンテンツはログイン必須
+
+**管理者認証（パスワード + Cookie）:**
+- 管理系API（POST/PUT/DELETE）は `requireAdmin()` で認証必須
+- 公開API（GET /api/videos, GET /api/search等）は認証不要
+- `/admin-login` でパスワード認証 → `admin_session` Cookie 設定
+- この分離を壊さない
 
 ### 5. publish_status / processing_step を使う
 
@@ -108,14 +121,17 @@ DELETE時はカスケード削除を実装済み。
 ```
 
 pipeline.ts で個別生成関数に分離済み。タイムアウト120秒。ログ記録。
+AI API未接続時はモックフォールバックでステータス遷移を模擬。
 
 ## 環境変数
 
 ```
-ADMIN_PASSWORD          — 管理画面ログイン
-OPENAI_API_KEY          — Whisper + Images API
-ANTHROPIC_API_KEY       — Claude
-SUPABASE_ACCESS_TOKEN   — Supabase（将来用）
+ADMIN_PASSWORD              — 管理画面ログイン (デフォルト: admin)
+OPENAI_API_KEY              — Whisper + Images API
+ANTHROPIC_API_KEY           — Claude
+NEXT_PUBLIC_SUPABASE_URL    — Supabase URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY — Supabase Anon Key
+SUPABASE_SERVICE_ROLE_KEY   — Supabase Service Role Key
 ```
 
 ## 禁止事項
@@ -127,6 +143,7 @@ SUPABASE_ACCESS_TOKEN   — Supabase（将来用）
 - publish_statusではなく旧statusを使う
 - SELECT * でデータコピーする（カラム順ずれの原因）
 - .nextキャッシュを消さずに新ルートを追加する
+- AuthGateを経由せずにコンテンツを直接表示する（動画詳細等）
 
 ## コマンド
 
