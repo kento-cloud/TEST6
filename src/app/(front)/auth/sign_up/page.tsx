@@ -76,8 +76,12 @@ export default function SignUpPage() {
 
         {success ? (
           <div className="text-center">
-            <p className="text-green-400 text-[15px] mb-2">登録が完了しました</p>
-            <p className="text-[13px] text-[#a9abb8]">トップページに移動します...</p>
+            <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="#22c55e"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
+            </div>
+            <p className="text-green-400 text-[18px] font-bold mb-2">ようこそ、PIVOTへ！</p>
+            <p className="text-[14px] text-[#a9abb8] mb-1">会員登録が完了しました。</p>
+            <p className="text-[13px] text-[#606370]">すべてのコンテンツをお楽しみいただけます。</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

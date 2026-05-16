@@ -100,9 +100,7 @@ export function Sidebar() {
             </Link>
           ))}
         </div>
-        <div className="mt-auto mb-4 flex justify-center">
-          <Link href="/admin" className="w-6 h-6 opacity-0 hover:opacity-30 transition-opacity" aria-label="Admin" />
-        </div>
+        {/* 管理画面は /admin-login から直接アクセス */}
       </aside>
 
       {/* SP Bottom Navigation */}

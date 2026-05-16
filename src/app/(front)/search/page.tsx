@@ -16,10 +16,10 @@ const genres = [
 const mcList = [
   { name: "佐々木紀彦", id: 1, thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
   { name: "小手森千紗", id: 2, thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  { name: "富山ハセン", id: 5, thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
   { name: "野嶋紗己子", id: 3, thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
   { name: "西川貴季", id: 4, thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  { name: "竹内由恵", id: 7, thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  { name: "富山ハセン", id: 5, thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
+  { name: "竹内由恵", id: 6, thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
 ] as const
 
 export default function SearchPage() {
