@@ -55,10 +55,12 @@ function LocalUploadForm() {
   const [description, setDescription] = useState("")
   const [categoryCode, setCategoryCode] = useState("")
   const [aiPrompt, setAiPrompt] = useState("")
+  const [autoProcess, setAutoProcess] = useState(true)
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
   const [progress, setProgress] = useState(0)
+  const [statusText, setStatusText] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -78,6 +80,13 @@ function LocalUploadForm() {
       if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? "アップロード失敗") }
       const data = await res.json()
       setProgress(100)
+
+      if (autoProcess) {
+        setStatusText("文字起こし・AI生成を開始中...")
+        // バックグラウンドで自動処理を開始（レスポンスを待たずに遷移）
+        fetch(`/api/videos/${data.id}/auto-process`, { method: "POST" }).catch(() => {})
+      }
+
       router.push(`/admin/videos/${data.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "エラー"); setUploading(false); setProgress(0)
@@ -129,12 +138,27 @@ function LocalUploadForm() {
         />
         <p className="text-[11px] text-gray-400 mt-1">文字起こし後のAI生成（要約・チャプター・記事・タグ）に適用されます。後から変更も可能です。</p>
       </div>
+      <div className="mb-6">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={autoProcess}
+            onChange={(e) => setAutoProcess(e.target.checked)}
+            className="w-4 h-4 accent-[#cd1cfa]"
+          />
+          <div>
+            <span className="text-[14px] font-semibold text-gray-700">自動AI処理</span>
+            <p className="text-[11px] text-gray-400">アップロード後、文字起こし→AI生成（要約・チャプター・記事・タグ）を自動で実行します</p>
+          </div>
+        </label>
+      </div>
       {error && <p className="text-red-500 text-[13px] mb-4">{error}</p>}
       {uploading && (
         <div className="mb-4">
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <div className="h-full bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
+          {statusText && <p className="text-[12px] text-gray-500 mt-1">{statusText}</p>}
         </div>
       )}
       <button type="submit" disabled={uploading} className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50">
@@ -211,6 +235,10 @@ function YouTubeImportForm() {
           className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
         />
         <p className="text-[11px] text-gray-400 mt-1">AI生成（要約・チャプター・記事・タグ）に適用されます。後から変更も可能です。</p>
+      </div>
+
+      <div className="mb-5 px-4 py-3 bg-yellow-50 rounded-lg border border-yellow-100">
+        <p className="text-[12px] text-yellow-700">YouTube動画は登録後、文字起こしを手動入力してからAI生成を実行してください。</p>
       </div>
 
       {error && <p className="text-red-500 text-[13px] mb-4">{error}</p>}

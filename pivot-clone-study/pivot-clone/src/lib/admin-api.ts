@@ -93,6 +93,17 @@ export async function regenerateStep(id: string, step: GenerationStepType, custo
   return res.json()
 }
 
+// === Auto Process ===
+
+export async function autoProcess(id: string) {
+  const res = await fetch(`/api/videos/${id}/auto-process`, { method: "POST" })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.error ?? "自動処理に失敗しました")
+  }
+  return res.json()
+}
+
 // === AI Contents (Edit) ===
 
 export async function updateAIContent(id: string, data: { summary?: string; chapters?: string; article?: string; tags?: string }) {
