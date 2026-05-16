@@ -112,22 +112,31 @@ export async function getRankings() {
 /** フィーチャードアイテム — 公開済み動画の上位をフィーチャード */
 export async function getFeaturedItems() {
   try {
-    const episodes = await getPublishedEpisodes()
-    if (episodes.length === 0) return getStaticFeaturedItems()
+    const { data: videos, error } = await supabase
+      .from("videos")
+      .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
+      .eq("publish_status", "published")
+      .order("published_at", { ascending: false })
+      .limit(5)
+
+    if (error || !videos || videos.length === 0) return getStaticFeaturedItems()
 
     // 番組ロゴも取得
     const { data: allPrograms } = await supabase.from("programs").select("id, name, logo_path")
-    const programLogoMap = new Map((allPrograms ?? []).map((p) => [p.name as string, (p.logo_path as string) ?? ""]))
+    const programMap = new Map((allPrograms ?? []).map((p) => [p.id as number, { name: p.name as string, logo: (p.logo_path as string) ?? "" }]))
 
-    // 先頭5件をフィーチャードに変換
-    return episodes.slice(0, 5).map((ep) => ({
-      id: ep.id,
-      title: ep.title,
-      subtitle: ep.programName || "",
-      description: ep.description,
-      thumbnailUrl: ep.thumbnailUrl,
-      programLogoUrl: programLogoMap.get(ep.programName) ?? "",
-    }))
+    return videos.map((v) => {
+      const prog = v.program_id ? programMap.get(v.program_id as number) : null
+      return {
+        id: v.id as string,
+        title: v.title as string,
+        subtitle: prog?.name ?? "",
+        description: (v.description as string) ?? "",
+        thumbnailUrl: (v.thumbnail_path as string) ?? FALLBACK_THUMBNAIL,
+        programLogoUrl: prog?.logo ?? "",
+        youtubeVideoId: (v.youtube_video_id as string) ?? null,
+      }
+    })
   } catch {
     return getStaticFeaturedItems()
   }
@@ -135,11 +144,11 @@ export async function getFeaturedItems() {
 
 function getStaticFeaturedItems() {
   return [
-    { id: "EP_14365", title: "宇宙開発の課題 \"交通整備\"は誰がする？", subtitle: "宇宙ビジネス最前線", description: "宇宙ビジネスは、ロケットや衛星だけでは成り立たない。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg" },
-    { id: "EP_14305", title: "北朝鮮・迎撃不可能なドローン攻撃の恐怖", subtitle: "9 questions", description: "北朝鮮は「抑止」から「実行」可能な現実の脅威へ。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg" },
-    { id: "EP_14317", title: "Geminiで学ぶ・稼ぐ術／AI家庭教師", subtitle: "ランキング超分析", description: "ランキングを専門家と共に徹底分析。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg" },
-    { id: "EP_14325", title: "「山下本気うどん」売却までの経緯", subtitle: "MONEY SKILL SET", description: "借金1000万円から資産2.5億円を築いた芸人。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg" },
-    { id: "EP_14328", title: "5年で株価3倍。JTが稼げる理由", subtitle: "TOP TALK", description: "海外市場での成長が続くJT。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg" },
+    { id: "EP_14365", title: "宇宙開発の課題 \"交通整備\"は誰がする？", subtitle: "宇宙ビジネス最前線", description: "宇宙ビジネスは、ロケットや衛星だけでは成り立たない。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg", youtubeVideoId: null },
+    { id: "EP_14305", title: "北朝鮮・迎撃不可能なドローン攻撃の恐怖", subtitle: "9 questions", description: "北朝鮮は「抑止」から「実行」可能な現実の脅威へ。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg", youtubeVideoId: null },
+    { id: "EP_14317", title: "Geminiで学ぶ・稼ぐ術／AI家庭教師", subtitle: "ランキング超分析", description: "ランキングを専門家と共に徹底分析。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg", youtubeVideoId: null },
+    { id: "EP_14325", title: "「山下本気うどん」売却までの経緯", subtitle: "MONEY SKILL SET", description: "借金1000万円から資産2.5億円を築いた芸人。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg", youtubeVideoId: null },
+    { id: "EP_14328", title: "5年で株価3倍。JTが稼げる理由", subtitle: "TOP TALK", description: "海外市場での成長が続くJT。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg", youtubeVideoId: null },
   ] as const
 }
 

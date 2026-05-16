@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { supabase } from "@/lib/supabase"
 import { ThumbnailGenerator } from "@/components/ThumbnailGenerator"
+import { ThumbnailGrid } from "@/components/ThumbnailGrid"
 import { DeleteButton } from "@/components/DeleteButton"
 import { ActionButton } from "@/components/ActionButton"
 import { PipelinePanel } from "@/components/PipelinePanel"
@@ -35,8 +36,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
   // 1. アップロード → 2. 文字起こし → 3. AI生成 → 4. 記事編集 → 5. 公開
   const steps = [
     { label: "アップロード", done: true, href: null },
-    { label: "文字起こし", done: !!transcript && transcript.status === "done", href: `/admin/videos/${id}/transcript` },
-    { label: "AI生成", done: !!aiContent && aiContent.status === "done", href: `/admin/videos/${id}/ai` },
+    { label: "生成", done: !!transcript && transcript.status === "done" && !!aiContent && aiContent.status === "done", href: `/admin/videos/${id}/transcript` },
     { label: "記事編集", done: !!aiContent?.article, href: `/admin/videos/${id}/article` },
     { label: "公開", done: video.publish_status === "published", href: `/admin/videos/${id}/publish` },
   ]
@@ -206,8 +206,8 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         <div className="mb-4">
           <p className="text-[12px] text-gray-400 mb-2">現在のサムネイル</p>
           {video.thumbnail_path ? (
-            <div className="w-[240px] aspect-video relative rounded-lg overflow-hidden bg-gray-100">
-              <Image src={video.thumbnail_path} alt="サムネイル" fill className="object-cover" sizes="240px" />
+            <div className="w-[240px] rounded-lg overflow-hidden bg-gray-100">
+              <img src={video.thumbnail_path} alt="サムネイル" className="w-full h-auto block" />
             </div>
           ) : (
             <div className="w-[240px] aspect-video rounded-lg bg-gray-100 flex items-center justify-center">
@@ -217,31 +217,16 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         </div>
 
         {videoThumbnails && videoThumbnails.length > 0 && (
-          <div className="mb-4">
-            <p className="text-[12px] text-gray-400 mb-2">生成済みサムネイル ({videoThumbnails.length}枚)</p>
-            <div className="flex gap-3 flex-wrap">
-              {videoThumbnails.map((t) => (
-                <div key={t.id} className="relative group">
-                  <div className={`w-[160px] aspect-video relative rounded-lg overflow-hidden bg-gray-100 ${t.is_primary ? "ring-2 ring-[#cd1cfa]" : ""}`}>
-                    {t.file_path && t.status === "done" ? (
-                      <Image src={t.file_path} alt="" fill className="object-cover" sizes="160px" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-[11px] text-gray-400">{t.status === "generating" ? "生成中..." : t.status}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1 mt-1">
-                    {t.is_primary ? (
-                      <span className="text-[10px] text-[#cd1cfa] font-semibold">✅ プライマリ</span>
-                    ) : (
-                      <span className="text-[10px] text-gray-400">{t.source}</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ThumbnailGrid
+            videoId={id}
+            thumbnails={(videoThumbnails).map(t => ({
+              id: t.id,
+              file_path: t.file_path,
+              status: t.status ?? "unknown",
+              is_primary: t.is_primary ?? false,
+              source: t.source ?? "unknown",
+            }))}
+          />
         )}
 
         <div className="border-t border-gray-100 pt-4">

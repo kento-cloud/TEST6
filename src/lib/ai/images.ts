@@ -12,7 +12,7 @@ interface GenerateImageResult {
 }
 
 /**
- * OpenAI Images API でサムネイル画像を生成
+ * OpenAI Images API でサムネイル画像を生成（複数枚対応）
  * モデルは管理画面設定で切り替え可能（gpt-image-1 / gpt-image-2）
  */
 export async function generateThumbnailImage(
@@ -20,6 +20,18 @@ export async function generateThumbnailImage(
   outputDir: string,
   fileName: string,
 ): Promise<GenerateImageResult> {
+  const results = await generateThumbnailImages(prompt, outputDir, [fileName])
+  return results[0]
+}
+
+/**
+ * 複数枚のサムネイルを一括生成
+ */
+export async function generateThumbnailImages(
+  prompt: string,
+  outputDir: string,
+  fileNames: string[],
+): Promise<GenerateImageResult[]> {
   const { getConfigValue } = await import("@/lib/config")
   const apiKey = await getConfigValue("OPENAI_API_KEY")
   if (!apiKey) {
@@ -29,31 +41,37 @@ export async function generateThumbnailImage(
   const models = await getAIModels()
   const openai = new OpenAI({ apiKey })
 
-  const response = await openai.images.generate({
-    model: models.image,
-    prompt,
-    n: 1,
-    size: "1536x1024",
-    quality: "medium",
-  })
-
-  const imageData = response.data?.[0]
-  if (!imageData?.b64_json) {
-    throw new Error("画像生成レスポンスが空です")
-  }
-
   if (!existsSync(outputDir)) {
     await mkdir(outputDir, { recursive: true })
   }
 
-  const buffer = Buffer.from(imageData.b64_json, "base64")
-  const filePath = path.join(outputDir, fileName)
-  await writeFile(filePath, buffer)
+  const generateOne = async (fileName: string): Promise<GenerateImageResult> => {
+    const response = await openai.images.generate({
+      model: models.image,
+      prompt,
+      n: 1,
+      size: "1792x1024",
+      quality: "medium",
+      response_format: "b64_json",
+    })
 
-  return {
-    filePath: `/uploads/thumbnails/${fileName}`,
-    width: 1536,
-    height: 1024,
-    fileSize: buffer.length,
+    const imageData = response.data?.[0]
+    if (!imageData?.b64_json) {
+      throw new Error("画像生成レスポンスが空です")
+    }
+
+    const buffer = Buffer.from(imageData.b64_json, "base64")
+    const filePath = path.join(outputDir, fileName)
+    await writeFile(filePath, buffer)
+
+    return {
+      filePath: `/api/uploads/thumbnails/${fileName}`,
+      width: 1792,
+      height: 1024,
+      fileSize: buffer.length,
+    }
   }
+
+  const results = await Promise.all(fileNames.map(generateOne))
+  return results
 }

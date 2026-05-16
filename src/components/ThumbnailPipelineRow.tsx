@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { generateThumbnail } from "@/lib/admin-api"
+import { generateThumbnail, setPrimaryThumbnail } from "@/lib/admin-api"
 
 interface Thumbnail {
   id: string
@@ -23,9 +23,10 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
   const router = useRouter()
   const [expanded, setExpanded] = useState(false)
   const [showGen, setShowGen] = useState(false)
-  const [prompt, setPrompt] = useState(`ビジネスメディア風のサムネイル。タイトル: ${videoTitle}`)
+  const [prompt, setPrompt] = useState(`Premium editorial thumbnail for "${videoTitle}". Abstract visual metaphor, dramatic lighting, high contrast. No text, no faces. 16:9.`)
   const [generating, setGenerating] = useState(false)
   const [message, setMessage] = useState("")
+  const [settingPrimary, setSettingPrimary] = useState<string | null>(null)
 
   const hasDone = thumbnails.some(t => t.status === "done")
   const icon = isGenerating ? "⏳" : hasDone ? "✅" : "⬜"
@@ -36,14 +37,26 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
     setGenerating(true)
     setMessage("")
     try {
-      await generateThumbnail(videoId, prompt)
-      setMessage("生成完了")
+      const data = await generateThumbnail(videoId, prompt, 5)
+      const count = data.thumbnails?.length ?? 0
+      setMessage(`${count}枚生成完了`)
       setShowGen(false)
       router.refresh()
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "生成に失敗しました")
     }
     setGenerating(false)
+  }
+
+  async function handleSetPrimary(thumbId: string) {
+    setSettingPrimary(thumbId)
+    try {
+      await setPrimaryThumbnail(videoId, thumbId)
+      router.refresh()
+    } catch {
+      setMessage("プライマリ設定に失敗")
+    }
+    setSettingPrimary(null)
   }
 
   return (
@@ -74,28 +87,34 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
               onClick={() => { setShowGen(!showGen); setExpanded(true) }}
               className="px-2.5 py-0.5 border border-[#cd1cfa] text-[#cd1cfa] rounded text-[11px] font-semibold hover:bg-purple-50 cursor-pointer"
             >
-              生成
+              5枚生成
             </button>
           )}
         </div>
       </div>
 
-      {/* Expanded: thumbnail preview */}
+      {/* Expanded: thumbnail preview with selection */}
       {expanded && thumbnails.length > 0 && (
         <div className="px-3 py-2 border-t border-gray-100">
           <div className="flex gap-2 flex-wrap">
-            {thumbnails.map((t) => (
-              <div key={t.id} className="relative">
-                <div className={`w-[100px] aspect-video rounded bg-gray-100 overflow-hidden ${t.is_primary ? "ring-2 ring-[#cd1cfa]" : ""}`}>
-                  {t.file_path && t.status === "done" ? (
-                    <img src={t.file_path} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-[9px] text-gray-400">{t.status}</span>
-                    </div>
-                  )}
+            {thumbnails.filter(t => t.status === "done" && t.file_path).map((t) => (
+              <div key={t.id} className="relative group">
+                <div className={`w-[120px] aspect-video rounded bg-gray-100 overflow-hidden cursor-pointer transition-all ${
+                  t.is_primary ? "ring-2 ring-[#cd1cfa]" : "hover:ring-2 hover:ring-gray-300"
+                }`}>
+                  <img src={t.file_path!} alt="" className="w-full h-full object-cover" />
                 </div>
-                {t.is_primary && <span className="text-[9px] text-[#cd1cfa] font-semibold">プライマリ</span>}
+                {t.is_primary ? (
+                  <span className="text-[9px] text-[#cd1cfa] font-semibold">メイン</span>
+                ) : (
+                  <button
+                    onClick={() => handleSetPrimary(t.id)}
+                    disabled={settingPrimary === t.id}
+                    className="text-[9px] text-gray-400 hover:text-[#cd1cfa] cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    {settingPrimary === t.id ? "設定中..." : "メインに設定"}
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -105,7 +124,7 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
       {/* Generate panel */}
       {showGen && (
         <div className="px-3 py-3 border-t border-purple-100 bg-purple-50">
-          <p className="text-[12px] font-semibold text-gray-700 mb-1.5">サムネイル生成プロンプト</p>
+          <p className="text-[12px] font-semibold text-gray-700 mb-1.5">サムネイル一括生成（5枚）</p>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -113,7 +132,7 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
             className="w-full px-2 py-1.5 border border-purple-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none bg-white"
             rows={2}
           />
-          <p className="text-[10px] text-gray-400 mt-1">OpenAI Images APIで生成されます</p>
+          <p className="text-[10px] text-gray-400 mt-1">同じプロンプトで5枚生成し、ベストなものを選択できます</p>
           <div className="flex gap-1.5 justify-end mt-2">
             <button
               onClick={() => setShowGen(false)}
@@ -126,7 +145,7 @@ export function ThumbnailPipelineRow({ videoId, videoTitle, thumbnails, isGenera
               disabled={generating || !prompt.trim()}
               className="px-3 py-1 bg-[#cd1cfa] text-white rounded text-[11px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
             >
-              {generating ? "生成中..." : "生成する"}
+              {generating ? "5枚生成中..." : "5枚生成する"}
             </button>
           </div>
         </div>

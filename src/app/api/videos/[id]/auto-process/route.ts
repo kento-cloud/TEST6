@@ -3,12 +3,13 @@ import { supabase } from "@/lib/supabase"
 import { ulid } from "ulid"
 import { requireAdmin } from "@/lib/auth"
 import { generateAll } from "@/lib/ai/pipeline"
+import { generateThumbnailImages } from "@/lib/ai/images"
 import { extractAudio } from "@/lib/ffmpeg"
 import { transcribeAudio } from "@/lib/ai/whisper"
 import { downloadYouTubeAudio } from "@/lib/youtube"
 import path from "path"
 import { existsSync } from "fs"
-import { mkdir } from "fs/promises"
+import { mkdir, unlink } from "fs/promises"
 
 /**
  * 自動処理パイプライン: 文字起こし → AI生成 を一気通貫で実行
@@ -42,13 +43,13 @@ export async function POST(
   }).eq("id", id)
 
   let transcriptText: string
+  const tempDir = path.join(process.cwd(), "uploads", "temp")
+  const audioPath = path.join(tempDir, `${id}_audio.mp3`)
 
   try {
-    const tempDir = path.join(process.cwd(), "uploads", "temp")
     if (!existsSync(tempDir)) {
       await mkdir(tempDir, { recursive: true })
     }
-    const audioPath = path.join(tempDir, `${id}_audio.mp3`)
 
     if (sourceType === "youtube") {
       // YouTube: yt-dlpで音声ダウンロード → Whisper
@@ -107,9 +108,13 @@ export async function POST(
     })
 
     transcriptText = result.text
+
+    // 一時音声ファイルを削除
+    try { await unlink(audioPath) } catch { /* ignore */ }
   } catch (error) {
+    // 一時音声ファイルを削除（エラー時も）
+    try { await unlink(audioPath) } catch { /* ignore */ }
     const message = error instanceof Error ? error.message : "Unknown error"
-    console.error(`[auto-process:transcribe] Error for video ${id}:`, message)
     const isApiKeyError = message.includes("API_KEY") && message.includes("設定されていません")
 
     if (isApiKeyError) {
@@ -179,12 +184,76 @@ export async function POST(
       instructions: Object.keys(instructions).length > 0 ? instructions : undefined,
     })
 
+    // --- Step 3: サムネイル生成（5枚） ---
+    let thumbnailCount = 0
+    try {
+      await supabase.from("videos").update({
+        processing_step: "generating_thumbnail",
+        updated_at: new Date().toISOString(),
+      }).eq("id", id)
+
+      const { getDefaultThumbnailPrompt } = await import("@/lib/ai/thumbnail-prompt")
+      // AI生成済みの要約があれば渡してテーマ抽出精度を上げる
+      const { data: aiData } = await supabase.from("ai_contents").select("summary").eq("video_id", id).single()
+      const thumbPrompt = getDefaultThumbnailPrompt(video.title, aiData?.summary ?? undefined)
+      const thumbIds = Array.from({ length: 5 }, () => ulid())
+      const outputDir = path.join(process.cwd(), "uploads", "thumbnails")
+      const fileNames = thumbIds.map((tid) => `${tid}.png`)
+      const now = new Date().toISOString()
+
+      // Create pending records
+      await supabase.from("thumbnails").insert(
+        thumbIds.map((tid) => ({
+          id: tid,
+          video_id: id,
+          file_path: null,
+          source: "ai",
+          prompt: thumbPrompt,
+          is_primary: false,
+          status: "generating",
+          model: "gpt-image-1",
+          created_at: now,
+        }))
+      )
+
+      const imgResults = await generateThumbnailImages(thumbPrompt, outputDir, fileNames)
+
+      // Update records + set first as primary
+      for (let i = 0; i < thumbIds.length; i++) {
+        await supabase.from("thumbnails").update({
+          file_path: imgResults[i].filePath,
+          status: "done",
+          width: imgResults[i].width,
+          height: imgResults[i].height,
+          file_size: imgResults[i].fileSize,
+          is_primary: i === 0,
+        }).eq("id", thumbIds[i])
+      }
+
+      // Update video thumbnail_path with first
+      await supabase.from("videos").update({
+        thumbnail_path: imgResults[0].filePath,
+        updated_at: new Date().toISOString(),
+      }).eq("id", id)
+
+      thumbnailCount = imgResults.length
+    } catch (thumbError) {
+      // サムネイル生成失敗は全体を止めない（API未設定時等）
+      console.error(`[auto-process:thumbnail] Error:`, thumbError instanceof Error ? thumbError.message : thumbError)
+    }
+
+    await supabase.from("videos").update({
+      processing_step: "none",
+      updated_at: new Date().toISOString(),
+    }).eq("id", id)
+
     return NextResponse.json({
       status: "done",
       transcriptLength: transcriptText.length,
       summaryLength: result.summary.length,
       articleLength: result.article.length,
       tagCount: result.tags.length,
+      thumbnailCount,
       processingMs: result.processingMs,
     })
   } catch (error) {

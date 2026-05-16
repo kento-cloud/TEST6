@@ -172,9 +172,10 @@ function LocalUploadForm() {
 function YouTubeImportForm() {
   const router = useRouter()
   const [url, setUrl] = useState("")
-  const [categoryCode, setCategoryCode] = useState("")
   const [aiPrompt, setAiPrompt] = useState("")
   const [autoProcess, setAutoProcess] = useState(true)
+  const [showOptions, setShowOptions] = useState(false)
+  const [categoryCode, setCategoryCode] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [preview, setPreview] = useState<{ title: string; authorName: string; videoId: string } | null>(null)
@@ -195,7 +196,7 @@ function YouTubeImportForm() {
     setError(""); setLoading(true)
 
     try {
-      const data = await importYouTube(url, categoryCode, aiPrompt || undefined)
+      const data = await importYouTube(url, categoryCode || undefined, aiPrompt || undefined)
 
       if (autoProcess) {
         fetch(`/api/videos/${data.id}/auto-process`, { method: "POST" }).catch(() => {})
@@ -226,26 +227,6 @@ function YouTubeImportForm() {
       )}
 
       <div className="mb-5">
-        <label htmlFor="yt-category" className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
-        <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
-          {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
-        </select>
-      </div>
-
-      <div className="mb-5">
-        <label htmlFor="yt-ai-prompt" className="block text-[13px] font-semibold text-gray-700 mb-1">AIへの指示（任意）</label>
-        <textarea
-          id="yt-ai-prompt"
-          value={aiPrompt}
-          onChange={(e) => setAiPrompt(e.target.value)}
-          placeholder="例: 初心者向けにわかりやすい記事にして、箇条書き多めで"
-          rows={3}
-          className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
-        />
-        <p className="text-[11px] text-gray-400 mt-1">AI生成（要約・チャプター・記事・タグ）に適用されます。後から変更も可能です。</p>
-      </div>
-
-      <div className="mb-5">
         <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
@@ -255,10 +236,43 @@ function YouTubeImportForm() {
           />
           <div>
             <span className="text-[14px] font-semibold text-gray-700">自動AI処理</span>
-            <p className="text-[11px] text-gray-400">登録後、YouTube音声をダウンロード→文字起こし→AI生成を自動で実行します</p>
+            <p className="text-[11px] text-gray-400">登録後、文字起こし→要約・記事・タグ→サムネイル生成を自動で実行</p>
           </div>
         </label>
       </div>
+
+      {/* Optional settings toggle */}
+      <button
+        type="button"
+        onClick={() => setShowOptions(!showOptions)}
+        className="text-[12px] text-gray-400 hover:text-[#cd1cfa] mb-4 cursor-pointer"
+      >
+        {showOptions ? "▲ オプションを閉じる" : "▼ オプション（カテゴリ・AIへの指示）"}
+      </button>
+
+      {showOptions && (
+        <div className="space-y-4 mb-5 pl-3 border-l-2 border-gray-100">
+          <div>
+            <label htmlFor="yt-category" className="block text-[12px] text-gray-500 mb-1">カテゴリ（任意）</label>
+            <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+              {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+            </select>
+            <p className="text-[11px] text-gray-400 mt-1">未選択でもOK。汎用プロンプトが自動適用されます。</p>
+          </div>
+          <div>
+            <label htmlFor="yt-ai-prompt" className="block text-[12px] text-gray-500 mb-1">AIへの指示（任意）</label>
+            <textarea
+              id="yt-ai-prompt"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="特別な指示がある場合のみ入力（例: 初心者向けに、箇条書き多めで）"
+              rows={2}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+            />
+            <p className="text-[11px] text-gray-400 mt-1">未入力の場合、汎用プロンプトで自動生成されます。</p>
+          </div>
+        </div>
+      )}
 
       {error && <p className="text-red-500 text-[13px] mb-4">{error}</p>}
 

@@ -1,10 +1,10 @@
-import Image from "next/image"
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { EpisodeSection } from "@/components/EpisodeSection"
 import { VideoPlayer } from "@/components/VideoPlayer"
 import { AuthGate } from "@/components/AuthGate"
 import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
+import { notFound } from "next/navigation"
 import type { Chapter } from "@/types/ai"
 
 interface Props {
@@ -37,7 +37,9 @@ export default async function MoviePage({ params }: Props) {
     commentCount: 0,
     rating: 0,
     description: dbDetail.video.description ?? "",
-  } : allEpisodes[0])
+  } : null)
+
+  if (!episode) notFound()
 
   const title = dbDetail?.video.title ?? episode.title
   const description = dbDetail?.video.description ?? episode.description
@@ -77,7 +79,7 @@ export default async function MoviePage({ params }: Props) {
           <div className="max-w-[960px]">
             {/* 動画プレーヤー（ログイン後に表示） */}
             {(sourceType === "youtube" && youtubeVideoId) || videoSrc ? (
-              <div className="mb-6 -mx-4 md:-mx-8 -mt-6">
+              <div className="mb-6 -mx-4 md:-mx-8">
                 <div className="w-full">
                   {sourceType === "youtube" && youtubeVideoId ? (
                     <iframe
@@ -126,10 +128,14 @@ export default async function MoviePage({ params }: Props) {
                 <h2 className="text-[18px] font-bold mb-3">チャプター</h2>
                 <div className="bg-[#1d2030] rounded-xl p-4 space-y-1">
                   {chapters.map((ch: Chapter, i: number) => (
-                    <div key={i} className="flex items-center gap-3 py-2 border-b border-[#303240] last:border-0 cursor-pointer hover:bg-[#303240]/50 rounded px-2 transition-colors">
-                      <span className="text-[13px] text-[#cd1cfa] font-mono shrink-0">{formatTime(ch.startTime)}</span>
-                      <span className="text-[14px] text-white">{ch.title}</span>
-                      <span className="text-[12px] text-[#606370] ml-auto shrink-0">{ch.summary}</span>
+                    <div key={i} className="flex items-start gap-3 py-3 border-b border-[#303240] last:border-0 cursor-pointer hover:bg-[#303240]/50 rounded px-2 transition-colors">
+                      <span className="text-[13px] text-[#cd1cfa] font-mono shrink-0 pt-0.5">{formatTime(ch.startTime)}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] text-white leading-snug">{ch.title}</p>
+                        {ch.summary && (
+                          <p className="text-[12px] text-[#606370] mt-1 leading-relaxed line-clamp-2">{ch.summary}</p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

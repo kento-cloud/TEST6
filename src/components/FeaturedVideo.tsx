@@ -12,6 +12,7 @@ export interface FeaturedItem {
   readonly description: string
   readonly thumbnailUrl: string
   readonly programLogoUrl: string
+  readonly youtubeVideoId?: string | null
 }
 
 interface FeaturedVideoProps {
@@ -21,6 +22,7 @@ interface FeaturedVideoProps {
 export function FeaturedVideo({ items }: FeaturedVideoProps) {
   const featuredItems = items
   const [current, setCurrent] = useState(0)
+  const [hovered, setHovered] = useState(false)
 
   const goTo = useCallback((index: number) => {
     setCurrent(index)
@@ -33,11 +35,12 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
 
   useEffect(() => {
     if (featuredItems.length === 0) return
+    if (hovered) return // ホバー中はスライド停止
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % featuredItems.length)
-    }, 6000)
+    }, 5000)
     return () => clearInterval(timer)
-  }, [featuredItems.length])
+  }, [featuredItems.length, hovered])
 
   if (featuredItems.length === 0) return null
 
@@ -82,11 +85,24 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
             ))}
           </div>
         </div>
-        <div className="flex-1">
+        <div
+          className="flex-1"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
           <AuthPrompt>
           <Link href={`/movie/${item.id}`} className="block">
             <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
-              <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
+              {item.youtubeVideoId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}`}
+                  className="absolute inset-0 w-full h-full z-10"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
+              )}
             </div>
           </Link>
           </AuthPrompt>

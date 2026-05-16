@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { generateThumbnail } from "@/lib/admin-api"
+import { generateThumbnail, setPrimaryThumbnail } from "@/lib/admin-api"
+import { useRouter } from "next/navigation"
 
 interface StylePreset {
   readonly id: string
@@ -9,18 +10,27 @@ interface StylePreset {
   readonly prompt_template: string
 }
 
+interface GeneratedThumb {
+  readonly id: string
+  readonly filePath: string
+}
+
 interface Props {
   readonly videoId: string
   readonly videoTitle: string
+  readonly count?: number
 }
 
-export function ThumbnailGenerator({ videoId, videoTitle }: Props) {
+export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
+  const router = useRouter()
   const [presets, setPresets] = useState<StylePreset[]>([])
   const [selectedPresetId, setSelectedPresetId] = useState("")
-  const [prompt, setPrompt] = useState(`ビジネスメディア風のサムネイル。タイトル: ${videoTitle}`)
-  const [state, setState] = useState<"idle" | "generating" | "done" | "error">("idle")
+  const [prompt, setPrompt] = useState(`Premium editorial thumbnail for "${videoTitle}". Abstract visual metaphor, dramatic lighting, high contrast. No text, no faces. 16:9.`)
+  const [state, setState] = useState<"idle" | "generating" | "selecting" | "done" | "error">("idle")
   const [error, setError] = useState("")
-  const [resultPath, setResultPath] = useState<string | null>(null)
+  const [generated, setGenerated] = useState<GeneratedThumb[]>([])
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [setting, setSetting] = useState(false)
 
   useEffect(() => {
     fetch("/api/thumbnail-presets")
@@ -44,15 +54,33 @@ export function ThumbnailGenerator({ videoId, videoTitle }: Props) {
     if (!prompt.trim()) return
     setState("generating")
     setError("")
-    setResultPath(null)
+    setGenerated([])
+    setSelectedId(null)
     try {
-      const data = await generateThumbnail(videoId, prompt)
-      setState("done")
-      setResultPath(data.filePath ?? null)
+      const data = await generateThumbnail(videoId, prompt, count, selectedPresetId || undefined)
+      const thumbs: GeneratedThumb[] = (data.thumbnails ?? []).map((t: { id: string; filePath: string }) => ({
+        id: t.id,
+        filePath: t.filePath,
+      }))
+      setGenerated(thumbs)
+      setState("selecting")
     } catch (e) {
       setState("error")
       setError(e instanceof Error ? e.message : "生成に失敗しました")
     }
+  }
+
+  async function handleSelect() {
+    if (!selectedId) return
+    setSetting(true)
+    try {
+      await setPrimaryThumbnail(videoId, selectedId)
+      setState("done")
+      router.refresh()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "設定に失敗しました")
+    }
+    setSetting(false)
   }
 
   return (
@@ -88,26 +116,80 @@ export function ThumbnailGenerator({ videoId, videoTitle }: Props) {
         <button
           onClick={handleGenerate}
           disabled={state === "generating" || !prompt.trim()}
-          className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+          className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap"
         >
           {state === "generating" ? (
             <span className="inline-flex items-center gap-1">
               <span className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full" />
-              生成中
+              {count}枚生成中...
             </span>
-          ) : "生成"}
+          ) : `${count}枚生成`}
         </button>
       </div>
-      <p className="text-[11px] text-gray-400 mt-1">OpenAI Images API (gpt-image-1) で生成</p>
+      <p className="text-[11px] text-gray-400 mt-1">OpenAI Images API (gpt-image-1) で{count}枚を一括生成し、選択できます</p>
+
+      {/* Generated Thumbnails Grid - Selection UI */}
+      {state === "selecting" && generated.length > 0 && (
+        <div className="mt-4">
+          <p className="text-[13px] font-semibold text-gray-700 mb-2">
+            {generated.length}枚生成されました — メインサムネイルを選択してください
+          </p>
+          <div className="flex gap-3 flex-wrap">
+            {generated.map((thumb, i) => (
+              <button
+                key={thumb.id}
+                onClick={() => setSelectedId(thumb.id)}
+                className={`relative w-[150px] aspect-video rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
+                  selectedId === thumb.id
+                    ? "border-[#cd1cfa] ring-2 ring-[#cd1cfa]/30 scale-[1.02]"
+                    : "border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                <img
+                  src={thumb.filePath}
+                  alt={`候補 ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                {selectedId === thumb.id && (
+                  <div className="absolute top-1 right-1 w-5 h-5 bg-[#cd1cfa] rounded-full flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] text-center py-0.5">
+                  {i + 1} / {generated.length}
+                </div>
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center justify-between mt-3">
+            <button
+              onClick={handleGenerate}
+              disabled={false}
+              className="px-3 py-1.5 text-[12px] text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+            >
+              再生成する
+            </button>
+            <button
+              onClick={handleSelect}
+              disabled={!selectedId || setting}
+              className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+            >
+              {setting ? "設定中..." : "この画像をメインに設定"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {state === "done" && (
-        <div className="mt-2 p-3 bg-green-50 rounded-lg text-[13px] text-green-700">
-          ✓ 生成完了{resultPath ? "。ページをリロードして確認してください。" : ""}
+        <div className="mt-3 p-3 bg-green-50 rounded-lg text-[13px] text-green-700">
+          メインサムネイルを設定しました
         </div>
       )}
       {state === "error" && (
-        <div className="mt-2 p-3 bg-red-50 rounded-lg">
-          <p className="text-[13px] text-red-600">✕ {error}</p>
+        <div className="mt-3 p-3 bg-red-50 rounded-lg">
+          <p className="text-[13px] text-red-600">{error}</p>
           <button onClick={handleGenerate} className="text-[12px] text-red-500 hover:underline mt-1 cursor-pointer">リトライ</button>
         </div>
       )}

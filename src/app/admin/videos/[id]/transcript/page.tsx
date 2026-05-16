@@ -2,6 +2,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { notFound } from "next/navigation"
 import { ManualTranscriptForm } from "@/components/ManualTranscriptForm"
+import { WhisperTranscribeButton } from "@/components/WhisperTranscribeButton"
 import { TranscriptEditor } from "@/components/TranscriptEditor"
 
 export const dynamic = "force-dynamic"
@@ -38,7 +39,19 @@ export default async function TranscriptPage({ params }: Props) {
       <h1 className="text-[24px] font-bold text-gray-900 mb-6">文字起こし</h1>
 
       {!transcript ? (
-        <ManualTranscriptForm videoId={id} />
+        <div className="space-y-6">
+          <WhisperTranscribeButton videoId={id} mode="full" />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+            <div className="relative flex justify-center"><span className="bg-[#f5f5f7] px-4 text-[13px] text-gray-400">または文字起こしのみ</span></div>
+          </div>
+          <WhisperTranscribeButton videoId={id} mode="transcribe-only" />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+            <div className="relative flex justify-center"><span className="bg-[#f5f5f7] px-4 text-[13px] text-gray-400">または手動入力</span></div>
+          </div>
+          <ManualTranscriptForm videoId={id} />
+        </div>
       ) : transcript.status === "error" ? (
         <div className="bg-white rounded-xl border border-red-200 p-8">
           <p className="text-red-600 text-[15px] font-semibold mb-2">文字起こしでエラーが発生しました</p>

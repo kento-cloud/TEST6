@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 import { requireAdmin } from "@/lib/auth"
-import { getAllConfigValues } from "@/lib/config"
+import { getAllConfigValues, invalidateConfigCache } from "@/lib/config"
 
 function maskKey(value: string): string {
   if (value.length <= 11) return "****"
@@ -64,6 +64,9 @@ export async function PUT(req: NextRequest) {
       }
     }
   }
+
+  // キャッシュを即座にクリアして次回リクエストで新しい値を使う
+  invalidateConfigCache()
 
   return NextResponse.json({ status: "ok", message: "設定を保存しました。" })
 }

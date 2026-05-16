@@ -22,6 +22,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
   const [editValue, setEditValue] = useState(transcript?.fullText ?? "")
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
+  const [autoProcessing, setAutoProcessing] = useState(false)
 
   const hasDone = !!transcript && transcript.status === "done"
   const hasError = !!transcript && transcript.status === "error"
@@ -77,7 +78,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
           className={`flex items-center gap-2 ${hasDone || hasError ? "cursor-pointer" : "cursor-default"}`}
         >
           <span className="text-[14px]">{icon}</span>
-          <span className={`text-[13px] font-medium ${textColor}`}>文字起こし</span>
+          <span className={`text-[13px] font-medium ${textColor}`}>{hasDone ? "文字起こし" : "AI生成"}</span>
           {hasDone && (
             <>
               <span className="text-[11px] text-gray-400">{transcript.fullText.length.toLocaleString()}文字</span>
@@ -109,12 +110,33 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
             </>
           )}
           {!transcript && !isProcessing && (
-            <Link
-              href={`/admin/videos/${videoId}/transcript`}
-              className="px-2.5 py-0.5 border border-blue-400 text-blue-500 rounded text-[11px] font-semibold hover:bg-blue-50"
+            <button
+              onClick={async () => {
+                setAutoProcessing(true)
+                setMessage("")
+                try {
+                  const res = await fetch(`/api/videos/${videoId}/auto-process`, { method: "POST" })
+                  if (!res.ok) {
+                    const data = await res.json().catch(() => ({}))
+                    throw new Error(data.error ?? "処理に失敗しました")
+                  }
+                  setMessage("生成完了")
+                  router.refresh()
+                } catch (e) {
+                  setMessage(e instanceof Error ? e.message : "エラー")
+                }
+                setAutoProcessing(false)
+              }}
+              disabled={autoProcessing}
+              className="px-2.5 py-0.5 bg-[#cd1cfa] text-white rounded text-[11px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
             >
-              文字起こしへ
-            </Link>
+              {autoProcessing ? (
+                <span className="inline-flex items-center gap-1">
+                  <span className="animate-spin w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full" />
+                  生成中...
+                </span>
+              ) : "生成スタート"}
+            </button>
           )}
         </div>
       </div>
