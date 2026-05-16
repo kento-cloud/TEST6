@@ -37,12 +37,36 @@ export async function POST(
   }
 
   try {
-    // 動画に保存されたai_promptをデフォルト指示として全項目に適用
-    const videoPrompt = video.ai_prompt as string | null
+    // 番組のAI設定を取得
+    let programPrompt: string | null = null
+    if (video.program_id) {
+      const { data: program } = await supabase
+        .from("programs")
+        .select("ai_prompt, ai_style_preset_id")
+        .eq("id", video.program_id)
+        .single()
+      if (program?.ai_prompt) {
+        programPrompt = program.ai_prompt
+      }
+      // 番組のプリセットも考慮（動画に個別指示がない場合）
+      if (!video.ai_prompt && program?.ai_style_preset_id) {
+        const { data: preset } = await supabase
+          .from("ai_style_presets")
+          .select("prompt_template")
+          .eq("id", program.ai_style_preset_id)
+          .single()
+        if (preset) {
+          programPrompt = preset.prompt_template
+        }
+      }
+    }
+
+    // 優先順位: 動画個別 > 番組 > ベースプロンプト
+    const effectivePrompt = (video.ai_prompt as string | null) || programPrompt
     const mergedInstructions = body.instructions ?? {}
-    if (videoPrompt && !body.instructions) {
+    if (effectivePrompt && !body.instructions) {
       for (const step of ["summary", "chapters", "article", "tags"] as const) {
-        mergedInstructions[step] = mergedInstructions[step] || videoPrompt
+        mergedInstructions[step] = mergedInstructions[step] || effectivePrompt
       }
     }
 

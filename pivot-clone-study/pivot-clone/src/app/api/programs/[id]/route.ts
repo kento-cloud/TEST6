@@ -30,7 +30,7 @@ export async function PUT(
 
   const { id } = await params
   const body = await req.json()
-  const { name, description, isActive } = body
+  const { name, description, isActive, aiPrompt, aiStylePresetId } = body
 
   if (!name || typeof name !== "string" || !name.trim()) {
     return NextResponse.json({ error: "番組名は必須です" }, { status: 400 })
@@ -50,6 +50,8 @@ export async function PUT(
     name: name.trim(),
     description: (description ?? "").trim(),
     is_active: isActive ?? true,
+    ai_prompt: aiPrompt ?? null,
+    ai_style_preset_id: aiStylePresetId ?? null,
   }).eq("id", Number(id))
 
   const { data: updated } = await supabase

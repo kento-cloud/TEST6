@@ -4,11 +4,20 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
+interface StylePreset {
+  id: string
+  name: string
+  description: string
+  prompt_template: string
+}
+
 interface ProgramData {
   id: number
   name: string
   description: string | null
   isActive: number | null
+  aiPrompt: string | null
+  aiStylePresetId: string | null
   createdAt: string | null
 }
 
@@ -17,10 +26,13 @@ interface FormState {
   name: string
   description: string
   isActive: boolean
+  aiPrompt: string
+  aiStylePresetId: string
   loading: boolean
   saving: boolean
   error: string | null
   success: boolean
+  presets: StylePreset[]
 }
 
 export default function ProgramDetailPage() {
@@ -31,26 +43,34 @@ export default function ProgramDetailPage() {
     name: "",
     description: "",
     isActive: true,
+    aiPrompt: "",
+    aiStylePresetId: "",
     loading: true,
     saving: false,
     error: null,
     success: false,
+    presets: [],
   })
 
   useEffect(() => {
-    fetch(`/api/programs/${id}`)
-      .then((res) => {
+    Promise.all([
+      fetch(`/api/programs/${id}`).then((res) => {
         if (!res.ok) throw new Error("番組が見つかりません")
         return res.json()
-      })
-      .then((data) => {
+      }),
+      fetch("/api/ai-style-presets").then((res) => res.ok ? res.json() : []),
+    ])
+      .then(([data, presets]) => {
         setState((prev) => ({
           ...prev,
           program: data,
           name: data.name,
           description: data.description ?? "",
           isActive: !!data.isActive,
+          aiPrompt: data.aiPrompt ?? "",
+          aiStylePresetId: data.aiStylePresetId ?? "",
           loading: false,
+          presets: presets as StylePreset[],
         }))
       })
       .catch((err) => {
@@ -80,6 +100,8 @@ export default function ProgramDetailPage() {
           name: state.name.trim(),
           description: state.description.trim(),
           isActive: state.isActive ? 1 : 0,
+          aiPrompt: state.aiPrompt.trim() || null,
+          aiStylePresetId: state.aiStylePresetId || null,
         }),
       })
 
@@ -174,6 +196,44 @@ export default function ProgramDetailPage() {
             <label htmlFor="isActive" className="text-[13px] font-semibold text-gray-700">
               有効
             </label>
+          </div>
+
+          {/* AI設定 */}
+          <div className="pt-4 border-t border-gray-100">
+            <h3 className="text-[14px] font-bold text-gray-800 mb-3">AI生成設定</h3>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="aiPrompt" className="block text-[13px] font-semibold text-gray-700 mb-1">
+                  AIへの指示
+                </label>
+                <textarea
+                  id="aiPrompt"
+                  value={state.aiPrompt}
+                  onChange={(e) => setState((prev) => ({ ...prev, aiPrompt: e.target.value, success: false }))}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors resize-none"
+                  placeholder="この番組の動画に対するAI生成の指示を入力（例：ビジネス向けのフォーマルな文体で生成してください）"
+                />
+                <p className="text-[11px] text-gray-400 mt-1">番組に紐づく動画のAI生成時にデフォルト指示として使用されます。動画個別の指示がある場合はそちらが優先されます。</p>
+              </div>
+              <div>
+                <label htmlFor="aiStylePresetId" className="block text-[13px] font-semibold text-gray-700 mb-1">
+                  デフォルト記事スタイル
+                </label>
+                <select
+                  id="aiStylePresetId"
+                  value={state.aiStylePresetId}
+                  onChange={(e) => setState((prev) => ({ ...prev, aiStylePresetId: e.target.value, success: false }))}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors bg-white"
+                >
+                  <option value="">プリセットなし</option>
+                  {state.presets.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-gray-400 mt-1">動画に個別指示がない場合、このプリセットのテンプレートが適用されます。</p>
+              </div>
+            </div>
           </div>
 
           {state.program && (

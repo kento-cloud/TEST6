@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (authError) return authError
 
   const body = await req.json()
-  const { name, description } = body
+  const { name, description, aiPrompt, aiStylePresetId } = body
 
   if (!name || typeof name !== "string" || !name.trim()) {
     return NextResponse.json({ error: "番組名は必須です" }, { status: 400 })
@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
     name: name.trim(),
     description: (description ?? "").trim(),
     is_active: true,
+    ai_prompt: aiPrompt ?? null,
+    ai_style_preset_id: aiStylePresetId ?? null,
     created_at: now,
   }).select().single()
 

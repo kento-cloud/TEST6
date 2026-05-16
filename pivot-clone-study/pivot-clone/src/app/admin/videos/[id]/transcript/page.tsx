@@ -2,6 +2,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { notFound } from "next/navigation"
 import { ManualTranscriptForm } from "@/components/ManualTranscriptForm"
+import { TranscriptEditor } from "@/components/TranscriptEditor"
 
 export const dynamic = "force-dynamic"
 
@@ -74,13 +75,8 @@ export default async function TranscriptPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Full Text */}
-          <div className="bg-white rounded-xl border border-gray-100 p-5">
-            <h2 className="text-[16px] font-bold text-gray-900 mb-3">全文テキスト</h2>
-            <div className="text-[14px] text-gray-700 leading-[1.8] whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-              {transcript.full_text}
-            </div>
-          </div>
+          {/* Full Text (editable) */}
+          <TranscriptEditor videoId={id} initialText={transcript.full_text} />
 
           {/* Segments */}
           {transcript.segments && Array.isArray(transcript.segments) && transcript.segments.length > 0 && (
