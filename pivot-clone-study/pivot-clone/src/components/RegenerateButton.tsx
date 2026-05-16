@@ -17,6 +17,13 @@ const STEP_LABELS: Record<string, string> = {
   tags: "タグ",
 }
 
+const STEP_PLACEHOLDERS: Record<string, string> = {
+  summary: "例: 専門用語を避けて平易に、100文字程度で",
+  chapters: "例: チャプターを細かく分けて、各10分以内で",
+  article: "例: もっと具体例を入れて、3000文字程度で",
+  tags: "例: マーケティング関連のタグを多めに",
+}
+
 export function RegenerateButton({ videoId, step, disabled }: Props) {
   const [state, setState] = useState<"idle" | "prompt" | "processing" | "done" | "error">("idle")
   const [error, setError] = useState("")
@@ -27,7 +34,7 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
     setState("processing")
     setError("")
     try {
-      await regenerateStep(videoId, step, step === "article" ? customInstruction : undefined, step === "article" ? mode : undefined)
+      await regenerateStep(videoId, step, customInstruction, mode)
       setState("done")
       setTimeout(() => setState("idle"), 3000)
     } catch (e) {
@@ -63,22 +70,22 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
   if (state === "prompt") {
     return (
       <div className="absolute right-0 top-full mt-1 w-[350px] bg-white rounded-xl border border-gray-200 shadow-lg p-3 z-50">
-        <p className="text-[12px] font-semibold text-gray-700 mb-1.5">記事への指示（任意）</p>
+        <p className="text-[12px] font-semibold text-gray-700 mb-1.5">{label}への指示（任意）</p>
         <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
-          placeholder="例: もっと具体例を入れて、3000文字程度で"
+          placeholder={STEP_PLACEHOLDERS[step] ?? "追加の指示を入力..."}
           className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
           rows={2}
         />
         {instruction && (
           <div className="flex gap-3 mt-1.5">
             <label className="flex items-center gap-1 cursor-pointer">
-              <input type="radio" name={`regenMode-${videoId}`} checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
+              <input type="radio" name={`regenMode-${videoId}-${step}`} checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
               <span className="text-[11px] text-gray-600">ベースに追加</span>
             </label>
             <label className="flex items-center gap-1 cursor-pointer">
-              <input type="radio" name={`regenMode-${videoId}`} checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
+              <input type="radio" name={`regenMode-${videoId}-${step}`} checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
               <span className="text-[11px] text-gray-600">この指示のみ</span>
             </label>
           </div>
@@ -103,7 +110,7 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
 
   return (
     <button
-      onClick={() => step === "article" ? setState("prompt") : handleRegenerate()}
+      onClick={() => setState("prompt")}
       disabled={disabled}
       className="text-[12px] text-[#cd1cfa] hover:underline disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
     >

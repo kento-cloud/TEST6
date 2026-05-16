@@ -14,7 +14,7 @@ export async function POST(
   if (authError) return authError
 
   const { id } = await params
-  const body = await req.json().catch(() => ({})) as { step?: string; articleInstruction?: string; promptMode?: "append" | "override" }
+  const body = await req.json().catch(() => ({})) as { step?: string; customInstruction?: string; promptMode?: "append" | "override" }
   const step = body.step as GenerationStep
 
   if (!step || !VALID_STEPS.includes(step)) {
@@ -45,18 +45,20 @@ export async function POST(
 
   try {
     let result: unknown
+    const ci = body.customInstruction
+    const pm = body.promptMode
     switch (step) {
       case "summary":
-        result = await generateSummary(id, transcript.full_text, video.title)
+        result = await generateSummary(id, transcript.full_text, video.title, ci, pm)
         break
       case "chapters":
-        result = await generateChapters(id, transcript.full_text, video.title)
+        result = await generateChapters(id, transcript.full_text, video.title, ci, pm)
         break
       case "article":
-        result = await generateArticle(id, transcript.full_text, video.title, body.articleInstruction, body.promptMode)
+        result = await generateArticle(id, transcript.full_text, video.title, ci, pm)
         break
       case "tags":
-        result = await generateTags(id, transcript.full_text, video.title)
+        result = await generateTags(id, transcript.full_text, video.title, ci, pm)
         break
     }
 

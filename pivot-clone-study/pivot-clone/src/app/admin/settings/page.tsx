@@ -13,7 +13,10 @@ interface SettingsData {
   AI_TEXT_MODEL?: string
   AI_IMAGE_MODEL?: string
   AI_TRANSCRIBE_MODEL?: string
+  AI_SUMMARY_BASE_PROMPT?: string
+  AI_CHAPTERS_BASE_PROMPT?: string
   AI_ARTICLE_BASE_PROMPT?: string
+  AI_TAGS_BASE_PROMPT?: string
 }
 
 const TEXT_MODELS = [
@@ -45,7 +48,10 @@ export default function AdminSettingsPage() {
   const [textModel, setTextModel] = useState("gpt-4.1")
   const [imageModel, setImageModel] = useState("gpt-image-2")
   const [transcribeModel, setTranscribeModel] = useState("gpt-4o-transcribe")
+  const [summaryBasePrompt, setSummaryBasePrompt] = useState("")
+  const [chaptersBasePrompt, setChaptersBasePrompt] = useState("")
   const [articleBasePrompt, setArticleBasePrompt] = useState("")
+  const [tagsBasePrompt, setTagsBasePrompt] = useState("")
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [ffmpegOk, setFfmpegOk] = useState<boolean | null>(null)
@@ -58,7 +64,10 @@ export default function AdminSettingsPage() {
         setTextModel(data.AI_TEXT_MODEL ?? "gpt-4.1")
         setImageModel(data.AI_IMAGE_MODEL ?? "gpt-image-2")
         setTranscribeModel(data.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe")
+        setSummaryBasePrompt(data.AI_SUMMARY_BASE_PROMPT ?? "")
+        setChaptersBasePrompt(data.AI_CHAPTERS_BASE_PROMPT ?? "")
         setArticleBasePrompt(data.AI_ARTICLE_BASE_PROMPT ?? "")
+        setTagsBasePrompt(data.AI_TAGS_BASE_PROMPT ?? "")
       })
       .catch(() => {})
 
@@ -77,7 +86,10 @@ export default function AdminSettingsPage() {
     body.AI_TEXT_MODEL = textModel
     body.AI_IMAGE_MODEL = imageModel
     body.AI_TRANSCRIBE_MODEL = transcribeModel
+    body.AI_SUMMARY_BASE_PROMPT = summaryBasePrompt
+    body.AI_CHAPTERS_BASE_PROMPT = chaptersBasePrompt
     body.AI_ARTICLE_BASE_PROMPT = articleBasePrompt
+    body.AI_TAGS_BASE_PROMPT = tagsBasePrompt
 
     try {
       const res = await fetch("/api/admin/settings", {
@@ -173,21 +185,54 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      {/* Article Base Prompt */}
+      {/* AI Base Prompts */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
         <div className="px-5 py-4 border-b border-gray-100">
-          <h2 className="text-[16px] font-bold text-gray-900">記事生成ベースプロンプト</h2>
-          <p className="text-[13px] text-gray-400 mt-0.5">全記事生成に共通で適用される指示です。動画ごとの個別指示はAI生成時に追加できます。</p>
+          <h2 className="text-[16px] font-bold text-gray-900">AI生成ベースプロンプト</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">各項目の生成に共通で適用される指示です。動画ごとの個別指示はAI生成時に追加できます。</p>
         </div>
-        <div className="p-5">
-          <textarea
-            value={articleBasePrompt}
-            onChange={(e) => setArticleBasePrompt(e.target.value)}
-            placeholder="例: ビジネスパーソン向けにわかりやすく、具体的な数字やデータを含めて書いてください。"
-            className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
-            rows={4}
-          />
-          <p className="text-[11px] text-gray-400 mt-1">空欄の場合はデフォルトのプロンプトのみで生成されます</p>
+        <div className="p-5 space-y-4">
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">要約</label>
+            <textarea
+              value={summaryBasePrompt}
+              onChange={(e) => setSummaryBasePrompt(e.target.value)}
+              placeholder="例: 専門用語を避け、一般のビジネスパーソンにわかる表現で"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              rows={2}
+            />
+          </div>
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">チャプター</label>
+            <textarea
+              value={chaptersBasePrompt}
+              onChange={(e) => setChaptersBasePrompt(e.target.value)}
+              placeholder="例: 5分以内の細かいチャプターに分けて"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              rows={2}
+            />
+          </div>
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">記事</label>
+            <textarea
+              value={articleBasePrompt}
+              onChange={(e) => setArticleBasePrompt(e.target.value)}
+              placeholder="例: ビジネスパーソン向けにわかりやすく、具体的な数字やデータを含めて"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              rows={2}
+            />
+          </div>
+          <div>
+            <label className="block text-[13px] font-semibold text-gray-700 mb-1">タグ</label>
+            <textarea
+              value={tagsBasePrompt}
+              onChange={(e) => setTagsBasePrompt(e.target.value)}
+              placeholder="例: SEOを意識したキーワードを含めて"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              rows={2}
+            />
+          </div>
+          <p className="text-[11px] text-gray-400">空欄の場合はデフォルトのプロンプトのみで生成されます。サムネイルは生成時に直接プロンプトを入力する仕組みです。</p>
         </div>
       </div>
 

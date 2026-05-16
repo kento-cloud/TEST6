@@ -20,7 +20,12 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   const [state, setState] = useState<ActionState>("idle")
   const [error, setError] = useState("")
   const [showPrompt, setShowPrompt] = useState(false)
-  const [articleInstruction, setArticleInstruction] = useState("")
+  const [instructions, setInstructions] = useState({
+    summary: "",
+    chapters: "",
+    article: "",
+    tags: "",
+  })
   const [promptMode, setPromptMode] = useState<"append" | "override">("append")
 
   async function handleAction(url: string, _successMessage: string, body?: Record<string, unknown>) {
@@ -120,17 +125,27 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
           AI生成開始
         </button>
         {showPrompt && (
-          <div className="absolute right-0 top-full mt-2 w-[400px] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50">
-            <p className="text-[13px] font-semibold text-gray-700 mb-2">記事への指示（任意）</p>
-            <textarea
-              value={articleInstruction}
-              onChange={(e) => setArticleInstruction(e.target.value)}
-              placeholder="例: 初心者向けにわかりやすく書いて、箇条書き多めで"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
-              rows={3}
-            />
-            {articleInstruction && (
-              <div className="flex gap-3 mt-2">
+          <div className="absolute right-0 top-full mt-2 w-[450px] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50 max-h-[70vh] overflow-y-auto">
+            <p className="text-[14px] font-bold text-gray-800 mb-3">AI生成の指示（任意）</p>
+            {([
+              { key: "summary" as const, label: "要約", placeholder: "例: 専門用語を避けて平易に" },
+              { key: "chapters" as const, label: "チャプター", placeholder: "例: 細かく分けて" },
+              { key: "article" as const, label: "記事", placeholder: "例: 初心者向けに、箇条書き多めで" },
+              { key: "tags" as const, label: "タグ", placeholder: "例: マーケティング関連多めに" },
+            ]).map(({ key, label, placeholder }) => (
+              <div key={key} className="mb-3">
+                <label className="block text-[12px] font-semibold text-gray-600 mb-1">{label}</label>
+                <input
+                  type="text"
+                  value={instructions[key]}
+                  onChange={(e) => setInstructions({ ...instructions, [key]: e.target.value })}
+                  placeholder={placeholder}
+                  className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                />
+              </div>
+            ))}
+            {Object.values(instructions).some(Boolean) && (
+              <div className="flex gap-3 mb-3">
                 <label className="flex items-center gap-1.5 cursor-pointer">
                   <input type="radio" name="promptMode" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
                   <span className="text-[12px] text-gray-600">ベースに追加</span>
@@ -141,7 +156,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
                 </label>
               </div>
             )}
-            <p className="text-[11px] text-gray-400 mt-2 mb-3">ベースの指示は設定画面で変更できます。</p>
+            <p className="text-[11px] text-gray-400 mb-3">空欄の項目はベースの指示（設定画面）のみで生成されます。</p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowPrompt(false)}
@@ -150,7 +165,11 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
                 キャンセル
               </button>
               <button
-                onClick={() => handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", articleInstruction ? { articleInstruction, promptMode } : undefined)}
+                onClick={() => {
+                  const hasAny = Object.values(instructions).some(Boolean)
+                  const filtered = hasAny ? Object.fromEntries(Object.entries(instructions).filter(([, v]) => v)) : undefined
+                  handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", filtered ? { instructions: filtered, promptMode } : undefined)
+                }}
                 className="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-[13px] font-semibold hover:bg-purple-700 cursor-pointer"
               >
                 生成開始

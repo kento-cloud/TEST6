@@ -67,11 +67,11 @@ export async function transcribeVideo(id: string, manualText?: string) {
 
 // === AI Generation ===
 
-export async function generateAll(id: string, articleInstruction?: string) {
+export async function generateAll(id: string, instructions?: Partial<Record<string, string>>, promptMode?: "append" | "override") {
   const res = await fetch(`/api/videos/${id}/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ articleInstruction }),
+    body: JSON.stringify({ instructions, promptMode }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
@@ -80,11 +80,11 @@ export async function generateAll(id: string, articleInstruction?: string) {
   return res.json()
 }
 
-export async function regenerateStep(id: string, step: GenerationStepType, articleInstruction?: string, promptMode?: "append" | "override") {
+export async function regenerateStep(id: string, step: GenerationStepType, customInstruction?: string, promptMode?: "append" | "override") {
   const res = await fetch(`/api/videos/${id}/regenerate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ step, articleInstruction, promptMode }),
+    body: JSON.stringify({ step, customInstruction, promptMode }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
