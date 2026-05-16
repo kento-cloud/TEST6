@@ -2,6 +2,10 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useAuth } from "@/contexts/AuthContext"
+
+// ログイン必須のパス
+const AUTH_REQUIRED_PATHS = new Set(["/mylist", "/action", "/account"])
 
 /* 本家から取得した正確なアイコンSVG・サイズ */
 const navItems = [
@@ -55,10 +59,18 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { user } = useAuth()
 
   function isActive(href: string): boolean {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
+  }
+
+  function getHref(item: (typeof navItems)[number]): string {
+    if (!user && AUTH_REQUIRED_PATHS.has(item.href)) {
+      return "/auth/sign_in"
+    }
+    return item.href
   }
 
   return (
@@ -78,7 +90,7 @@ export function Sidebar() {
           {navItems.map((item) => (
             <Link
               key={item.label}
-              href={item.href}
+              href={getHref(item)}
               className={`flex flex-col items-center justify-center gap-[4px] w-[72px] h-[66px] transition-colors ${
                 isActive(item.href) ? "text-white" : "text-[#a9abb8] hover:text-white"
               }`}
@@ -98,7 +110,7 @@ export function Sidebar() {
         {navItems.map((item) => (
           <Link
             key={item.label}
-            href={item.href}
+            href={getHref(item)}
             className={`flex-1 flex flex-col items-center justify-center gap-[3px] h-[60px] transition-colors ${
               isActive(item.href) ? "text-white" : "text-[#a9abb8]"
             }`}
