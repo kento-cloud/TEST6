@@ -2,6 +2,15 @@
 
 import { useState, useEffect } from "react"
 
+interface StylePreset {
+  id: string
+  name: string
+  description: string
+  prompt_template: string
+  is_default: number
+  sort_order: number
+}
+
 interface KeyStatus {
   set: boolean
   masked: string
@@ -56,6 +65,15 @@ export default function AdminSettingsPage() {
   const [message, setMessage] = useState("")
   const [ffmpegOk, setFfmpegOk] = useState<boolean | null>(null)
 
+  // Style Presets
+  const [presets, setPresets] = useState<StylePreset[]>([])
+  const [presetsLoading, setPresetsLoading] = useState(true)
+  const [editingPreset, setEditingPreset] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState({ name: "", description: "", promptTemplate: "" })
+  const [newPreset, setNewPreset] = useState({ name: "", description: "", promptTemplate: "" })
+  const [presetMessage, setPresetMessage] = useState("")
+  const [showNewForm, setShowNewForm] = useState(false)
+
   useEffect(() => {
     fetch("/api/admin/settings")
       .then((r) => r.json())
@@ -77,7 +95,83 @@ export default function AdminSettingsPage() {
       .then((r) => r.json())
       .then((data) => setFfmpegOk(data.installed))
       .catch(() => setFfmpegOk(false))
+
+    fetchPresets()
   }, [])
+
+  function fetchPresets() {
+    setPresetsLoading(true)
+    fetch("/api/ai-style-presets")
+      .then((r) => r.json())
+      .then((data: StylePreset[]) => {
+        if (Array.isArray(data)) setPresets(data)
+      })
+      .catch(() => {
+        setPresetMessage("プリセットの取得に失敗しました")
+      })
+      .finally(() => setPresetsLoading(false))
+  }
+
+  function startEditPreset(preset: StylePreset) {
+    setEditingPreset(preset.id)
+    setEditForm({
+      name: preset.name,
+      description: preset.description,
+      promptTemplate: preset.prompt_template,
+    })
+  }
+
+  async function savePresetEdit(id: string) {
+    setPresetMessage("")
+    try {
+      const res = await fetch(`/api/ai-style-presets/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editForm),
+      })
+      if (!res.ok) throw new Error("更新に失敗しました")
+      setEditingPreset(null)
+      setPresetMessage("プリセットを更新しました")
+      fetchPresets()
+    } catch (e) {
+      setPresetMessage(e instanceof Error ? e.message : "更新に失敗しました")
+    }
+  }
+
+  async function deletePreset(id: string, name: string) {
+    if (!confirm(`「${name}」を削除しますか？`)) return
+    setPresetMessage("")
+    try {
+      const res = await fetch(`/api/ai-style-presets/${id}`, { method: "DELETE" })
+      if (!res.ok) throw new Error("削除に失敗しました")
+      setPresetMessage("プリセットを削除しました")
+      fetchPresets()
+    } catch (e) {
+      setPresetMessage(e instanceof Error ? e.message : "削除に失敗しました")
+    }
+  }
+
+  async function addPreset() {
+    if (!newPreset.name || !newPreset.promptTemplate) {
+      setPresetMessage("名前とプロンプトは必須です")
+      return
+    }
+    setPresetMessage("")
+    try {
+      const res = await fetch("/api/ai-style-presets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPreset),
+      })
+      if (!res.ok) throw new Error("追加に失敗しました")
+      setNewPreset({ name: "", description: "", promptTemplate: "" })
+      setShowNewForm(false)
+      setPresetMessage("プリセットを追加しました")
+      fetchPresets()
+    } catch (e) {
+      setPresetMessage(e instanceof Error ? e.message : "追加に失敗しました")
+    }
+  }
 
   async function handleSave() {
     setSaving(true)
@@ -183,6 +277,153 @@ export default function AdminSettingsPage() {
               ))}
             </select>
             <p className="text-[11px] text-gray-400 mt-1">動画の音声→テキスト変換に使用</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Style Presets */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">記事スタイルプリセット</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">AI記事生成時に選べるスタイルプリセットを管理します。プリセットを選ぶとプロンプトが自動入力されます。</p>
+        </div>
+        <div className="p-5">
+          {presetMessage && (
+            <p className={`text-[13px] mb-3 ${presetMessage.includes("失敗") ? "text-red-500" : "text-green-600"}`}>{presetMessage}</p>
+          )}
+
+          {presetsLoading ? (
+            <p className="text-[13px] text-gray-400">読み込み中...</p>
+          ) : (
+            <div className="space-y-3">
+              {presets.map((preset) => (
+                <div key={preset.id} className="border border-gray-100 rounded-lg p-4">
+                  {editingPreset === preset.id ? (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        placeholder="プリセット名"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                      />
+                      <input
+                        type="text"
+                        value={editForm.description}
+                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                        placeholder="説明"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                      />
+                      <textarea
+                        value={editForm.promptTemplate}
+                        onChange={(e) => setEditForm({ ...editForm, promptTemplate: e.target.value })}
+                        placeholder="プロンプトテンプレート"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+                        rows={3}
+                      />
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => setEditingPreset(null)}
+                          className="px-3 py-1.5 text-[12px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer"
+                        >
+                          キャンセル
+                        </button>
+                        <button
+                          onClick={() => savePresetEdit(preset.id)}
+                          className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer"
+                        >
+                          保存
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[14px] font-semibold text-gray-900">{preset.name}</p>
+                            {preset.is_default === 1 && (
+                              <span className="px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded text-[10px] font-semibold">デフォルト</span>
+                            )}
+                          </div>
+                          <p className="text-[12px] text-gray-400 mt-0.5">{preset.description}</p>
+                          <p className="text-[12px] text-gray-500 mt-1.5 bg-gray-50 rounded px-2 py-1.5 leading-relaxed">{preset.prompt_template}</p>
+                        </div>
+                        <div className="flex gap-1 ml-3 shrink-0">
+                          <button
+                            onClick={() => startEditPreset(preset)}
+                            className="px-2 py-1 text-[11px] text-blue-600 hover:bg-blue-50 rounded cursor-pointer"
+                          >
+                            編集
+                          </button>
+                          <button
+                            onClick={() => deletePreset(preset.id, preset.name)}
+                            className="px-2 py-1 text-[11px] text-red-500 hover:bg-red-50 rounded cursor-pointer"
+                          >
+                            削除
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {presets.length === 0 && (
+                <p className="text-[13px] text-gray-400">プリセットがありません</p>
+              )}
+            </div>
+          )}
+
+          {/* New preset form */}
+          <div className="mt-4">
+            {showNewForm ? (
+              <div className="border border-dashed border-purple-200 rounded-lg p-4 space-y-2">
+                <p className="text-[13px] font-semibold text-gray-700 mb-2">新規プリセット</p>
+                <input
+                  type="text"
+                  value={newPreset.name}
+                  onChange={(e) => setNewPreset({ ...newPreset, name: e.target.value })}
+                  placeholder="プリセット名（例: 技術解説）"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                />
+                <input
+                  type="text"
+                  value={newPreset.description}
+                  onChange={(e) => setNewPreset({ ...newPreset, description: e.target.value })}
+                  placeholder="説明（例: エンジニア向けの技術解説記事）"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                />
+                <textarea
+                  value={newPreset.promptTemplate}
+                  onChange={(e) => setNewPreset({ ...newPreset, promptTemplate: e.target.value })}
+                  placeholder="プロンプトテンプレート（例: 技術者向けに、コード例やアーキテクチャの解説を含めて...）"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+                  rows={3}
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    onClick={() => { setShowNewForm(false); setNewPreset({ name: "", description: "", promptTemplate: "" }) }}
+                    className="px-3 py-1.5 text-[12px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={addPreset}
+                    className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer"
+                  >
+                    追加
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowNewForm(true)}
+                className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:border-[#cd1cfa] hover:text-[#cd1cfa] transition-colors cursor-pointer"
+              >
+                + 新規プリセットを追加
+              </button>
+            )}
           </div>
         </div>
       </div>

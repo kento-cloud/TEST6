@@ -1,7 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { updateAIContent, regenerateStep } from "@/lib/admin-api"
+
+interface StylePreset {
+  id: string
+  name: string
+  description: string
+  prompt_template: string
+}
 
 interface Props {
   readonly videoId: string
@@ -19,6 +26,26 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
   const [instruction, setInstruction] = useState("")
   const [promptMode, setPromptMode] = useState<"append" | "override">("append")
   const [regenerating, setRegenerating] = useState(false)
+  const [presets, setPresets] = useState<StylePreset[]>([])
+  const [selectedPreset, setSelectedPreset] = useState("")
+
+  useEffect(() => {
+    fetch("/api/ai-style-presets")
+      .then((r) => r.json())
+      .then((data: StylePreset[]) => {
+        if (Array.isArray(data)) setPresets(data)
+      })
+      .catch(() => {})
+  }, [])
+
+  function handlePresetChange(presetId: string) {
+    setSelectedPreset(presetId)
+    if (!presetId) return
+    const preset = presets.find((p) => p.id === presetId)
+    if (preset) {
+      setInstruction(preset.prompt_template)
+    }
+  }
 
   function handleChange(value: string) {
     setArticle(value)
@@ -86,6 +113,21 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
       {showRegen && (
         <div className="bg-purple-50 rounded-xl border border-purple-100 p-4 mb-4">
           <p className="text-[13px] font-semibold text-gray-700 mb-2">記事への指示（任意）</p>
+          {presets.length > 0 && (
+            <div className="mb-3">
+              <label className="block text-[12px] font-semibold text-gray-600 mb-1">記事スタイル</label>
+              <select
+                value={selectedPreset}
+                onChange={(e) => handlePresetChange(e.target.value)}
+                className="w-full px-3 py-2 border border-purple-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] bg-white"
+              >
+                <option value="">カスタム（自由入力）</option>
+                {presets.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name} — {p.description}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <textarea
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}

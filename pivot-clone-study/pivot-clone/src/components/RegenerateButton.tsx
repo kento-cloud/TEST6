@@ -1,8 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { regenerateStep } from "@/lib/admin-api"
 import type { GenerationStepType } from "@/types/admin"
+
+interface StylePreset {
+  id: string
+  name: string
+  description: string
+  prompt_template: string
+}
 
 interface Props {
   readonly videoId: string
@@ -29,6 +36,27 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
   const [error, setError] = useState("")
   const [instruction, setInstruction] = useState("")
   const [promptMode, setPromptMode] = useState<"append" | "override">("append")
+  const [presets, setPresets] = useState<StylePreset[]>([])
+  const [selectedPreset, setSelectedPreset] = useState("")
+
+  useEffect(() => {
+    if (step !== "article") return
+    fetch("/api/ai-style-presets")
+      .then((r) => r.json())
+      .then((data: StylePreset[]) => {
+        if (Array.isArray(data)) setPresets(data)
+      })
+      .catch(() => {})
+  }, [step])
+
+  function handlePresetChange(presetId: string) {
+    setSelectedPreset(presetId)
+    if (!presetId) return
+    const preset = presets.find((p) => p.id === presetId)
+    if (preset) {
+      setInstruction(preset.prompt_template)
+    }
+  }
 
   async function handleRegenerate(customInstruction?: string, mode?: "append" | "override") {
     setState("processing")
@@ -71,6 +99,21 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
     return (
       <div className="absolute right-0 top-full mt-1 w-[350px] bg-white rounded-xl border border-gray-200 shadow-lg p-3 z-50">
         <p className="text-[12px] font-semibold text-gray-700 mb-1.5">{label}への指示（任意）</p>
+        {step === "article" && presets.length > 0 && (
+          <div className="mb-2">
+            <label className="block text-[11px] font-semibold text-gray-600 mb-1">記事スタイル</label>
+            <select
+              value={selectedPreset}
+              onChange={(e) => handlePresetChange(e.target.value)}
+              className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+            >
+              <option value="">カスタム（自由入力）</option>
+              {presets.map((p) => (
+                <option key={p.id} value={p.id}>{p.name} — {p.description}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <textarea
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}

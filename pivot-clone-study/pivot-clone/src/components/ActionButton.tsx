@@ -1,9 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { resetVideo, generateAll } from "@/lib/admin-api"
+
+interface StylePreset {
+  id: string
+  name: string
+  description: string
+  prompt_template: string
+}
 
 interface Props {
   readonly videoId: string
@@ -28,6 +35,31 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
     tags: "",
   })
   const [promptMode, setPromptMode] = useState<"append" | "override">("append")
+  const [presets, setPresets] = useState<StylePreset[]>([])
+  const [selectedPreset, setSelectedPreset] = useState("")
+
+  useEffect(() => {
+    fetch("/api/ai-style-presets")
+      .then((r) => r.json())
+      .then((data: StylePreset[]) => {
+        if (Array.isArray(data)) setPresets(data)
+      })
+      .catch(() => {})
+  }, [])
+
+  function handlePresetChange(presetId: string) {
+    setSelectedPreset(presetId)
+    if (!presetId) return
+    const preset = presets.find((p) => p.id === presetId)
+    if (preset) {
+      setInstructions({
+        summary: "",
+        chapters: "",
+        article: preset.prompt_template,
+        tags: "",
+      })
+    }
+  }
 
   async function handleReset() {
     setState("processing")
@@ -138,6 +170,19 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
         {showPrompt && (
           <div className="absolute right-0 top-full mt-2 w-[450px] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50 max-h-[70vh] overflow-y-auto">
             <p className="text-[14px] font-bold text-gray-800 mb-3">AI生成の指示（任意）</p>
+            <div className="mb-4">
+              <label className="block text-[12px] font-semibold text-gray-600 mb-1">記事スタイル</label>
+              <select
+                value={selectedPreset}
+                onChange={(e) => handlePresetChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+              >
+                <option value="">カスタム（自由入力）</option>
+                {presets.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name} — {p.description}</option>
+                ))}
+              </select>
+            </div>
             {([
               { key: "summary" as const, label: "要約", placeholder: "例: 専門用語を避けて平易に" },
               { key: "chapters" as const, label: "チャプター", placeholder: "例: 細かく分けて" },
