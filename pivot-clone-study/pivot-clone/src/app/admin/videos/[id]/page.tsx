@@ -6,6 +6,7 @@ import { DeleteButton } from "@/components/DeleteButton"
 import { ActionButton } from "@/components/ActionButton"
 import { PipelinePanel } from "@/components/PipelinePanel"
 import { ThumbnailPipelineRow } from "@/components/ThumbnailPipelineRow"
+import { TranscriptPipelineRow } from "@/components/TranscriptPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
@@ -139,13 +140,16 @@ export default async function AdminVideoDetailPage({ params }: Props) {
           )}
 
           {/* 文字起こし行 */}
-          <div className="border border-gray-100 rounded-lg px-3 py-2 bg-gray-50 flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-[14px]">{step === "transcribing" || step === "extracting_audio" ? "⏳" : !!transcript && transcript.status === "error" ? "❌" : !!transcript && transcript.status === "done" ? "✅" : "⬜"}</span>
-              <span className={`text-[13px] font-medium ${step === "transcribing" || step === "extracting_audio" ? "text-blue-600" : !!transcript && transcript.status === "error" ? "text-red-600" : !!transcript && transcript.status === "done" ? "text-green-600" : "text-gray-400"}`}>文字起こし</span>
-            </div>
-            {transcript?.status === "done" && <Link href={`/admin/videos/${id}/transcript`} className="text-[12px] text-[#cd1cfa] hover:underline">確認・編集</Link>}
-          </div>
+          <TranscriptPipelineRow
+            videoId={id}
+            transcript={transcript ? {
+              fullText: transcript.full_text,
+              status: transcript.status ?? "pending",
+              source: transcript.source ?? null,
+              errorMessage: transcript.error_message ?? null,
+            } : null}
+            isProcessing={step === "transcribing" || step === "extracting_audio"}
+          />
 
           {/* AI生成項目（確認・編集・再生成パネル） */}
           <PipelinePanel
