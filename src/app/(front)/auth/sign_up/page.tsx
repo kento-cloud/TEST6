@@ -28,32 +28,38 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
+      // サーバーサイドでユーザー作成（メール確認スキップ）
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
+      })
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || "登録に失敗しました")
+        setLoading(false)
+        return
+      }
+
+      // 登録成功 → 自動ログイン
       const supabase = createBrowserClient()
-      const { error: authError } = await supabase.auth.signUp({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: { data: { display_name: name } },
       })
 
-      if (authError) {
-        const raw = authError.message
-        const msg = raw.includes("already registered")
-          ? "このメールアドレスは既に登録されています"
-          : raw.includes("valid email")
-            ? "有効なメールアドレスを入力してください"
-            : raw.includes("rate limit")
-              ? "登録の試行回数が制限を超えました。しばらく待ってから再度お試しください"
-              : raw.includes("password")
-                ? "パスワードは8文字以上で入力してください"
-                : raw
-        setError(msg)
+      if (signInError) {
+        // 登録は成功したがログインに失敗 → ログインページへ誘導
+        setSuccess(true)
         setLoading(false)
+        setTimeout(() => router.push("/auth/sign_in"), 2000)
         return
       }
 
       setSuccess(true)
       setLoading(false)
-      setTimeout(() => router.push("/"), 2000)
+      setTimeout(() => router.push("/"), 1500)
     } catch {
       setError("登録中にエラーが発生しました")
       setLoading(false)
