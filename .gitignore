@@ -32,7 +32,18 @@ uploads/
 # drizzle
 drizzle/
 
-# generated mirrors (large data, keep mirror-tool/output only)
+# generated mirrors & comparison assets
 pivot-clone-study/pivot-mirror/
 pivot-clone-study/local-site/
 pivot-clone-study/snapshot/
+pivot-clone-study/pivotmedia.co.jp/
+pivot-clone-study/page-captures/
+pivot-clone-study/compare/
+pivot-clone-study/*.png
+mirror-tool/output/
+
+# reports
+pivot-clone-study/pivot-clone/reports/
+
+# typescript build info
+*.tsbuildinfo
