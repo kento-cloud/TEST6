@@ -5,6 +5,7 @@ import { ThumbnailGenerator } from "@/components/ThumbnailGenerator"
 import { DeleteButton } from "@/components/DeleteButton"
 import { ActionButton } from "@/components/ActionButton"
 import { PipelinePanel } from "@/components/PipelinePanel"
+import { ThumbnailPipelineRow } from "@/components/ThumbnailPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
@@ -160,13 +161,18 @@ export default async function AdminVideoDetailPage({ params }: Props) {
           />
 
           {/* サムネイル行 */}
-          <div className="border border-gray-100 rounded-lg px-3 py-2 bg-gray-50 flex items-center justify-between mt-2">
-            <div className="flex items-center gap-2">
-              <span className="text-[14px]">{step === "generating_thumbnail" ? "⏳" : (videoThumbnails ?? []).some(t => t.status === "done") ? "✅" : "⬜"}</span>
-              <span className={`text-[13px] font-medium ${step === "generating_thumbnail" ? "text-blue-600" : (videoThumbnails ?? []).some(t => t.status === "done") ? "text-green-600" : "text-gray-400"}`}>サムネイル</span>
-            </div>
-            <span className="text-[12px] text-gray-400">{(videoThumbnails ?? []).length}枚</span>
-          </div>
+          <ThumbnailPipelineRow
+            videoId={id}
+            videoTitle={video.title}
+            thumbnails={(videoThumbnails ?? []).map(t => ({
+              id: t.id,
+              file_path: t.file_path,
+              status: t.status ?? "unknown",
+              is_primary: t.is_primary ?? false,
+              source: t.source ?? "unknown",
+            }))}
+            isGenerating={step === "generating_thumbnail"}
+          />
 
           {/* Generation Logs */}
           {logs && logs.length > 0 && (
