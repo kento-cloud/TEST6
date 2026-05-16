@@ -3,6 +3,7 @@ import { HeaderTabs } from "@/components/HeaderTabs"
 import { EpisodeSection } from "@/components/EpisodeSection"
 import { VideoPlayer } from "@/components/VideoPlayer"
 import { AuthGate } from "@/components/AuthGate"
+import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
 import type { Chapter } from "@/types/ai"
 
@@ -57,19 +58,8 @@ export default async function MoviePage({ params }: Props) {
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
 
-      {/* サムネイル/プレビューは全員に表示 */}
-      <div className="flex flex-col md:flex-row">
-        <div className="w-full md:flex-1">
-          <div className="relative w-full aspect-video bg-black">
-            <Image src={thumbnailUrl} alt={title} fill className="object-cover" priority />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="white" className="ml-1"><path d="M8 5v14l11-7z" /></svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* サムネイルプレビュー（未ログイン時のみ表示） */}
+      <MovieThumbnailPreview thumbnailUrl={thumbnailUrl} title={title} />
 
       {/* タイトル・番組名は全員に表示 */}
       <div className="px-4 md:px-8 pt-6">

@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect, useCallback } from "react"
+import { AuthPrompt } from "@/components/AuthPrompt"
 
 export interface FeaturedItem {
   readonly id: string
@@ -59,6 +60,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
           <p className="text-[13px] lg:text-[14px] font-normal leading-[1.7] text-[#a9abb8] line-clamp-3 mb-6">
             {item.description}
           </p>
+          <AuthPrompt>
           <Link
             href={`/movie/${item.id}`}
             className="flex items-center justify-center gap-1 w-[200px] h-[48px] rounded-[24px] bg-white border-2 border-white font-semibold text-[16px] hover:bg-white/90 transition-colors"
@@ -69,6 +71,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
             </span>
           </Link>
+          </AuthPrompt>
           <div className="flex items-center gap-[4px] mt-6">
             {featuredItems.map((_, i) => (
               <button key={i} onClick={() => goTo(i)} className="py-2 cursor-pointer group/dot" aria-label={`スライド ${i + 1}`}>
@@ -80,30 +83,36 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
           </div>
         </div>
         <div className="flex-1">
+          <AuthPrompt>
           <Link href={`/movie/${item.id}`} className="block">
             <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
               <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
             </div>
           </Link>
+          </AuthPrompt>
         </div>
       </div>
 
       {/* SP Layout */}
       <div className="md:hidden">
+        <AuthPrompt>
         <Link href={`/movie/${item.id}`} className="block">
           <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
             <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="100vw" />
           </div>
         </Link>
+        </AuthPrompt>
         {/* SP: タイトル左 + 視聴する右（本家と同じ横並び） */}
         <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-[16px] font-bold leading-[1.3] text-white line-clamp-1 flex-1 mr-3">{item.title}</h2>
+          <AuthPrompt>
           <Link
             href={`/movie/${item.id}`}
             className="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-white/50 text-white font-bold text-[13px] shrink-0"
           >
             視聴する
           </Link>
+          </AuthPrompt>
         </div>
         {/* SP Indicators */}
         <div className="flex items-center gap-[4px] px-4 pb-3">

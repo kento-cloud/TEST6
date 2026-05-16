@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
+import { AuthPrompt } from "@/components/AuthPrompt"
 import { getAllEpisodes } from "@/lib/data-source"
 
 export default async function NewArrivalPage() {
@@ -17,8 +18,8 @@ export default async function NewArrivalPage() {
         {/* List layout like real site */}
         <div className="flex flex-col gap-4">
           {newEpisodes.map((ep) => (
+            <AuthPrompt key={ep.id}>
             <Link
-              key={ep.id}
               href={`/movie/${ep.id}`}
               className="flex gap-4 group"
             >
@@ -49,6 +50,7 @@ export default async function NewArrivalPage() {
                 </div>
               </div>
             </Link>
+            </AuthPrompt>
           ))}
         </div>
       </div>

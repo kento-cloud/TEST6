@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { LargeRankingCard } from "@/components/LargeRankingCard"
+import { AuthPrompt } from "@/components/AuthPrompt"
 import type { Episode, Program } from "@/types"
 
 const genres = [
@@ -62,12 +63,14 @@ export default function SearchPage() {
             <p className="text-[14px] text-[#a9abb8] mb-4">「{query}」の検索結果: {filtered.length}件</p>
             <div className="flex flex-wrap gap-[10px]">
               {filtered.map((ep) => (
-                <Link key={ep.id} href={`/movie/${ep.id}`} className="group block w-[calc(33.333%-10px)]">
+                <AuthPrompt key={ep.id}>
+                <Link href={`/movie/${ep.id}`} className="group block w-[calc(33.333%-10px)]">
                   <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#1d2030]">
                     <Image src={ep.thumbnailUrl} alt={ep.title} fill className="object-cover" sizes="33vw" />
                   </div>
                   <p className="mt-2 text-[14px] font-bold line-clamp-2 group-hover:text-[#cd1cfa]">{ep.title}</p>
                 </Link>
+                </AuthPrompt>
               ))}
             </div>
             {filtered.length === 0 && (

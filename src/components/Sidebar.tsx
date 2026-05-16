@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
 
 // ログイン必須のパス
-const AUTH_REQUIRED_PATHS = new Set(["/mylist", "/action", "/account"])
+const AUTH_REQUIRED_PATHS = new Set(["/mylist", "/action", "/account", "/watch-later", "/playlist"])
 
 /* 本家から取得した正確なアイコンSVG・サイズ */
 const navItems = [

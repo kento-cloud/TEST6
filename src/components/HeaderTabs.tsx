@@ -20,6 +20,7 @@ function HeaderTabsInner() {
   const searchParams = useSearchParams()
   const { user } = useAuth()
   const currentCode = searchParams.get("category_code")
+  const isAuthPage = pathname.startsWith("/auth/")
 
   function isActive(tab: (typeof tabs)[number]): boolean {
     if (tab.code === null) return pathname === "/"
@@ -49,11 +50,11 @@ function HeaderTabsInner() {
           <Link href="/account" className="text-[14px] font-bold text-white">
             {user.user_metadata?.display_name || "アカウント"}
           </Link>
-        ) : (
+        ) : !isAuthPage ? (
           <Link href="/auth/sign_in" className="text-[14px] font-bold text-white">
             ログイン
           </Link>
-        )}
+        ) : null}
       </div>
 
       {/* PC Header: タブ + 認証ボタン/アカウント (88px) */}
@@ -92,7 +93,7 @@ function HeaderTabsInner() {
               </span>
               {user.user_metadata?.display_name || "アカウント"}
             </Link>
-          ) : (
+          ) : !isAuthPage ? (
             <>
               <Link
                 href="/auth/sign_in"
@@ -107,7 +108,7 @@ function HeaderTabsInner() {
                 会員登録
               </Link>
             </>
-          )}
+          ) : null}
         </div>
       </div>
     </header>
