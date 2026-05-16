@@ -1,5 +1,12 @@
 # dependencies
 node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
 # build
 .next/
@@ -7,9 +14,17 @@ out/
 build/
 dist/
 
+# testing
+/coverage
+
 # debug & temp
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 .DS_Store
+*.pem
 
 # env
 .env
@@ -21,7 +36,6 @@ dist/
 .idea/
 
 # database
-/data/
 *.db
 *.db-journal
 *.db-wal
@@ -32,18 +46,12 @@ uploads/
 # drizzle
 drizzle/
 
-# generated mirrors & comparison assets
-pivot-clone-study/pivot-mirror/
-pivot-clone-study/local-site/
-pivot-clone-study/snapshot/
-pivot-clone-study/pivotmedia.co.jp/
-pivot-clone-study/page-captures/
-pivot-clone-study/compare/
-pivot-clone-study/*.png
-mirror-tool/output/
-
-# reports
-pivot-clone-study/pivot-clone/reports/
+# vercel
+.vercel
 
 # typescript build info
 *.tsbuildinfo
+next-env.d.ts
+
+# reports
+reports/
