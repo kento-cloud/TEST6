@@ -31,7 +31,7 @@ export default function UploadPage() {
             activeTab === "upload" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
           }`}
         >
-          ファイルアップロード
+          📁 ファイルアップロード
         </button>
         <button
           onClick={() => setActiveTab("youtube")}
@@ -39,7 +39,7 @@ export default function UploadPage() {
             activeTab === "youtube" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
           }`}
         >
-          YouTube URL
+          📺 YouTube URL
         </button>
       </div>
 

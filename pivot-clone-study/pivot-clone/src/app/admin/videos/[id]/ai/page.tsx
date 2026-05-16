@@ -33,7 +33,7 @@ export default async function AIResultPage({ params }: Props) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← {video.title}</Link>
+        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
       <h1 className="text-[24px] font-bold text-gray-900 mb-6">AI生成結果</h1>

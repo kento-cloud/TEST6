@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
+import { getStatusDisplay } from "@/components/StatusBadge"
 
 export const dynamic = "force-dynamic"
 
@@ -8,33 +9,6 @@ export default async function AdminVideosPage() {
     .from("videos")
     .select("*")
     .order("created_at", { ascending: false })
-
-  function getStatusDisplay(v: { publish_status: string | null; processing_step: string | null }): { label: string; style: string } {
-    const step = v.processing_step ?? "none"
-    if (step === "error") return { label: "エラー", style: "bg-red-100 text-red-700" }
-    if (step !== "none") {
-      const stepLabels: Record<string, string> = {
-        transcribing: "文字起こし中",
-        extracting_audio: "音声抽出中",
-        generating: "AI生成中",
-        generating_summary: "要約生成中",
-        generating_chapters: "チャプター生成中",
-        generating_article: "記事生成中",
-        generating_tags: "タグ生成中",
-        generating_thumbnail: "サムネイル生成中",
-      }
-      return { label: stepLabels[step] ?? "処理中", style: "bg-yellow-100 text-yellow-700" }
-    }
-
-    const ps = v.publish_status ?? "draft"
-    const publishLabels: Record<string, { label: string; style: string }> = {
-      draft: { label: "下書き", style: "bg-gray-100 text-gray-600" },
-      review: { label: "レビュー待ち", style: "bg-orange-100 text-orange-700" },
-      published: { label: "公開中", style: "bg-green-100 text-green-700" },
-      unpublished: { label: "非公開", style: "bg-gray-100 text-gray-600" },
-    }
-    return publishLabels[ps] ?? publishLabels.draft
-  }
 
   return (
     <div>
@@ -68,7 +42,7 @@ export default async function AdminVideosPage() {
             </thead>
             <tbody>
               {allVideos.map((v) => {
-                const s = getStatusDisplay(v)
+                const s = getStatusDisplay(v.publish_status, v.processing_step)
                 return (
                   <tr key={v.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
                     <td className="px-5 py-3">

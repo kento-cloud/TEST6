@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { StatusBadge } from "@/components/StatusBadge"
 
 interface VideoData {
   id: string
@@ -161,13 +162,18 @@ export default function PublishPage() {
           {state.checklist.map((item) => (
             <li key={item.label} className="flex items-center gap-3">
               <span className={`w-5 h-5 rounded flex items-center justify-center text-[12px] ${
-                item.done ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+                item.done ? "bg-green-100 text-green-600" : "bg-red-50 text-red-400"
               }`}>
-                {item.done ? "✓" : "—"}
+                {item.done ? "✓" : "✕"}
               </span>
-              <span className={`text-[14px] ${item.done ? "text-gray-700" : "text-gray-400"}`}>
+              <span className={`text-[14px] ${item.done ? "text-gray-700" : "text-red-500"}`}>
                 {item.label}
               </span>
+              {!item.done && (
+                <Link href={item.label.includes("文字起こし") ? `/admin/videos/${id}/transcript` : `/admin/videos/${id}`} className="text-[12px] text-[#cd1cfa] hover:underline">
+                  対応する →
+                </Link>
+              )}
             </li>
           ))}
         </ul>
@@ -223,29 +229,3 @@ export default function PublishPage() {
   )
 }
 
-function StatusBadge({ publishStatus, processingStep }: { publishStatus: string; processingStep: string }) {
-  if (processingStep === "error") {
-    return <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-red-100 text-red-700">エラー</span>
-  }
-  if (processingStep !== "none") {
-    return <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-yellow-100 text-yellow-700">処理中</span>
-  }
-
-  const styles: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-600",
-    review: "bg-orange-100 text-orange-700",
-    published: "bg-green-100 text-green-700",
-    unpublished: "bg-gray-100 text-gray-600",
-  }
-  const labels: Record<string, string> = {
-    draft: "下書き",
-    review: "レビュー待ち",
-    published: "公開中",
-    unpublished: "非公開",
-  }
-  return (
-    <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${styles[publishStatus] ?? styles.draft}`}>
-      {labels[publishStatus] ?? publishStatus}
-    </span>
-  )
-}

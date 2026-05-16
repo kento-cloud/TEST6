@@ -6,6 +6,7 @@ import { DeleteButton } from "@/components/DeleteButton"
 import { RegenerateButton } from "@/components/RegenerateButton"
 import { ActionButton } from "@/components/ActionButton"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
+import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
 
 export const dynamic = "force-dynamic"
@@ -26,26 +27,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
   const { data: logs } = await supabase.from("ai_generation_logs").select("*").eq("video_id", id).order("created_at", { ascending: false }).limit(10)
 
   const step = video.processing_step ?? "none"
-  const ps = video.publish_status ?? "draft"
-  const s = (() => {
-    if (step === "error") return { label: "エラー", style: "bg-red-100 text-red-700" }
-    if (step !== "none") {
-      const stepLabels: Record<string, string> = {
-        transcribing: "文字起こし中", extracting_audio: "音声抽出中",
-        generating: "AI生成中", generating_summary: "要約生成中",
-        generating_chapters: "チャプター生成中", generating_article: "記事生成中",
-        generating_tags: "タグ生成中", generating_thumbnail: "サムネイル生成中",
-      }
-      return { label: stepLabels[step] ?? "処理中", style: "bg-yellow-100 text-yellow-700" }
-    }
-    const labels: Record<string, { label: string; style: string }> = {
-      draft: { label: "下書き", style: "bg-gray-100 text-gray-600" },
-      review: { label: "レビュー待ち", style: "bg-orange-100 text-orange-700" },
-      published: { label: "公開中", style: "bg-green-100 text-green-700" },
-      unpublished: { label: "非公開", style: "bg-gray-100 text-gray-600" },
-    }
-    return labels[ps] ?? labels.draft
-  })()
+  const s = getStatusDisplay(video.publish_status ?? "draft", video.processing_step ?? "none")
 
   const steps = [
     { label: "アップロード", done: true, href: null },

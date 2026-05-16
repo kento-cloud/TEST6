@@ -112,7 +112,7 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
     <button
       onClick={() => setState("prompt")}
       disabled={disabled}
-      className="text-[12px] text-[#cd1cfa] hover:underline disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+      className="px-2.5 py-1 border border-[#cd1cfa] text-[#cd1cfa] rounded text-[11px] font-semibold hover:bg-purple-50 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
     >
       再生成
     </button>

@@ -71,9 +71,9 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
           <button
             onClick={() => setShowRegen(!showRegen)}
             disabled={regenerating}
-            className="px-4 py-2 border border-purple-200 text-purple-600 rounded-lg text-[13px] font-semibold hover:bg-purple-50 disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 border border-orange-300 text-orange-600 rounded-lg text-[13px] font-semibold hover:bg-orange-50 disabled:opacity-50 cursor-pointer"
           >
-            {regenerating ? "再生成中..." : "AIで再生成"}
+            {regenerating ? "再生成中..." : "AIで再生成（上書き）"}
           </button>
           {message && (
             <span className={`text-[13px] ${message.includes("失敗") ? "text-red-500" : "text-green-600"}`}>{message}</span>

@@ -19,7 +19,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← {video.title}</Link>
+        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
       <div className="flex items-center justify-between mb-6">

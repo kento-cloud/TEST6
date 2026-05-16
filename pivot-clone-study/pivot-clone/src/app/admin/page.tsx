@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
+import { StatusBadge } from "@/components/StatusBadge"
 
 export const dynamic = "force-dynamic"
 
@@ -83,39 +84,3 @@ export default async function AdminDashboard() {
   )
 }
 
-function StatusBadge({ publishStatus, processingStep }: { publishStatus: string; processingStep: string }) {
-  if (processingStep === "error") {
-    return <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-red-100 text-red-700">エラー</span>
-  }
-  if (processingStep !== "none") {
-    const stepLabels: Record<string, string> = {
-      transcribing: "文字起こし中",
-      extracting_audio: "音声抽出中",
-      generating: "AI生成中",
-      generating_summary: "要約生成中",
-      generating_chapters: "チャプター生成中",
-      generating_article: "記事生成中",
-      generating_tags: "タグ生成中",
-      generating_thumbnail: "サムネイル生成中",
-    }
-    return <span className="px-2 py-1 rounded-full text-[11px] font-semibold bg-yellow-100 text-yellow-700">{stepLabels[processingStep] ?? "処理中"}</span>
-  }
-
-  const styles: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-600",
-    review: "bg-orange-100 text-orange-700",
-    published: "bg-green-100 text-green-700",
-    unpublished: "bg-gray-100 text-gray-600",
-  }
-  const labels: Record<string, string> = {
-    draft: "下書き",
-    review: "レビュー待ち",
-    published: "公開中",
-    unpublished: "非公開",
-  }
-  return (
-    <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${styles[publishStatus] ?? styles.draft}`}>
-      {labels[publishStatus] ?? publishStatus}
-    </span>
-  )
-}

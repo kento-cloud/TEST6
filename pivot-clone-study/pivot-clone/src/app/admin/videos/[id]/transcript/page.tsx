@@ -31,7 +31,7 @@ export default async function TranscriptPage({ params }: Props) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← {video.title}</Link>
+        <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
       <h1 className="text-[24px] font-bold text-gray-900 mb-6">文字起こし</h1>
@@ -40,8 +40,17 @@ export default async function TranscriptPage({ params }: Props) {
         <ManualTranscriptForm videoId={id} />
       ) : transcript.status === "error" ? (
         <div className="bg-white rounded-xl border border-red-200 p-8">
-          <p className="text-red-600 text-[15px] font-semibold mb-2">エラーが発生しました</p>
-          <p className="text-red-400 text-[14px]">{transcript.error_message}</p>
+          <p className="text-red-600 text-[15px] font-semibold mb-2">文字起こしでエラーが発生しました</p>
+          <p className="text-red-400 text-[14px] mb-4">{transcript.error_message}</p>
+          <div className="flex gap-3">
+            <Link href={`/admin/videos/${id}`} className="px-4 py-2 bg-orange-600 text-white rounded-lg text-[13px] font-semibold hover:bg-orange-700">
+              動画詳細に戻ってリセット
+            </Link>
+          </div>
+          <div className="mt-6 border-t border-gray-100 pt-4">
+            <p className="text-[13px] text-gray-500 mb-2">または手動で文字起こしを入力：</p>
+            <ManualTranscriptForm videoId={id} />
+          </div>
         </div>
       ) : transcript.status === "processing" ? (
         <div className="bg-white rounded-xl border border-yellow-200 p-8 text-center">
