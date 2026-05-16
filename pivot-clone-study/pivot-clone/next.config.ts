@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "pivotmedia.co.jp",
       },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+      },
     ],
     unoptimized: true,
   },

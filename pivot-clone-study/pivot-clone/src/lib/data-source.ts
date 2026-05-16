@@ -273,9 +273,13 @@ export function getVideoDetail(videoId: string): VideoDetailResult | null {
       },
       transcript: (transcript?.full_text as string) ?? null,
       summary: (aiContent?.summary as string) ?? null,
-      chapters: (aiContent?.chapters as Chapter[]) ?? null,
+      chapters: aiContent?.chapters
+        ? (typeof aiContent.chapters === "string" ? JSON.parse(aiContent.chapters) as Chapter[] : aiContent.chapters as Chapter[])
+        : null,
       article: (aiContent?.article as string) ?? null,
-      tags: (aiContent?.tags as string[]) ?? null,
+      tags: aiContent?.tags
+        ? (typeof aiContent.tags === "string" ? JSON.parse(aiContent.tags) as string[] : aiContent.tags as string[])
+        : null,
       metrics,
     }
   } catch {
