@@ -18,6 +18,7 @@ export const videos = sqliteTable("videos", {
   youtubeChannel: text("youtube_channel"),               // youtube_metadataから昇格
   youtubeDuration: integer("youtube_duration"),           // youtube_metadataから昇格
   categoryCode: text("category_code"),
+  aiPrompt: text("ai_prompt"),
   programId: integer("program_id"),
   publishedAt: text("published_at"),
   createdAt: text("created_at").default(new Date().toISOString()),

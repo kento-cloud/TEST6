@@ -37,8 +37,17 @@ export async function POST(
   }
 
   try {
+    // 動画に保存されたai_promptをデフォルト指示として全項目に適用
+    const videoPrompt = video.ai_prompt as string | null
+    const mergedInstructions = body.instructions ?? {}
+    if (videoPrompt && !body.instructions) {
+      for (const step of ["summary", "chapters", "article", "tags"] as const) {
+        mergedInstructions[step] = mergedInstructions[step] || videoPrompt
+      }
+    }
+
     const result = await generateAll(id, transcript.full_text, video.title, {
-      instructions: body.instructions,
+      instructions: Object.keys(mergedInstructions).length > 0 ? mergedInstructions : undefined,
       promptMode: body.promptMode,
     })
 

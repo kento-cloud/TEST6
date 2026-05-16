@@ -51,6 +51,8 @@ export async function POST(req: NextRequest) {
 
     const now = new Date().toISOString()
 
+    const aiPrompt = formData.get("aiPrompt") as string ?? ""
+
     const { error } = await supabase.from("videos").insert({
       id,
       title,
@@ -61,6 +63,7 @@ export async function POST(req: NextRequest) {
       processing_step: "none",
       category_code: categoryCode || null,
       program_id: programId ? Number(programId) : null,
+      ai_prompt: aiPrompt || null,
       created_at: now,
       updated_at: now,
     })

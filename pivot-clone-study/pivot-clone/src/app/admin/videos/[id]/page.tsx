@@ -5,6 +5,7 @@ import { ThumbnailGenerator } from "@/components/ThumbnailGenerator"
 import { DeleteButton } from "@/components/DeleteButton"
 import { RegenerateButton } from "@/components/RegenerateButton"
 import { ActionButton } from "@/components/ActionButton"
+import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { notFound } from "next/navigation"
 
 export const dynamic = "force-dynamic"
@@ -110,6 +111,11 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* AI Prompt */}
+      <div className="mb-6">
+        <AIPromptEditor videoId={id} initialPrompt={video.ai_prompt ?? ""} />
+      </div>
+
       {/* Video Info */}
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-gray-100 p-5">
@@ -126,6 +132,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
               <div><dt className="text-[12px] text-gray-400">ファイルサイズ</dt><dd className="text-[14px] text-gray-700">{video.file_size ? `${(video.file_size / 1024 / 1024).toFixed(1)} MB` : "—"}</dd></div>
             )}
             <div><dt className="text-[12px] text-gray-400">作成日</dt><dd className="text-[14px] text-gray-700">{video.created_at ?? "—"}</dd></div>
+            <div><dt className="text-[12px] text-gray-400">AIへの指示</dt><dd className="text-[14px] text-gray-700">{video.ai_prompt || "—"}</dd></div>
           </dl>
           {video.youtube_video_id && (
             <div className="mt-4 rounded-lg overflow-hidden border border-gray-200">

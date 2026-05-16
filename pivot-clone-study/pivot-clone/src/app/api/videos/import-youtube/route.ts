@@ -10,8 +10,8 @@ export async function POST(req: NextRequest) {
   if (authError) return authError
 
   try {
-    const body = await req.json() as { url: string; categoryCode?: string }
-    const { url, categoryCode } = body
+    const body = await req.json() as { url: string; categoryCode?: string; aiPrompt?: string }
+    const { url, categoryCode, aiPrompt } = body
 
     if (!url) {
       return NextResponse.json({ error: "URLが必要です" }, { status: 400 })
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       youtube_metadata: JSON.stringify(metadata),
       youtube_channel: metadata.authorName ?? null,
       category_code: categoryCode ?? null,
+      ai_prompt: aiPrompt || null,
       created_at: now,
       updated_at: now,
     })

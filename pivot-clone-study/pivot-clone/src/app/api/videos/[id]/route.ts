@@ -23,6 +23,42 @@ export async function GET(
   return NextResponse.json(snakeToCamel(data))
 }
 
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const authError = await requireAdmin()
+  if (authError) return authError
+
+  const { id } = await params
+  const body = await req.json().catch(() => ({})) as {
+    title?: string
+    description?: string
+    categoryCode?: string
+    aiPrompt?: string
+  }
+
+  const updates: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  }
+
+  if (body.title !== undefined) updates.title = body.title
+  if (body.description !== undefined) updates.description = body.description
+  if (body.categoryCode !== undefined) updates.category_code = body.categoryCode
+  if (body.aiPrompt !== undefined) updates.ai_prompt = body.aiPrompt || null
+
+  const { error } = await supabase
+    .from("videos")
+    .update(updates)
+    .eq("id", id)
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ status: "ok" })
+}
+
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
