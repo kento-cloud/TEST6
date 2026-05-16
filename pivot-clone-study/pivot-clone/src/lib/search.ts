@@ -92,7 +92,7 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
   }
 
   // 4. data-source fallback
-  const fallbackEpisodes = getAllEpisodes()
+  const fallbackEpisodes = await getAllEpisodes()
   for (const ep of fallbackEpisodes) {
     const eid = `static_${ep.id}`
     if (seenIds.has(eid)) continue
@@ -110,7 +110,7 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
     }
   }
 
-  const fallbackPrograms = getPrograms()
+  const fallbackPrograms = await getPrograms()
   for (const p of fallbackPrograms) {
     const pid = `sprogram_${p.id}`
     if (seenIds.has(pid)) continue

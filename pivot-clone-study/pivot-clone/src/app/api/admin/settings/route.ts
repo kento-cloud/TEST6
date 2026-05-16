@@ -1,31 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { readFile, writeFile, copyFile } from "fs/promises"
-import { existsSync } from "fs"
-import path from "path"
+import { supabase } from "@/lib/supabase"
 import { requireAdmin } from "@/lib/auth"
-
-const ENV_PATH = path.join(process.cwd(), ".env.local")
-
-async function readEnvFile(): Promise<Record<string, string>> {
-  if (!existsSync(ENV_PATH)) return {}
-  const content = await readFile(ENV_PATH, "utf-8")
-  const env: Record<string, string> = {}
-  for (const line of content.split("\n")) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith("#")) continue
-    const eqIndex = trimmed.indexOf("=")
-    if (eqIndex === -1) continue
-    const key = trimmed.slice(0, eqIndex)
-    const value = trimmed.slice(eqIndex + 1)
-    env[key] = value
-  }
-  return env
-}
-
-async function writeEnvFile(env: Record<string, string>): Promise<void> {
-  const lines = Object.entries(env).map(([k, v]) => `${k}=${v}`)
-  await writeFile(ENV_PATH, lines.join("\n") + "\n", "utf-8")
-}
+import { getAllConfigValues } from "@/lib/config"
 
 function maskKey(value: string): string {
   if (value.length <= 11) return "****"
@@ -36,17 +12,22 @@ export async function GET() {
   const authError = await requireAdmin()
   if (authError) return authError
 
-  const env = await readEnvFile()
+  const config = await getAllConfigValues()
+
+  // 環境変数もフォールバックとしてマージ
+  const openaiKey = config.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY ?? ""
+  const adminPw = config.ADMIN_PASSWORD ?? process.env.ADMIN_PASSWORD ?? ""
+
   return NextResponse.json({
-    OPENAI_API_KEY: env.OPENAI_API_KEY ? { set: true, masked: maskKey(env.OPENAI_API_KEY) } : { set: false, masked: "" },
-    ADMIN_PASSWORD: env.ADMIN_PASSWORD ? { set: true, masked: "****" } : { set: false, masked: "" },
-    AI_TEXT_MODEL: env.AI_TEXT_MODEL ?? "gpt-4.1",
-    AI_IMAGE_MODEL: env.AI_IMAGE_MODEL ?? "gpt-image-2",
-    AI_TRANSCRIBE_MODEL: env.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe",
-    AI_SUMMARY_BASE_PROMPT: env.AI_SUMMARY_BASE_PROMPT ?? "",
-    AI_CHAPTERS_BASE_PROMPT: env.AI_CHAPTERS_BASE_PROMPT ?? "",
-    AI_ARTICLE_BASE_PROMPT: env.AI_ARTICLE_BASE_PROMPT ?? "",
-    AI_TAGS_BASE_PROMPT: env.AI_TAGS_BASE_PROMPT ?? "",
+    OPENAI_API_KEY: openaiKey ? { set: true, masked: maskKey(openaiKey) } : { set: false, masked: "" },
+    ADMIN_PASSWORD: adminPw ? { set: true, masked: "****" } : { set: false, masked: "" },
+    AI_TEXT_MODEL: config.AI_TEXT_MODEL ?? process.env.AI_TEXT_MODEL ?? "gpt-4.1",
+    AI_IMAGE_MODEL: config.AI_IMAGE_MODEL ?? process.env.AI_IMAGE_MODEL ?? "gpt-image-2",
+    AI_TRANSCRIBE_MODEL: config.AI_TRANSCRIBE_MODEL ?? process.env.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe",
+    AI_SUMMARY_BASE_PROMPT: config.AI_SUMMARY_BASE_PROMPT ?? process.env.AI_SUMMARY_BASE_PROMPT ?? "",
+    AI_CHAPTERS_BASE_PROMPT: config.AI_CHAPTERS_BASE_PROMPT ?? process.env.AI_CHAPTERS_BASE_PROMPT ?? "",
+    AI_ARTICLE_BASE_PROMPT: config.AI_ARTICLE_BASE_PROMPT ?? process.env.AI_ARTICLE_BASE_PROMPT ?? "",
+    AI_TAGS_BASE_PROMPT: config.AI_TAGS_BASE_PROMPT ?? process.env.AI_TAGS_BASE_PROMPT ?? "",
   })
 }
 
@@ -55,7 +36,6 @@ export async function PUT(req: NextRequest) {
   if (authError) return authError
 
   const body = await req.json() as Record<string, string>
-  const env = await readEnvFile()
 
   const allowedKeys = [
     "OPENAI_API_KEY",
@@ -69,39 +49,21 @@ export async function PUT(req: NextRequest) {
     "AI_TAGS_BASE_PROMPT",
   ]
 
+  const now = new Date().toISOString()
+
   for (const key of allowedKeys) {
     if (key in body && body[key] !== undefined) {
       if (body[key] === "") {
-        delete env[key]
+        await supabase.from("system_config").delete().eq("key", key)
       } else {
-        env[key] = body[key]
+        await supabase.from("system_config").upsert({
+          key,
+          value: body[key],
+          updated_at: now,
+        })
       }
     }
   }
 
-  const BAK_PATH = ENV_PATH + ".bak"
-
-  try {
-    if (existsSync(ENV_PATH)) {
-      await copyFile(ENV_PATH, BAK_PATH)
-    }
-  } catch {
-    // Backup failed
-  }
-
-  try {
-    await writeEnvFile(env)
-  } catch (writeError) {
-    try {
-      if (existsSync(BAK_PATH)) {
-        await copyFile(BAK_PATH, ENV_PATH)
-      }
-    } catch {
-      // Restore also failed
-    }
-    const message = writeError instanceof Error ? writeError.message : "Unknown error"
-    return NextResponse.json({ error: `設定の保存に失敗しました: ${message}` }, { status: 500 })
-  }
-
-  return NextResponse.json({ status: "ok", message: "設定を保存しました。サーバーを再起動してください。" })
+  return NextResponse.json({ status: "ok", message: "設定を保存しました。" })
 }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { cookies } from "next/headers"
+import { getConfigValue } from "@/lib/config"
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as { password?: string }
-  const adminPassword = process.env.ADMIN_PASSWORD || "admin"
+  const adminPassword = (await getConfigValue("ADMIN_PASSWORD")) || "admin"
 
   if (body.password !== adminPassword) {
     return NextResponse.json({ error: "パスワードが正しくありません" }, { status: 401 })

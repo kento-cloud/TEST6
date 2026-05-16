@@ -13,16 +13,16 @@ export async function GET(req: NextRequest) {
 
   switch (type) {
     case "all":
-      return NextResponse.json(getAllEpisodes())
+      return NextResponse.json(await getAllEpisodes())
     case "rankings":
-      return NextResponse.json(getRankings())
+      return NextResponse.json(await getRankings())
     case "categories":
-      return NextResponse.json(getCategoryEpisodes())
+      return NextResponse.json(await getCategoryEpisodes())
     case "featured":
-      return NextResponse.json(getCategoryFeatured())
+      return NextResponse.json(await getCategoryFeatured())
     case "playlists":
-      return NextResponse.json(getPlaylists())
+      return NextResponse.json(await getPlaylists())
     default:
-      return NextResponse.json(getAllEpisodes())
+      return NextResponse.json(await getAllEpisodes())
   }
 }

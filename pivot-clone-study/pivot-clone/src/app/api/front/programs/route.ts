@@ -4,5 +4,5 @@ import { getPrograms } from "@/lib/data-source"
 export const dynamic = "force-dynamic"
 
 export async function GET() {
-  return NextResponse.json(getPrograms())
+  return NextResponse.json(await getPrograms())
 }

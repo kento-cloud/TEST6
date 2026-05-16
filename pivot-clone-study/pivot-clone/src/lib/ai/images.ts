@@ -20,12 +20,13 @@ export async function generateThumbnailImage(
   outputDir: string,
   fileName: string,
 ): Promise<GenerateImageResult> {
-  const apiKey = process.env.OPENAI_API_KEY
+  const { getConfigValue } = await import("@/lib/config")
+  const apiKey = await getConfigValue("OPENAI_API_KEY")
   if (!apiKey) {
     throw new Error("OPENAI_API_KEY が設定されていません。管理画面の設定ページから登録してください。")
   }
 
-  const models = getAIModels()
+  const models = await getAIModels()
   const openai = new OpenAI({ apiKey })
 
   const response = await openai.images.generate({

@@ -8,8 +8,8 @@ interface Props {
 
 export default async function PlaylistPage({ params }: Props) {
   const { playlistId } = await params
-  const playlists = getPlaylists()
-  const allEpisodes = getAllEpisodes()
+  const playlists = await getPlaylists()
+  const allEpisodes = await getAllEpisodes()
   const playlist = playlists.find((p) => p.id === playlistId)
   const episodes = playlist?.episodes ?? allEpisodes.slice(0, 4)
   const title = playlist?.title ?? "プレイリスト"

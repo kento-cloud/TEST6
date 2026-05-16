@@ -14,13 +14,13 @@ import { getPublishedEpisodes, getRankings, getCategoryEpisodes, getPlaylists, g
 // ISR: 5秒キャッシュ — 管理画面からの変更を素早く反映
 export const revalidate = 5
 
-export default function HomePage() {
-  const episodes = getPublishedEpisodes()
-  const featuredItems = getFeaturedItems()
-  const rankings = getRankings()
-  const categoryEpisodes = getCategoryEpisodes()
-  const playlists = getPlaylists()
-  const programs = getPrograms()
+export default async function HomePage() {
+  const episodes = await getPublishedEpisodes()
+  const featuredItems = await getFeaturedItems()
+  const rankings = await getRankings()
+  const categoryEpisodes = await getCategoryEpisodes()
+  const playlists = await getPlaylists()
+  const programs = await getPrograms()
 
   return (
     <div className="flex flex-col min-h-screen">

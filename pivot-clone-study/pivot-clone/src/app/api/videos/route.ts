@@ -36,6 +36,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "ファイルとタイトルは必須です" }, { status: 400 })
     }
 
+    const MAX_SIZE = 500 * 1024 * 1024 // 500MB
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: "ファイルサイズが500MBを超えています" }, { status: 413 })
+    }
+
+    const validTypes = ["video/mp4", "video/webm", "video/quicktime", "video/x-msvideo"]
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json({ error: "対応していないファイル形式です（MP4, WebM, MOV）" }, { status: 400 })
+    }
+
     const id = ulid()
     const ext = file.name.split(".").pop() ?? "mp4"
     const fileName = `${id}.${ext}`

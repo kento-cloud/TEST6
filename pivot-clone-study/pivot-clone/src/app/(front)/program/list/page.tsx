@@ -3,8 +3,8 @@ import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { getPrograms } from "@/lib/data-source"
 
-export default function ProgramListPage() {
-  const programs = getPrograms()
+export default async function ProgramListPage() {
+  const programs = await getPrograms()
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />

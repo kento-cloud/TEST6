@@ -1,13 +1,13 @@
 /**
- * データソース層 — Supabase接続版
+ * データソース層 — Supabase公式クライアント版
  *
  * 全てのデータ取得をここに集約。
  * コンポーネントはpropsでデータを受け取り、このファイルに依存しない。
  *
  * 戦略:
- * - Supabase REST APIを同期的に呼ぶ（Server Component対応のためexecSync+curl）
+ * - Supabase公式クライアントでasync呼び出し
  * - 失敗時は静的データにフォールバック
- * - キャッシュTTL: 60秒
+ * - キャッシュTTL: 5秒
  */
 
 import {
@@ -21,35 +21,19 @@ import { programs as staticPrograms } from "@/data/programs"
 import type { Episode, Program } from "@/types"
 import type { Chapter } from "@/types/ai"
 import { FALLBACK_THUMBNAIL } from "./constants"
-
-// ============================================================
-// Supabase同期ヘルパー
-// ============================================================
-
-function supabaseGet(path: string): unknown {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
-  if (!url || !key) return null
-
-  const { execSync } = require("child_process")
-  const result = execSync(
-    `curl -s "${url}/rest/v1/${path}" -H "apikey: ${key}" -H "Authorization: Bearer ${key}"`,
-    { encoding: "utf-8", timeout: 5000 },
-  )
-  return JSON.parse(result)
-}
+import { supabase } from "./supabase"
 
 // ============================================================
 // Episodes
 // ============================================================
 
 /** 公開済み動画 */
-export function getPublishedEpisodes(): readonly Episode[] {
-  return fetchPublishedEpisodesSync()
+export async function getPublishedEpisodes(): Promise<readonly Episode[]> {
+  return fetchPublishedEpisodes()
 }
 
 /** 全エピソード */
-export function getAllEpisodes(): readonly Episode[] {
+export async function getAllEpisodes(): Promise<readonly Episode[]> {
   return getPublishedEpisodes()
 }
 
@@ -57,20 +41,24 @@ let _cachedEpisodes: Episode[] | null = null
 let _cacheTime = 0
 const CACHE_TTL = 5000 // 5秒 — 管理画面からの変更を素早く反映
 
-function fetchPublishedEpisodesSync(): readonly Episode[] {
+async function fetchPublishedEpisodes(): Promise<readonly Episode[]> {
   if (_cachedEpisodes && Date.now() - _cacheTime < CACHE_TTL) {
     return _cachedEpisodes
   }
 
   try {
-    const videos = supabaseGet("videos?publish_status=eq.published&order=published_at.desc") as Record<string, unknown>[]
-    if (!Array.isArray(videos) || videos.length === 0) return staticEpisodes
+    const { data: videos, error } = await supabase
+      .from("videos")
+      .select("id, title, description, duration, thumbnail_path, category_code, program_id, published_at")
+      .eq("publish_status", "published")
+      .order("published_at", { ascending: false })
 
-    const allMetrics = supabaseGet("metrics?select=*") as Record<string, unknown>[]
+    if (error || !videos || videos.length === 0) return staticEpisodes
+
+    const { data: allMetrics } = await supabase.from("metrics").select("video_id, view_count, comment_count, rating")
     const metricsMap = new Map((allMetrics ?? []).map((m) => [m.video_id as string, m]))
 
-    // 番組名を引くためprogramsも取得
-    const allPrograms = supabaseGet("programs?select=id,name") as Record<string, unknown>[]
+    const { data: allPrograms } = await supabase.from("programs").select("id, name")
     const programMap = new Map((allPrograms ?? []).map((p) => [p.id as number, p.name as string]))
 
     _cachedEpisodes = videos.map((v) => {
@@ -98,9 +86,9 @@ function fetchPublishedEpisodesSync(): readonly Episode[] {
 }
 
 /** ランキングデータ — Supabaseの視聴数・評価からランキングを動的生成 */
-export function getRankings() {
+export async function getRankings() {
   try {
-    const episodes = getPublishedEpisodes()
+    const episodes = await getPublishedEpisodes()
     if (episodes.length === 0) return staticRankings
 
     // 視聴数でソート（viewCountから数値を抽出）
@@ -122,13 +110,13 @@ export function getRankings() {
 }
 
 /** フィーチャードアイテム — 公開済み動画の上位をフィーチャード */
-export function getFeaturedItems() {
+export async function getFeaturedItems() {
   try {
-    const episodes = getPublishedEpisodes()
+    const episodes = await getPublishedEpisodes()
     if (episodes.length === 0) return getStaticFeaturedItems()
 
-    // programsのロゴも取得
-    const allPrograms = supabaseGet("programs?select=id,name,logo_path") as Record<string, unknown>[]
+    // 番組ロゴも取得
+    const { data: allPrograms } = await supabase.from("programs").select("id, name, logo_path")
     const programLogoMap = new Map((allPrograms ?? []).map((p) => [p.name as string, (p.logo_path as string) ?? ""]))
 
     // 先頭5件をフィーチャードに変換
@@ -156,9 +144,9 @@ function getStaticFeaturedItems() {
 }
 
 /** カテゴリ別新着エピソード — DB公開動画をcategory_codeでグループ化 */
-export function getCategoryEpisodes() {
+export async function getCategoryEpisodes() {
   try {
-    const episodes = getPublishedEpisodes()
+    const episodes = await getPublishedEpisodes()
     if (episodes.length === 0) return staticCategoryEpisodes
 
     const categoryLabels: Record<string, string> = {
@@ -182,12 +170,12 @@ export function getCategoryEpisodes() {
 }
 
 /** カテゴリ別フィーチャード */
-export function getCategoryFeatured() {
+export async function getCategoryFeatured() {
   return staticCategoryFeatured
 }
 
 /** プレイリスト */
-export function getPlaylists() {
+export async function getPlaylists() {
   return staticPlaylists
 }
 
@@ -196,10 +184,15 @@ export function getPlaylists() {
 // ============================================================
 
 /** 番組一覧 */
-export function getPrograms(): readonly Program[] {
+export async function getPrograms(): Promise<readonly Program[]> {
   try {
-    const programs = supabaseGet("programs?is_active=eq.true&order=id") as Record<string, unknown>[]
-    if (!Array.isArray(programs) || programs.length === 0) return staticPrograms
+    const { data: programs, error } = await supabase
+      .from("programs")
+      .select("id, name, description, thumbnail_path")
+      .eq("is_active", true)
+      .order("id")
+
+    if (error || !programs || programs.length === 0) return staticPrograms
     return programs.map((p) => ({
       id: p.id as number,
       name: p.name as string,
@@ -237,26 +230,47 @@ interface VideoDetailResult {
 }
 
 /** 動画詳細（AI生成コンテンツ付き） */
-export function getVideoDetail(videoId: string): VideoDetailResult | null {
+export async function getVideoDetail(videoId: string): Promise<VideoDetailResult | null> {
   try {
-    const videos = supabaseGet(`videos?id=eq.${videoId}&limit=1`) as Record<string, unknown>[]
-    if (!Array.isArray(videos) || videos.length === 0) return null
+    const { data: videos, error } = await supabase
+      .from("videos")
+      .select("*")
+      .eq("id", videoId)
+      .limit(1)
+
+    if (error || !videos || videos.length === 0) return null
     const v = videos[0]
 
     // 番組名を取得
     let programName = ""
     if (v.program_id) {
-      const progs = supabaseGet(`programs?id=eq.${v.program_id}&select=name&limit=1`) as Record<string, unknown>[]
+      const { data: progs } = await supabase
+        .from("programs")
+        .select("name")
+        .eq("id", v.program_id)
+        .limit(1)
       programName = (progs?.[0]?.name as string) ?? ""
     }
 
-    const trans = supabaseGet(`transcriptions?video_id=eq.${videoId}&limit=1`) as Record<string, unknown>[]
+    const { data: trans } = await supabase
+      .from("transcriptions")
+      .select("full_text")
+      .eq("video_id", videoId)
+      .limit(1)
     const transcript = trans?.[0] ?? null
 
-    const aiArr = supabaseGet(`ai_contents?video_id=eq.${videoId}&limit=1`) as Record<string, unknown>[]
+    const { data: aiArr } = await supabase
+      .from("ai_contents")
+      .select("summary, chapters, article, tags")
+      .eq("video_id", videoId)
+      .limit(1)
     const aiContent = aiArr?.[0] ?? null
 
-    const metArr = supabaseGet(`metrics?video_id=eq.${videoId}&limit=1`) as Record<string, unknown>[]
+    const { data: metArr } = await supabase
+      .from("metrics")
+      .select("*")
+      .eq("video_id", videoId)
+      .limit(1)
     const metrics = (metArr?.[0] as Record<string, unknown>) ?? null
 
     return {

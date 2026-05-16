@@ -1,9 +1,11 @@
 /**
  * AIモデル設定
  *
- * 環境変数で切り替え可能。管理画面の設定ページから変更すると .env.local に書き込まれる。
+ * system_configテーブル優先、環境変数フォールバック。
  * 全てOpenAI APIキー1つで動作。
  */
+
+import { getConfigValue } from "@/lib/config"
 
 export interface AIModels {
   readonly text: string
@@ -35,10 +37,10 @@ export const TRANSCRIBE_MODEL_OPTIONS = [
   { id: "whisper-1", label: "Whisper-1（従来版）" },
 ] as const
 
-export function getAIModels(): AIModels {
+export async function getAIModels(): Promise<AIModels> {
   return {
-    text: process.env.AI_TEXT_MODEL ?? "gpt-4.1",
-    image: process.env.AI_IMAGE_MODEL ?? "gpt-image-2",
-    transcribe: process.env.AI_TRANSCRIBE_MODEL ?? "gpt-4o-transcribe",
+    text: (await getConfigValue("AI_TEXT_MODEL")) || "gpt-4.1",
+    image: (await getConfigValue("AI_IMAGE_MODEL")) || "gpt-image-2",
+    transcribe: (await getConfigValue("AI_TRANSCRIBE_MODEL")) || "gpt-4o-transcribe",
   }
 }

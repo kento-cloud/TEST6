@@ -2,8 +2,8 @@ import { HeaderTabs } from "@/components/HeaderTabs"
 import { PlaylistSection } from "@/components/PlaylistSection"
 import { getPlaylists } from "@/lib/data-source"
 
-export default function StaffRecommendPage() {
-  const playlists = getPlaylists()
+export default async function StaffRecommendPage() {
+  const playlists = await getPlaylists()
 
   return (
     <div className="flex flex-col min-h-screen">

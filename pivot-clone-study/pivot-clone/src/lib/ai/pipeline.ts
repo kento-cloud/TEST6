@@ -2,6 +2,7 @@ import OpenAI from "openai"
 import { supabase } from "@/lib/supabase"
 import { ulid } from "ulid"
 import { getAIModels } from "@/lib/ai/models"
+import { getConfigValue } from "@/lib/config"
 import type { GenerationStep } from "@/types/ai"
 
 const TIMEOUT_MS = 120000 // 2分
@@ -16,11 +17,11 @@ interface GenerateResult {
 interface PromptOptions {
   readonly customInstruction?: string
   readonly promptMode?: "append" | "override"
-  readonly envKey?: string
+  readonly basePrompt?: string
 }
 
 function buildExtraInstruction(opts: PromptOptions): string {
-  const basePrompt = opts.envKey ? (process.env[opts.envKey] || "") : ""
+  const basePrompt = opts.basePrompt ?? ""
   const isOverride = opts.promptMode === "override" && opts.customInstruction
   const instructions = isOverride
     ? opts.customInstruction
@@ -31,32 +32,32 @@ function buildExtraInstruction(opts: PromptOptions): string {
 // --- プロンプト ---
 
 function summaryPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
-  const extra = buildExtraInstruction({ ...opts, envKey: "AI_SUMMARY_BASE_PROMPT" })
+  const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。150-200文字の要約を生成してください。要約のみを出力し、他のテキストは含めないでください。${extra}\n\n${transcript.slice(0, 20000)}`
 }
 
 function chaptersPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
-  const extra = buildExtraInstruction({ ...opts, envKey: "AI_CHAPTERS_BASE_PROMPT" })
+  const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。チャプターをJSON配列で生成してください。JSON配列のみを出力してください。\n\nフォーマット: [{"title":"チャプタータイトル","startTime":0,"endTime":120,"summary":"概要"}]${extra}\n\n${transcript.slice(0, 20000)}`
 }
 
 function articlePrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
-  const extra = buildExtraInstruction({ ...opts, envKey: "AI_ARTICLE_BASE_PROMPT" })
+  const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。1500-2500文字のMarkdown記事を生成してください。## 見出しと箇条書きを含めてください。Markdownのみ出力してください。${extra}\n\n${transcript.slice(0, 20000)}`
 }
 
 function tagsPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
-  const extra = buildExtraInstruction({ ...opts, envKey: "AI_TAGS_BASE_PROMPT" })
+  const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。5つのタグをJSON配列で生成してください。JSON配列のみ出力してください。例: ["タグ1","タグ2"]${extra}\n\n${transcript.slice(0, 10000)}`
 }
 
 // --- OpenAI API呼び出し（タイムアウト付き） ---
 
 async function callLLM(prompt: string, systemPrompt?: string): Promise<GenerateResult> {
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = await getConfigValue("OPENAI_API_KEY")
   if (!apiKey) throw new Error("OPENAI_API_KEY が設定されていません。管理画面の設定ページから登録してください。")
 
-  const models = getAIModels()
+  const models = await getAIModels()
   const client = new OpenAI({ apiKey })
   const startTime = Date.now()
 
@@ -90,7 +91,7 @@ async function callLLM(prompt: string, systemPrompt?: string): Promise<GenerateR
 async function logGeneration(videoId: string, step: GenerationStep | "full_generate", status: string, opts: {
   model?: string; prompt?: string; resultPreview?: string; errorMessage?: string; processingMs?: number
 } = {}) {
-  const models = getAIModels()
+  const models = await getAIModels()
   await supabase.from("ai_generation_logs").insert({
     id: ulid(),
     video_id: videoId,
@@ -118,7 +119,8 @@ async function setStep(videoId: string, step: string) {
 
 export async function generateSummary(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
   await setStep(videoId, "generating_summary")
-  const prompt = summaryPrompt(title, transcript, { customInstruction, promptMode })
+  const basePrompt = await getConfigValue("AI_SUMMARY_BASE_PROMPT")
+  const prompt = summaryPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
   try {
     const result = await callLLM(prompt)
@@ -157,7 +159,8 @@ export async function generateSummary(videoId: string, transcript: string, title
 
 export async function generateChapters(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
   await setStep(videoId, "generating_chapters")
-  const prompt = chaptersPrompt(title, transcript, { customInstruction, promptMode })
+  const basePrompt = await getConfigValue("AI_CHAPTERS_BASE_PROMPT")
+  const prompt = chaptersPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
   try {
     const result = await callLLM(prompt)
@@ -199,7 +202,8 @@ export async function generateChapters(videoId: string, transcript: string, titl
 
 export async function generateArticle(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
   await setStep(videoId, "generating_article")
-  const prompt = articlePrompt(title, transcript, { customInstruction, promptMode })
+  const basePrompt = await getConfigValue("AI_ARTICLE_BASE_PROMPT")
+  const prompt = articlePrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
   try {
     const result = await callLLM(prompt)
@@ -238,7 +242,8 @@ export async function generateArticle(videoId: string, transcript: string, title
 
 export async function generateTags(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string[]> {
   await setStep(videoId, "generating_tags")
-  const prompt = tagsPrompt(title, transcript, { customInstruction, promptMode })
+  const basePrompt = await getConfigValue("AI_TAGS_BASE_PROMPT")
+  const prompt = tagsPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
 
   try {
     const result = await callLLM(prompt)
@@ -280,7 +285,7 @@ export async function generateTags(videoId: string, transcript: string, title: s
 }
 
 /**
- * 全項目を順次生成
+ * 全項目を並列生成
  */
 export interface GenerateAllOptions {
   readonly instructions?: Partial<Record<GenerationStep, string>>
@@ -306,15 +311,25 @@ export async function generateAll(videoId: string, transcript: string, title: st
 
   await logGeneration(videoId, "full_generate", "processing")
 
+  // 全体ステップを generating に設定
+  await supabase.from("videos").update({
+    processing_step: "generating",
+    updated_at: new Date().toISOString(),
+  }).eq("id", videoId)
+
   const startTime = Date.now()
 
   try {
     const mode = options?.promptMode
     const ins = options?.instructions
-    const summary = await generateSummary(videoId, transcript, title, ins?.summary, mode)
-    const chapters = await generateChapters(videoId, transcript, title, ins?.chapters, mode)
-    const article = await generateArticle(videoId, transcript, title, ins?.article, mode)
-    const tags = await generateTags(videoId, transcript, title, ins?.tags, mode)
+
+    // 並列実行
+    const [summary, chapters, article, tags] = await Promise.all([
+      generateSummary(videoId, transcript, title, ins?.summary, mode),
+      generateChapters(videoId, transcript, title, ins?.chapters, mode),
+      generateArticle(videoId, transcript, title, ins?.article, mode),
+      generateTags(videoId, transcript, title, ins?.tags, mode),
+    ])
 
     await supabase.from("ai_contents").update({
       status: "done",

@@ -3,8 +3,8 @@ import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { getAllEpisodes } from "@/lib/data-source"
 
-export default function NewArrivalPage() {
-  const newEpisodes = getAllEpisodes()
+export default async function NewArrivalPage() {
+  const newEpisodes = await getAllEpisodes()
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />

@@ -18,10 +18,10 @@ function formatTime(seconds: number): string {
 export default async function MoviePage({ params }: Props) {
   const { episodeId } = await params
 
-  const allEpisodes = getAllEpisodes()
+  const allEpisodes = await getAllEpisodes()
 
   // Try DB first (ULID or numeric ID)
-  const dbDetail = getVideoDetail(episodeId)
+  const dbDetail = await getVideoDetail(episodeId)
 
   // Fallback to static data (numeric IDs like 14365)
   const episode = allEpisodes.find((e) => e.id === episodeId) ?? (dbDetail ? {

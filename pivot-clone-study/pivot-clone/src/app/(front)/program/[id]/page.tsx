@@ -9,8 +9,8 @@ interface Props {
 
 export default async function ProgramPage({ params }: Props) {
   const { id } = await params
-  const programs = getPrograms()
-  const newEpisodes = getAllEpisodes()
+  const programs = await getPrograms()
+  const newEpisodes = await getAllEpisodes()
   const program = programs.find((p) => p.id === Number(id)) ?? programs[0]
 
   return (

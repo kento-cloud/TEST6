@@ -114,7 +114,11 @@ export async function POST(
       updated_at: new Date().toISOString(),
     }).eq("id", id)
 
-    return NextResponse.json({ error: `文字起こしに失敗: ${message}` }, { status: 500 })
+    console.error(`[auto-process:transcribe] Error for video ${id}:`, message)
+    const isConfigError = message.includes("設定されていません")
+    return NextResponse.json({
+      error: isConfigError ? message : "文字起こし処理中にエラーが発生しました",
+    }, { status: 500 })
   }
 
   // --- Step 2: AI生成 ---
@@ -164,6 +168,10 @@ export async function POST(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json({ error: `AI生成に失敗: ${message}` }, { status: 500 })
+    console.error(`[auto-process:generate] Error for video ${id}:`, message)
+    const isConfigError = message.includes("設定されていません")
+    return NextResponse.json({
+      error: isConfigError ? message : "AI生成処理中にエラーが発生しました",
+    }, { status: 500 })
   }
 }

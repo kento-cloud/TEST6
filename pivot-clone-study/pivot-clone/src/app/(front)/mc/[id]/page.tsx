@@ -17,7 +17,7 @@ interface Props {
 
 export default async function MCDetailPage({ params }: Props) {
   const { id } = await params
-  const newEpisodes = getAllEpisodes()
+  const newEpisodes = await getAllEpisodes()
   const mc = mcData[id] ?? { name: "MC", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" }
 
   return (

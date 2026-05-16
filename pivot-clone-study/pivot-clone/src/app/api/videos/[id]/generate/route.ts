@@ -84,6 +84,10 @@ export async function POST(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error(`[generate] Error for video ${id}:`, message)
+    const isConfigError = message.includes("設定されていません")
+    return NextResponse.json({
+      error: isConfigError ? message : "処理中にエラーが発生しました",
+    }, { status: 500 })
   }
 }

@@ -127,6 +127,10 @@ export async function POST(
       created_at: new Date().toISOString(),
     })
 
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error(`[transcribe] Error for video ${id}:`, message)
+    const isConfigError = message.includes("設定されていません")
+    return NextResponse.json({
+      error: isConfigError ? message : "文字起こし処理中にエラーが発生しました",
+    }, { status: 500 })
   }
 }
