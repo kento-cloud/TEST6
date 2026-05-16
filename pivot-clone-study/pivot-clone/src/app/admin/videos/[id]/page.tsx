@@ -3,8 +3,8 @@ import Image from "next/image"
 import { supabase } from "@/lib/supabase"
 import { ThumbnailGenerator } from "@/components/ThumbnailGenerator"
 import { DeleteButton } from "@/components/DeleteButton"
-import { RegenerateButton } from "@/components/RegenerateButton"
 import { ActionButton } from "@/components/ActionButton"
+import { PipelinePanel } from "@/components/PipelinePanel"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
@@ -137,30 +137,35 @@ export default async function AdminVideoDetailPage({ params }: Props) {
             </div>
           )}
 
-          <div className="space-y-2">
-            <PipelineRow label="文字起こし" done={!!transcript && transcript.status === "done"} active={step === "transcribing" || step === "extracting_audio"} error={!!transcript && transcript.status === "error"}>
-              {transcript?.status === "done" && <Link href={`/admin/videos/${id}/transcript`} className="text-[12px] text-[#cd1cfa]">確認</Link>}
-            </PipelineRow>
-            <PipelineRow label="要約" done={!!aiContent?.summary} active={step === "generating_summary"}>
-              {!!transcript && transcript.status === "done" && <RegenerateButton videoId={id} step="summary" />}
-            </PipelineRow>
-            <PipelineRow label="チャプター" done={!!aiContent?.chapters} active={step === "generating_chapters"}>
-              {!!transcript && transcript.status === "done" && <RegenerateButton videoId={id} step="chapters" />}
-            </PipelineRow>
-            <PipelineRow label="記事" done={!!aiContent?.article} active={step === "generating_article"}>
-              {!!transcript && transcript.status === "done" && (
-                <span className="flex gap-2">
-                  <RegenerateButton videoId={id} step="article" />
-                  {aiContent?.article && <Link href={`/admin/videos/${id}/article`} className="text-[12px] text-[#cd1cfa]">確認</Link>}
-                </span>
-              )}
-            </PipelineRow>
-            <PipelineRow label="タグ" done={!!aiContent?.tags} active={step === "generating_tags"}>
-              {!!transcript && transcript.status === "done" && <RegenerateButton videoId={id} step="tags" />}
-            </PipelineRow>
-            <PipelineRow label="サムネイル" done={(videoThumbnails ?? []).some(t => t.status === "done")} active={step === "generating_thumbnail"}>
-              <span className="text-[12px] text-gray-400">{(videoThumbnails ?? []).length}枚</span>
-            </PipelineRow>
+          {/* 文字起こし行 */}
+          <div className="border border-gray-100 rounded-lg px-3 py-2 bg-gray-50 flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[14px]">{step === "transcribing" || step === "extracting_audio" ? "⏳" : !!transcript && transcript.status === "error" ? "❌" : !!transcript && transcript.status === "done" ? "✅" : "⬜"}</span>
+              <span className={`text-[13px] font-medium ${step === "transcribing" || step === "extracting_audio" ? "text-blue-600" : !!transcript && transcript.status === "error" ? "text-red-600" : !!transcript && transcript.status === "done" ? "text-green-600" : "text-gray-400"}`}>文字起こし</span>
+            </div>
+            {transcript?.status === "done" && <Link href={`/admin/videos/${id}/transcript`} className="text-[12px] text-[#cd1cfa] hover:underline">確認・編集</Link>}
+          </div>
+
+          {/* AI生成項目（確認・編集・再生成パネル） */}
+          <PipelinePanel
+            videoId={id}
+            aiContent={aiContent ? {
+              summary: aiContent.summary,
+              chapters: aiContent.chapters,
+              article: aiContent.article,
+              tags: aiContent.tags,
+            } : null}
+            hasTranscript={!!transcript && transcript.status === "done"}
+            processingStep={step}
+          />
+
+          {/* サムネイル行 */}
+          <div className="border border-gray-100 rounded-lg px-3 py-2 bg-gray-50 flex items-center justify-between mt-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[14px]">{step === "generating_thumbnail" ? "⏳" : (videoThumbnails ?? []).some(t => t.status === "done") ? "✅" : "⬜"}</span>
+              <span className={`text-[13px] font-medium ${step === "generating_thumbnail" ? "text-blue-600" : (videoThumbnails ?? []).some(t => t.status === "done") ? "text-green-600" : "text-gray-400"}`}>サムネイル</span>
+            </div>
+            <span className="text-[12px] text-gray-400">{(videoThumbnails ?? []).length}枚</span>
           </div>
 
           {/* Generation Logs */}
@@ -231,22 +236,6 @@ export default async function AdminVideoDetailPage({ params }: Props) {
           <p className="text-[12px] text-gray-400 mb-2">AIサムネイル生成（GPT Images）</p>
           <ThumbnailGenerator videoId={id} videoTitle={video.title} />
         </div>
-      </div>
-    </div>
-  )
-}
-
-function PipelineRow({ label, done, active, error, children }: { label: string; done: boolean; active?: boolean; error?: boolean; children?: React.ReactNode }) {
-  const icon = active ? "⏳" : error ? "❌" : done ? "✅" : "⬜"
-  const textColor = active ? "text-blue-600" : error ? "text-red-600" : done ? "text-green-600" : "text-gray-400"
-  return (
-    <div className="flex items-center justify-between py-1 relative">
-      <div className="flex items-center gap-2">
-        <span className="text-[14px]">{icon}</span>
-        <span className={`text-[13px] font-medium ${textColor}`}>{label}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        {children}
       </div>
     </div>
   )
