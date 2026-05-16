@@ -80,11 +80,11 @@ export async function generateAll(id: string, articleInstruction?: string) {
   return res.json()
 }
 
-export async function regenerateStep(id: string, step: GenerationStepType, articleInstruction?: string) {
+export async function regenerateStep(id: string, step: GenerationStepType, articleInstruction?: string, promptMode?: "append" | "override") {
   const res = await fetch(`/api/videos/${id}/regenerate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ step, articleInstruction }),
+    body: JSON.stringify({ step, articleInstruction, promptMode }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))

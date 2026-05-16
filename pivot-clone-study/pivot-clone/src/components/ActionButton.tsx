@@ -21,6 +21,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   const [error, setError] = useState("")
   const [showPrompt, setShowPrompt] = useState(false)
   const [articleInstruction, setArticleInstruction] = useState("")
+  const [promptMode, setPromptMode] = useState<"append" | "override">("append")
 
   async function handleAction(url: string, _successMessage: string, body?: Record<string, unknown>) {
     setState("processing")
@@ -128,7 +129,19 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
               className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
               rows={3}
             />
-            <p className="text-[11px] text-gray-400 mt-1 mb-3">ベースの指示は設定画面で変更できます。ここでは動画ごとの追加指示を入力できます。</p>
+            {articleInstruction && (
+              <div className="flex gap-3 mt-2">
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="promptMode" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
+                  <span className="text-[12px] text-gray-600">ベースに追加</span>
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input type="radio" name="promptMode" checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
+                  <span className="text-[12px] text-gray-600">この指示のみ使用</span>
+                </label>
+              </div>
+            )}
+            <p className="text-[11px] text-gray-400 mt-2 mb-3">ベースの指示は設定画面で変更できます。</p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowPrompt(false)}
@@ -137,7 +150,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
                 キャンセル
               </button>
               <button
-                onClick={() => handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", articleInstruction ? { articleInstruction } : undefined)}
+                onClick={() => handleAction(`/api/videos/${videoId}/generate`, "AI生成完了", articleInstruction ? { articleInstruction, promptMode } : undefined)}
                 className="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-[13px] font-semibold hover:bg-purple-700 cursor-pointer"
               >
                 生成開始

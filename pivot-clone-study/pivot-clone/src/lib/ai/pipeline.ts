@@ -21,9 +21,12 @@ function chaptersPrompt(title: string, transcript: string): string {
   return `以下は動画「${title}」の文字起こしです。チャプターをJSON配列で生成してください。JSON配列のみを出力してください。\n\nフォーマット: [{"title":"チャプタータイトル","startTime":0,"endTime":120,"summary":"概要"}]\n\n${transcript.slice(0, 20000)}`
 }
 
-function articlePrompt(title: string, transcript: string, customInstruction?: string): string {
+function articlePrompt(title: string, transcript: string, customInstruction?: string, promptMode?: "append" | "override"): string {
   const basePrompt = process.env.AI_ARTICLE_BASE_PROMPT || ""
-  const instructions = [basePrompt, customInstruction].filter(Boolean).join("\n")
+  const isOverride = promptMode === "override" && customInstruction
+  const instructions = isOverride
+    ? customInstruction
+    : [basePrompt, customInstruction].filter(Boolean).join("\n")
   const extra = instructions
     ? `\n\n## 追加指示\n${instructions}`
     : ""
@@ -181,9 +184,9 @@ export async function generateChapters(videoId: string, transcript: string, titl
   }
 }
 
-export async function generateArticle(videoId: string, transcript: string, title: string, customInstruction?: string): Promise<string> {
+export async function generateArticle(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override"): Promise<string> {
   await setStep(videoId, "generating_article")
-  const prompt = articlePrompt(title, transcript, customInstruction)
+  const prompt = articlePrompt(title, transcript, customInstruction, promptMode)
 
   try {
     const result = await callLLM(prompt)
@@ -266,7 +269,7 @@ export async function generateTags(videoId: string, transcript: string, title: s
 /**
  * 全項目を順次生成
  */
-export async function generateAll(videoId: string, transcript: string, title: string, articleInstruction?: string) {
+export async function generateAll(videoId: string, transcript: string, title: string, articleInstruction?: string, promptMode?: "append" | "override") {
   const { data: existing } = await supabase
     .from("ai_contents")
     .select("id")
@@ -290,7 +293,7 @@ export async function generateAll(videoId: string, transcript: string, title: st
   try {
     const summary = await generateSummary(videoId, transcript, title)
     const chapters = await generateChapters(videoId, transcript, title)
-    const article = await generateArticle(videoId, transcript, title, articleInstruction)
+    const article = await generateArticle(videoId, transcript, title, articleInstruction, promptMode)
     const tags = await generateTags(videoId, transcript, title)
 
     await supabase.from("ai_contents").update({

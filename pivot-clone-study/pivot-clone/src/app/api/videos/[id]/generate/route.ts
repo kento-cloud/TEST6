@@ -11,7 +11,7 @@ export async function POST(
   if (authError) return authError
 
   const { id } = await params
-  const body = await req.json().catch(() => ({})) as { articleInstruction?: string }
+  const body = await req.json().catch(() => ({})) as { articleInstruction?: string; promptMode?: "append" | "override" }
 
   const { data: video, error: videoErr } = await supabase
     .from("videos")
@@ -34,7 +34,7 @@ export async function POST(
   }
 
   try {
-    const result = await generateAll(id, transcript.full_text, video.title, body.articleInstruction)
+    const result = await generateAll(id, transcript.full_text, video.title, body.articleInstruction, body.promptMode)
 
     return NextResponse.json({
       status: "done",

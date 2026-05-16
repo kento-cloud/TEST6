@@ -21,12 +21,13 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
   const [state, setState] = useState<"idle" | "prompt" | "processing" | "done" | "error">("idle")
   const [error, setError] = useState("")
   const [instruction, setInstruction] = useState("")
+  const [promptMode, setPromptMode] = useState<"append" | "override">("append")
 
-  async function handleRegenerate(customInstruction?: string) {
+  async function handleRegenerate(customInstruction?: string, mode?: "append" | "override") {
     setState("processing")
     setError("")
     try {
-      await regenerateStep(videoId, step, step === "article" ? customInstruction : undefined)
+      await regenerateStep(videoId, step, step === "article" ? customInstruction : undefined, step === "article" ? mode : undefined)
       setState("done")
       setTimeout(() => setState("idle"), 3000)
     } catch (e) {
@@ -70,6 +71,18 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
           className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
           rows={2}
         />
+        {instruction && (
+          <div className="flex gap-3 mt-1.5">
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input type="radio" name={`regenMode-${videoId}`} checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
+              <span className="text-[11px] text-gray-600">ベースに追加</span>
+            </label>
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input type="radio" name={`regenMode-${videoId}`} checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
+              <span className="text-[11px] text-gray-600">この指示のみ</span>
+            </label>
+          </div>
+        )}
         <div className="flex gap-1.5 justify-end mt-2">
           <button
             onClick={() => setState("idle")}
@@ -78,7 +91,7 @@ export function RegenerateButton({ videoId, step, disabled }: Props) {
             キャンセル
           </button>
           <button
-            onClick={() => handleRegenerate(instruction || undefined)}
+            onClick={() => handleRegenerate(instruction || undefined, promptMode)}
             className="px-3 py-1 bg-purple-600 text-white rounded text-[11px] font-semibold hover:bg-purple-700 cursor-pointer"
           >
             再生成

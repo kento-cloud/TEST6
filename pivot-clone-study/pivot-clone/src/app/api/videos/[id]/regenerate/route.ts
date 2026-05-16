@@ -14,7 +14,7 @@ export async function POST(
   if (authError) return authError
 
   const { id } = await params
-  const body = await req.json().catch(() => ({})) as { step?: string; articleInstruction?: string }
+  const body = await req.json().catch(() => ({})) as { step?: string; articleInstruction?: string; promptMode?: "append" | "override" }
   const step = body.step as GenerationStep
 
   if (!step || !VALID_STEPS.includes(step)) {
@@ -53,7 +53,7 @@ export async function POST(
         result = await generateChapters(id, transcript.full_text, video.title)
         break
       case "article":
-        result = await generateArticle(id, transcript.full_text, video.title, body.articleInstruction)
+        result = await generateArticle(id, transcript.full_text, video.title, body.articleInstruction, body.promptMode)
         break
       case "tags":
         result = await generateTags(id, transcript.full_text, video.title)
