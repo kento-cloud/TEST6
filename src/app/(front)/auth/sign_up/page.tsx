@@ -36,11 +36,16 @@ export default function SignUpPage() {
       })
 
       if (authError) {
-        const msg = authError.message.includes("already registered")
+        const raw = authError.message
+        const msg = raw.includes("already registered")
           ? "このメールアドレスは既に登録されています"
-          : authError.message.includes("valid email")
+          : raw.includes("valid email")
             ? "有効なメールアドレスを入力してください"
-            : authError.message
+            : raw.includes("rate limit")
+              ? "登録の試行回数が制限を超えました。しばらく待ってから再度お試しください"
+              : raw.includes("password")
+                ? "パスワードは8文字以上で入力してください"
+                : raw
         setError(msg)
         setLoading(false)
         return
