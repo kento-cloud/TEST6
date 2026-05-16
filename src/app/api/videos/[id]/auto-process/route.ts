@@ -109,16 +109,37 @@ export async function POST(
     transcriptText = result.text
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
-    await supabase.from("videos").update({
-      processing_step: "error",
-      updated_at: new Date().toISOString(),
-    }).eq("id", id)
-
     console.error(`[auto-process:transcribe] Error for video ${id}:`, message)
-    const isConfigError = message.includes("設定されていません")
-    return NextResponse.json({
-      error: isConfigError ? message : "文字起こし処理中にエラーが発生しました",
-    }, { status: 500 })
+    const isApiKeyError = message.includes("API_KEY") && message.includes("設定されていません")
+
+    if (isApiKeyError) {
+      // モックフォールバック: API未設定時にモック文字起こしを挿入
+      const now = new Date().toISOString()
+      const mockTranscriptText = "[モック] AI API未接続のためモックテキストです。実際の文字起こしはAPI接続後に実行してください。"
+      await supabase.from("transcriptions").delete().eq("video_id", id)
+      await supabase.from("transcriptions").insert({
+        id: ulid(),
+        video_id: id,
+        full_text: mockTranscriptText,
+        segments: JSON.stringify([]),
+        source: "mock",
+        language: "ja",
+        model: "mock",
+        status: "done",
+        processing_ms: 0,
+        created_at: now,
+      })
+      transcriptText = mockTranscriptText
+    } else {
+      await supabase.from("videos").update({
+        processing_step: "error",
+        updated_at: new Date().toISOString(),
+      }).eq("id", id)
+
+      return NextResponse.json({
+        error: "文字起こし処理中にエラーが発生しました",
+      }, { status: 500 })
+    }
   }
 
   // --- Step 2: AI生成 ---
@@ -170,8 +191,66 @@ export async function POST(
     const message = error instanceof Error ? error.message : "Unknown error"
     console.error(`[auto-process:generate] Error for video ${id}:`, message)
     const isConfigError = message.includes("設定されていません")
+
+    if (isConfigError) {
+      // モックフォールバック: API未設定時にモックAIコンテンツを挿入
+      const now = new Date().toISOString()
+      const mockSummary = "[モック] AI APIが未接続のため、モックデータです。接続後に再生成してください。"
+      const mockChapters = JSON.stringify([
+        { title: "イントロダクション", startTime: 0, endTime: 120, summary: "動画の導入部分です。" },
+        { title: "メインコンテンツ", startTime: 120, endTime: 360, summary: "主要なトピックについて解説します。" },
+        { title: "まとめ", startTime: 360, endTime: 480, summary: "内容の振り返りと結論です。" },
+      ])
+      const mockArticle = "## モック記事\n\nAI API接続後に本番の記事が生成されます。\n\n### 概要\n\nこの記事はモックデータです。"
+      const mockTags = JSON.stringify(["モック", "テスト", "AI未接続"])
+
+      const { data: existing } = await supabase
+        .from("ai_contents")
+        .select("id")
+        .eq("video_id", id)
+        .single()
+
+      if (existing) {
+        await supabase.from("ai_contents").update({
+          summary: mockSummary,
+          chapters: mockChapters,
+          article: mockArticle,
+          tags: mockTags,
+          status: "done",
+          updated_at: now,
+        }).eq("video_id", id)
+      } else {
+        await supabase.from("ai_contents").insert({
+          id: ulid(),
+          video_id: id,
+          summary: mockSummary,
+          chapters: mockChapters,
+          article: mockArticle,
+          tags: mockTags,
+          status: "done",
+          created_at: now,
+          updated_at: now,
+        })
+      }
+
+      await supabase.from("videos").update({
+        publish_status: "review",
+        processing_step: "none",
+        updated_at: now,
+      }).eq("id", id)
+
+      return NextResponse.json({
+        status: "done",
+        mock: true,
+        transcriptLength: transcriptText.length,
+        summaryLength: mockSummary.length,
+        articleLength: mockArticle.length,
+        tagCount: 3,
+      })
+    }
+
     return NextResponse.json({
-      error: isConfigError ? message : "AI生成処理中にエラーが発生しました",
+      error: "AI生成処理中にエラーが発生しました",
     }, { status: 500 })
   }
 }

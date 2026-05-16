@@ -169,14 +169,36 @@ export async function getCategoryEpisodes() {
   }
 }
 
-/** カテゴリ別フィーチャード */
+/** カテゴリ別フィーチャード — 将来: Supabase featured テーブルからカテゴリ別に取得 */
 export async function getCategoryFeatured() {
   return staticCategoryFeatured
 }
 
-/** プレイリスト */
+/** プレイリスト — 将来: Supabase playlists テーブルから取得 */
 export async function getPlaylists() {
   return staticPlaylists
+}
+
+/**
+ * 検索 — 将来: Supabase Full-Text Search 対応
+ * 現在はクライアント側フィルタリング。
+ * DB切り替え時はこの関数に Supabase の textSearch/ilike を実装する。
+ */
+export async function searchEpisodes(query: string): Promise<readonly Episode[]> {
+  const episodes = await getPublishedEpisodes()
+  if (!query.trim()) return episodes
+  const q = query.toLowerCase()
+  return episodes.filter(
+    (e) => e.title.toLowerCase().includes(q) || e.programName.toLowerCase().includes(q)
+  )
+}
+
+/**
+ * ユーザーマイリスト — 将来: ユーザー認証 + user_playlists テーブル対応
+ * 現在は静的データ。DB切り替え時にユーザーIDを受け取る形に変更する。
+ */
+export async function getUserPlaylists(_userId?: string): Promise<readonly unknown[]> {
+  return []
 }
 
 // ============================================================

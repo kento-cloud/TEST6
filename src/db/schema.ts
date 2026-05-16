@@ -68,12 +68,33 @@ export const aiContents = sqliteTable("ai_contents", {
   updatedAt: text("updated_at").default(new Date().toISOString()),
 })
 
+/**
+ * ジョブキュー — 非同期処理の管理テーブル
+ *
+ * === 現在のモード: API直実行 ===
+ * pipeline.ts が同期的に AI API を呼び出す。
+ * job_queue はログ・進捗表示用に使用。
+ *
+ * === 将来のモード: 非同期ワーカー ===
+ * 1. API がジョブを投入 (status=pending)
+ * 2. ワーカーが polling で取得 (status→processing)
+ * 3. 実行後に完了 (status→done) またはリトライ (attempts++)
+ * 4. max_attempts 超過で error に固定
+ *
+ * ワーカー候補:
+ * - Supabase Edge Function (cron)
+ * - 外部ワーカープロセス (polling)
+ * - Supabase Realtime (INSERT trigger)
+ *
+ * リトライ戦略: exponential backoff (attempts に基づく)
+ * 優先度: 0=通常, 1=高優先度 (priority DESC でソート)
+ */
 export const jobQueue = sqliteTable("job_queue", {
   id: text("id").primaryKey(),
   videoId: text("video_id").notNull(),
-  jobType: text("job_type").notNull(),
-  status: text("status").default("pending"),
-  priority: integer("priority").default(0),
+  jobType: text("job_type").notNull(),         // transcribe | generate | thumbnail
+  status: text("status").default("pending"),   // pending | processing | done | error
+  priority: integer("priority").default(0),    // 0=通常, 1=高優先度
   attempts: integer("attempts").default(0),
   maxAttempts: integer("max_attempts").default(3),
   errorMessage: text("error_message"),

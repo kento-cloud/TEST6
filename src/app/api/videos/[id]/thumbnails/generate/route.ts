@@ -68,6 +68,28 @@ export async function POST(
     }, { status: 201 })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
+    const isConfigError = message.includes("設定されていません")
+
+    if (isConfigError) {
+      // モックフォールバック: API未設定時に既存画像パスで完了扱い
+      const mockFilePath = (video.thumbnail_path as string) || "/images/static/converted/chapter/14365/ogp/14365.webp"
+      await supabase.from("thumbnails").update({
+        file_path: mockFilePath,
+        status: "done",
+        width: 1536,
+        height: 1024,
+      }).eq("id", thumbId)
+
+      return NextResponse.json({
+        id: thumbId,
+        status: "done",
+        mock: true,
+        filePath: mockFilePath,
+        width: 1536,
+        height: 1024,
+      }, { status: 201 })
+    }
+
     await supabase.from("thumbnails").update({
       status: "error",
       error_message: message,

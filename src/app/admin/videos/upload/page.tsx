@@ -96,21 +96,21 @@ function LocalUploadForm() {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6">
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">タイトル *</label>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="動画のタイトル" className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
+        <label htmlFor="local-title" className="block text-[13px] font-semibold text-gray-700 mb-1">タイトル *</label>
+        <input id="local-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="動画のタイトル" className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
       </div>
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">説明</label>
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="動画の説明" rows={3} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none" />
+        <label htmlFor="local-description" className="block text-[13px] font-semibold text-gray-700 mb-1">説明</label>
+        <textarea id="local-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="動画の説明" rows={3} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none" />
       </div>
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
-        <select value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+        <label htmlFor="local-category" className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
+        <select id="local-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
           {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
       </div>
       <div className="mb-6">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">動画ファイル *</label>
+        <label htmlFor="local-file" className="block text-[13px] font-semibold text-gray-700 mb-1">動画ファイル *</label>
         <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-[#cd1cfa] transition-colors relative">
           {file ? (
             <div>
@@ -124,12 +124,13 @@ function LocalUploadForm() {
               <p className="text-[11px] text-gray-400">.mp4, .mov, .webm（最大500MB）</p>
             </div>
           )}
-          <input type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="absolute inset-0 opacity-0 cursor-pointer" />
+          <input id="local-file" type="file" accept="video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="absolute inset-0 opacity-0 cursor-pointer" />
         </div>
       </div>
       <div className="mb-6">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">AIへの指示（任意）</label>
+        <label htmlFor="local-ai-prompt" className="block text-[13px] font-semibold text-gray-700 mb-1">AIへの指示（任意）</label>
         <textarea
+          id="local-ai-prompt"
           value={aiPrompt}
           onChange={(e) => setAiPrompt(e.target.value)}
           placeholder="例: 初心者向けにわかりやすい記事にして、箇条書き多めで、要約は100文字程度で"
@@ -209,8 +210,8 @@ function YouTubeImportForm() {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6">
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">YouTube URL *</label>
-        <input type="text" value={url} onChange={(e) => handleUrlChange(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
+        <label htmlFor="yt-url" className="block text-[13px] font-semibold text-gray-700 mb-1">YouTube URL *</label>
+        <input id="yt-url" type="text" value={url} onChange={(e) => handleUrlChange(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
       </div>
 
       {/* Preview */}
@@ -225,15 +226,16 @@ function YouTubeImportForm() {
       )}
 
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
-        <select value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+        <label htmlFor="yt-category" className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
+        <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
           {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
       </div>
 
       <div className="mb-5">
-        <label className="block text-[13px] font-semibold text-gray-700 mb-1">AIへの指示（任意）</label>
+        <label htmlFor="yt-ai-prompt" className="block text-[13px] font-semibold text-gray-700 mb-1">AIへの指示（任意）</label>
         <textarea
+          id="yt-ai-prompt"
           value={aiPrompt}
           onChange={(e) => setAiPrompt(e.target.value)}
           placeholder="例: 初心者向けにわかりやすい記事にして、箇条書き多めで"

@@ -116,6 +116,32 @@ export type ThumbnailSource = "manual" | "ffmpeg" | "ai" | "youtube"
 
 export type StepStatus = "pending" | "processing" | "done" | "error"
 
+export type CategoryCode = "business" | "money" | "career" | "life" | "technology" | "global"
+
+export type PromptMode = "append" | "override"
+
+export interface ThumbnailStylePreset {
+  readonly id: string
+  readonly name: string
+  readonly promptTemplate: string
+  readonly styleParams: string | null
+  readonly isDefault: number
+}
+
+export interface JobQueueEntry {
+  readonly id: string
+  readonly videoId: string
+  readonly jobType: string
+  readonly status: string
+  readonly priority: number
+  readonly attempts: number
+  readonly maxAttempts: number
+  readonly errorMessage: string | null
+  readonly startedAt: string | null
+  readonly completedAt: string | null
+  readonly createdAt: string
+}
+
 // === UI State Types ===
 
 export interface AsyncState {

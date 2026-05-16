@@ -29,7 +29,7 @@ export default async function AdminVideosPage() {
             <Link href="/admin/videos/upload" className="text-[14px] text-[#cd1cfa] font-semibold">最初の動画をアップロード →</Link>
           </div>
         ) : (
-          <table className="w-full">
+          <table className="w-full" aria-label="動画一覧">
             <thead>
               <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
                 <th className="px-5 py-3">タイトル</th>

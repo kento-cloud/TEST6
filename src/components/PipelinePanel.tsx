@@ -36,6 +36,11 @@ interface Props {
 
 type StepKey = "summary" | "chapters" | "article" | "tags"
 
+/**
+ * AI生成パイプラインのステップ順序（固定 — 変更禁止）
+ * この順序は generateAll() の実行順序と一致する。
+ * summary → chapters → article → tags
+ */
 const STEP_CONFIG: { key: StepKey; label: string; processingKey: string; placeholder: string }[] = [
   { key: "summary", label: "要約", processingKey: "generating_summary", placeholder: "例: 専門用語を避けて平易に" },
   { key: "chapters", label: "チャプター", processingKey: "generating_chapters", placeholder: "例: チャプターを細かく分けて" },

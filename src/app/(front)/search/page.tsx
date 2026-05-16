@@ -39,6 +39,7 @@ export default function SearchPage() {
 
   return (
     <div className="flex flex-col min-h-screen max-w-5xl mx-auto w-full px-6 md:px-10">
+      <h1 className="sr-only">検索</h1>
       {/* Search Bar */}
       <div className="pt-8 pb-4">
         <div className="w-full flex items-center bg-[#1d2030] rounded-full px-5 py-3 gap-3">
@@ -76,8 +77,8 @@ export default function SearchPage() {
         ) : (
           <>
             {/* ジャンルからさがす */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
-              <p className="text-[15px] font-bold mb-4">ジャンルからさがす</p>
+            <section aria-labelledby="search-genre" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+              <h2 id="search-genre" className="text-[15px] font-bold mb-4">ジャンルからさがす</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">
                 {genres.map((g) => (
                   <button key={g} onClick={() => setQuery(g)} className="py-[10px] px-4 h-[40px] bg-[rgba(48,50,64,0.8)] rounded-lg text-[14px] font-bold text-white hover:bg-[#484a5e] transition-colors text-center cursor-pointer">
@@ -88,9 +89,9 @@ export default function SearchPage() {
             </section>
 
             {/* MCからさがす */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-mc" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[15px] font-bold">MCからさがす</p>
+                <h2 id="search-mc" className="text-[15px] font-bold">MCからさがす</h2>
                 <Link href="/mc" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">
@@ -106,9 +107,9 @@ export default function SearchPage() {
             </section>
 
             {/* 番組からさがす */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-program" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[15px] font-bold">番組からさがす</p>
+                <h2 id="search-program" className="text-[15px] font-bold">番組からさがす</h2>
                 <Link href="/program/list" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="flex gap-3 overflow-x-auto scrollbar-hide">
@@ -126,9 +127,9 @@ export default function SearchPage() {
             </section>
 
             {/* 月間ランキング - 大型カード */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-monthly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[15px] font-bold">月間ランキング</p>
+                <h2 id="search-monthly-ranking" className="text-[15px] font-bold">月間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=MONTHLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="flex gap-4 overflow-x-auto scrollbar-hide">
@@ -139,9 +140,9 @@ export default function SearchPage() {
             </section>
 
             {/* 週間ランキング - 大型カード */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-weekly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[15px] font-bold">週間ランキング</p>
+                <h2 id="search-weekly-ranking" className="text-[15px] font-bold">週間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=WEEKLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="flex gap-4 overflow-x-auto scrollbar-hide">
@@ -152,9 +153,9 @@ export default function SearchPage() {
             </section>
 
             {/* 年間ランキング - 大型カード */}
-            <section className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-yearly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[15px] font-bold">年間ランキング</p>
+                <h2 id="search-yearly-ranking" className="text-[15px] font-bold">年間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=YEARLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="flex gap-4 overflow-x-auto scrollbar-hide">

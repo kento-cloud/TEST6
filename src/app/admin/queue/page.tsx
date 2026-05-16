@@ -82,7 +82,7 @@ export default async function AdminQueuePage() {
             <p className="text-gray-400 text-[15px]">処理キューにジョブがありません</p>
           </div>
         ) : (
-          <table className="w-full">
+          <table className="w-full" aria-label="処理キュー一覧">
             <thead>
               <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
                 <th className="px-5 py-3">動画</th>

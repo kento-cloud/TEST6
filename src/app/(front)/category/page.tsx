@@ -13,6 +13,15 @@ function CategoryContent() {
   const searchParams = useSearchParams()
   const code = searchParams.get("category_code") ?? "business"
 
+  const categoryLabels: Record<string, string> = {
+    business: "ビジネス",
+    money: "マネー",
+    career: "キャリア",
+    life: "ライフ",
+    technology: "テクノロジー",
+    global: "グローバル",
+  }
+
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [rankings, setRankings] = useState<{ label: string; key: string; episodes: Episode[] }[]>([])
   const [featuredItems, setFeaturedItems] = useState<FeaturedItem[]>([])
@@ -53,6 +62,7 @@ function CategoryContent() {
 
   return (
     <>
+      <h1 className="sr-only">{categoryLabels[code] ?? code} カテゴリ</h1>
       <FeaturedVideo items={featuredItems} />
       <div className="flex flex-col gap-8 md:gap-10 px-4 md:px-6 lg:px-8 py-5 md:py-8">
         <EpisodeSection title="新着" episodes={episodes} href="/new_arrival/episode" />

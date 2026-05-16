@@ -19,24 +19,6 @@ export interface AIGeneratedContent {
   readonly relatedCategories: readonly string[]
 }
 
-export type PublishStatus =
-  | "draft"
-  | "review"
-  | "published"
-  | "unpublished"
-
-export type ProcessingStep =
-  | "none"
-  | "extracting_audio"
-  | "transcribing"
-  | "generating"           // 互換用（全体生成）
-  | "generating_summary"
-  | "generating_chapters"
-  | "generating_article"
-  | "generating_tags"
-  | "generating_thumbnail"
-  | "error"
-
 export type GenerationStep =
   | "transcribe"
   | "summary"
@@ -58,12 +40,3 @@ export type JobStatus =
   | "error"
   | "cancelled"
 
-// 旧型（段階廃止予定、後方互換用）
-export type VideoStatus =
-  | "draft"
-  | "uploaded"
-  | "transcribing"
-  | "generating"
-  | "review"
-  | "published"
-  | "error"

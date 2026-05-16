@@ -31,6 +31,8 @@ export default async function AdminVideoDetailPage({ params }: Props) {
   const step = video.processing_step ?? "none"
   const s = getStatusDisplay(video.publish_status ?? "draft", video.processing_step ?? "none")
 
+  // 動画管理の5ステップ（順序固定 — 変更禁止）
+  // 1. アップロード → 2. 文字起こし → 3. AI生成 → 4. 記事編集 → 5. 公開
   const steps = [
     { label: "アップロード", done: true, href: null },
     { label: "文字起こし", done: !!transcript && transcript.status === "done", href: `/admin/videos/${id}/transcript` },

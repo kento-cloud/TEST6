@@ -94,6 +94,17 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
     }
   }
 
+  // === UIフロー順序（固定 — 変更禁止） ===
+  // 1. isProcessing         → disabled (パイプライン実行中)
+  // 2. state=processing     → spinner (ボタン操作の実行中)
+  // 3. state=done           → checkmark (操作完了)
+  // 4. state=error          → エラー表示 + 戻るボタン
+  // 5. processingStep=error → 「エラーをリセット」ボタン
+  // 6. draft + !transcript  → 「文字起こしへ」リンク
+  // 7. transcript + !AI     → 「AI生成開始」ボタン + プロンプト設定
+  // 8. AI + !published      → 「公開設定へ」リンク
+  // 9. それ以外             → null (表示なし)
+
   // 処理中（パイプライン実行中）
   if (isProcessing) {
     return (
