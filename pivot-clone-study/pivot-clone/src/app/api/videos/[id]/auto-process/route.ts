@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth"
 import { generateAll } from "@/lib/ai/pipeline"
 import { extractAudio } from "@/lib/ffmpeg"
 import { transcribeAudio } from "@/lib/ai/whisper"
+import { downloadYouTubeAudio } from "@/lib/youtube"
 import path from "path"
 import { existsSync } from "fs"
 import { mkdir } from "fs/promises"
@@ -34,13 +35,6 @@ export async function POST(
 
   const sourceType = video.source_type ?? "local"
 
-  // YouTube動画の場合、自動文字起こしは未対応
-  if (sourceType === "youtube") {
-    return NextResponse.json({
-      error: "YouTube動画の自動文字起こしは準備中です。文字起こしを手動入力後、AI生成を実行してください。",
-    }, { status: 400 })
-  }
-
   // --- Step 1: 文字起こし ---
   await supabase.from("videos").update({
     processing_step: "transcribing",
@@ -50,27 +44,42 @@ export async function POST(
   let transcriptText: string
 
   try {
-    if (!video.file_path) {
-      throw new Error("動画ファイルパスが設定されていません")
-    }
-    const videoPath = path.join(process.cwd(), video.file_path)
-    if (!existsSync(videoPath)) {
-      throw new Error("動画ファイルが見つかりません")
-    }
-
     const tempDir = path.join(process.cwd(), "uploads", "temp")
     if (!existsSync(tempDir)) {
       await mkdir(tempDir, { recursive: true })
     }
     const audioPath = path.join(tempDir, `${id}_audio.mp3`)
 
-    // 音声抽出
-    await supabase.from("videos").update({
-      processing_step: "extracting_audio",
-      updated_at: new Date().toISOString(),
-    }).eq("id", id)
+    if (sourceType === "youtube") {
+      // YouTube: yt-dlpで音声ダウンロード → Whisper
+      const youtubeVideoId = video.youtube_video_id as string
+      if (!youtubeVideoId) {
+        throw new Error("YouTube Video IDが設定されていません")
+      }
 
-    await extractAudio(videoPath, audioPath)
+      await supabase.from("videos").update({
+        processing_step: "extracting_audio",
+        updated_at: new Date().toISOString(),
+      }).eq("id", id)
+
+      await downloadYouTubeAudio(youtubeVideoId, audioPath)
+    } else {
+      // ローカル: ffmpegで音声抽出
+      if (!video.file_path) {
+        throw new Error("動画ファイルパスが設定されていません")
+      }
+      const videoPath = path.join(process.cwd(), video.file_path)
+      if (!existsSync(videoPath)) {
+        throw new Error("動画ファイルが見つかりません")
+      }
+
+      await supabase.from("videos").update({
+        processing_step: "extracting_audio",
+        updated_at: new Date().toISOString(),
+      }).eq("id", id)
+
+      await extractAudio(videoPath, audioPath)
+    }
 
     // Whisper文字起こし
     await supabase.from("videos").update({
@@ -89,7 +98,7 @@ export async function POST(
       video_id: id,
       full_text: result.text,
       segments: JSON.stringify(result.segments),
-      source: "whisper",
+      source: sourceType === "youtube" ? "whisper-youtube" : "whisper",
       language: result.language,
       model: "whisper-1",
       status: "done",

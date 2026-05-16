@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase"
 import { ulid } from "ulid"
 import { extractAudio } from "@/lib/ffmpeg"
 import { transcribeAudio } from "@/lib/ai/whisper"
+import { downloadYouTubeAudio } from "@/lib/youtube"
 import path from "path"
 import { existsSync } from "fs"
 import { mkdir } from "fs/promises"
@@ -57,35 +58,29 @@ export async function POST(
 
   const sourceType = video.source_type ?? "local"
 
-  // YouTube: try to get captions (placeholder for now)
-  if (sourceType === "youtube") {
-    return NextResponse.json({
-      error: "YouTube動画の自動字幕取得は準備中です。管理画面の文字起こしページから手動で入力してください。",
-      hint: "POST /api/videos/{id}/transcribe に { text: '...' } を送信することで手動登録できます。",
-    }, { status: 400 })
-  }
-
-  // Local: ffmpeg + Whisper
+  // Whisper文字起こし（ローカル + YouTube両対応）
   await supabase.from("videos").update({
     processing_step: "transcribing",
     updated_at: new Date().toISOString(),
   }).eq("id", id)
 
   try {
-    if (!video.file_path) {
-      throw new Error("動画ファイルパスが設定されていません")
-    }
-    const videoPath = path.join(process.cwd(), video.file_path)
-    if (!existsSync(videoPath)) {
-      throw new Error("動画ファイルが見つかりません: " + video.file_path)
-    }
-
     const tempDir = path.join(process.cwd(), "uploads", "temp")
     if (!existsSync(tempDir)) {
       await mkdir(tempDir, { recursive: true })
     }
     const audioPath = path.join(tempDir, `${id}_audio.mp3`)
-    await extractAudio(videoPath, audioPath)
+
+    if (sourceType === "youtube") {
+      const youtubeVideoId = video.youtube_video_id as string
+      if (!youtubeVideoId) throw new Error("YouTube Video IDが設定されていません")
+      await downloadYouTubeAudio(youtubeVideoId, audioPath)
+    } else {
+      if (!video.file_path) throw new Error("動画ファイルパスが設定されていません")
+      const videoPath = path.join(process.cwd(), video.file_path)
+      if (!existsSync(videoPath)) throw new Error("動画ファイルが見つかりません: " + video.file_path)
+      await extractAudio(videoPath, audioPath)
+    }
 
     const startTime = Date.now()
     const result = await transcribeAudio(audioPath)
@@ -100,7 +95,7 @@ export async function POST(
       video_id: id,
       full_text: result.text,
       segments: JSON.stringify(result.segments),
-      source: "whisper",
+      source: sourceType === "youtube" ? "whisper-youtube" : "whisper",
       language: result.language,
       model: "whisper-1",
       status: "done",

@@ -1,6 +1,10 @@
 import { writeFile, mkdir } from "fs/promises"
 import { existsSync } from "fs"
+import { execFile } from "child_process"
+import { promisify } from "util"
 import path from "path"
+
+const execFileAsync = promisify(execFile)
 
 interface YouTubeMetadata {
   readonly videoId: string
@@ -72,4 +76,39 @@ export async function downloadYouTubeThumbnail(videoId: string, savePath: string
     }
   }
   throw new Error("サムネイルのダウンロードに失敗しました")
+}
+
+/**
+ * YouTube動画の音声をダウンロード（yt-dlp使用）
+ * Whisperに渡すためのMP3ファイルを生成
+ */
+export async function downloadYouTubeAudio(videoId: string, savePath: string): Promise<string> {
+  const dir = path.dirname(savePath)
+  if (!existsSync(dir)) {
+    await mkdir(dir, { recursive: true })
+  }
+
+  const url = `https://www.youtube.com/watch?v=${videoId}`
+
+  await execFileAsync("yt-dlp", [
+    "-x",
+    "--audio-format", "mp3",
+    "--audio-quality", "5",
+    "--postprocessor-args", "-ar 16000 -ac 1",
+    "-o", savePath.replace(/\.mp3$/, ".%(ext)s"),
+    "--no-playlist",
+    url,
+  ], { timeout: 300000 }) // 5分タイムアウト
+
+  // yt-dlpは拡張子を自動付与するので確認
+  if (!existsSync(savePath)) {
+    // webm→mp3変換後のファイルを探す
+    const possiblePath = savePath.replace(/\.mp3$/, ".mp3")
+    if (existsSync(possiblePath)) {
+      return possiblePath
+    }
+    throw new Error("YouTube音声のダウンロードに失敗しました")
+  }
+
+  return savePath
 }

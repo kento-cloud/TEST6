@@ -173,6 +173,7 @@ function YouTubeImportForm() {
   const [url, setUrl] = useState("")
   const [categoryCode, setCategoryCode] = useState("")
   const [aiPrompt, setAiPrompt] = useState("")
+  const [autoProcess, setAutoProcess] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [preview, setPreview] = useState<{ title: string; authorName: string; videoId: string } | null>(null)
@@ -194,6 +195,11 @@ function YouTubeImportForm() {
 
     try {
       const data = await importYouTube(url, categoryCode, aiPrompt || undefined)
+
+      if (autoProcess) {
+        fetch(`/api/videos/${data.id}/auto-process`, { method: "POST" }).catch(() => {})
+      }
+
       router.push(`/admin/videos/${data.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "エラー"); setLoading(false)
@@ -237,8 +243,19 @@ function YouTubeImportForm() {
         <p className="text-[11px] text-gray-400 mt-1">AI生成（要約・チャプター・記事・タグ）に適用されます。後から変更も可能です。</p>
       </div>
 
-      <div className="mb-5 px-4 py-3 bg-yellow-50 rounded-lg border border-yellow-100">
-        <p className="text-[12px] text-yellow-700">YouTube動画は登録後、文字起こしを手動入力してからAI生成を実行してください。</p>
+      <div className="mb-5">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={autoProcess}
+            onChange={(e) => setAutoProcess(e.target.checked)}
+            className="w-4 h-4 accent-[#cd1cfa]"
+          />
+          <div>
+            <span className="text-[14px] font-semibold text-gray-700">自動AI処理</span>
+            <p className="text-[11px] text-gray-400">登録後、YouTube音声をダウンロード→文字起こし→AI生成を自動で実行します</p>
+          </div>
+        </label>
       </div>
 
       {error && <p className="text-red-500 text-[13px] mb-4">{error}</p>}
