@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { ThumbnailPresetManager } from "@/components/ThumbnailPresetManager"
 
 interface StylePreset {
   id: string
@@ -425,6 +426,17 @@ export default function AdminSettingsPage() {
               </button>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Thumbnail Presets */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">サムネイルテンプレート</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">サムネイル生成時に選べるデザインテンプレートを管理します。</p>
+        </div>
+        <div className="p-5">
+          <ThumbnailPresetManager />
         </div>
       </div>
 
