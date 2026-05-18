@@ -61,6 +61,27 @@ export function CategoryManager() {
     }
   }
 
+  async function handleMove(index: number, direction: -1 | 1) {
+    const newIndex = index + direction
+    if (newIndex < 0 || newIndex >= categories.length) return
+
+    const updated = [...categories]
+    const temp = updated[index]
+    updated[index] = updated[newIndex]
+    updated[newIndex] = temp
+    setCategories(updated)
+
+    try {
+      await fetch("/api/categories", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order: updated.map(c => c.code) }),
+      })
+    } catch {
+      fetchCategories()
+    }
+  }
+
   return (
     <div>
       {message && (
@@ -70,18 +91,28 @@ export function CategoryManager() {
       {loading ? (
         <p className="text-[13px] text-gray-400">読み込み中...</p>
       ) : (
-        <div className="flex flex-wrap gap-2 mb-3">
-          {categories.map((cat) => (
-            <div key={cat.code} className="flex items-center gap-1 bg-gray-50 rounded-lg pl-3 pr-1 py-1.5 border border-gray-100 group">
-              <span className="text-[13px] text-gray-700">{cat.label}</span>
+        <div className="space-y-1.5 mb-3">
+          {categories.map((cat, i) => (
+            <div key={cat.code} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-100 group">
+              <div className="flex flex-col gap-0.5 shrink-0">
+                <button
+                  onClick={() => handleMove(i, -1)}
+                  disabled={i === 0}
+                  className="text-[10px] text-gray-300 hover:text-gray-600 disabled:opacity-20 cursor-pointer leading-none"
+                >▲</button>
+                <button
+                  onClick={() => handleMove(i, 1)}
+                  disabled={i === categories.length - 1}
+                  className="text-[10px] text-gray-300 hover:text-gray-600 disabled:opacity-20 cursor-pointer leading-none"
+                >▼</button>
+              </div>
+              <span className="text-[13px] text-gray-700 flex-1">{cat.label}</span>
               <span className="text-[10px] text-gray-400 font-mono">{cat.code}</span>
               <button
                 onClick={() => handleDelete(cat.code, cat.label)}
-                className="ml-1 w-5 h-5 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                className="w-5 h-5 flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 rounded cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                 title="削除"
-              >
-                ×
-              </button>
+              >×</button>
             </div>
           ))}
         </div>

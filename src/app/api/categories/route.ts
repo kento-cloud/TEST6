@@ -59,6 +59,22 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true }, { status: 201 })
 }
 
+export async function PUT(req: NextRequest) {
+  const authError = await requireAdmin()
+  if (authError) return authError
+
+  const body = await req.json() as { order?: string[] }
+  if (!body.order || !Array.isArray(body.order)) {
+    return NextResponse.json({ error: "orderは必須です" }, { status: 400 })
+  }
+
+  for (let i = 0; i < body.order.length; i++) {
+    await supabase.from("categories").update({ sort_order: i + 1 }).eq("code", body.order[i])
+  }
+
+  return NextResponse.json({ success: true })
+}
+
 export async function DELETE(req: NextRequest) {
   const authError = await requireAdmin()
   if (authError) return authError
