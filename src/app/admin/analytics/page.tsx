@@ -54,9 +54,7 @@ export default async function AnalyticsPage() {
     .sort((a, b) => b.views - a.views)
 
   function formatViews(n: number): string {
-    if (n >= 10000) return `${(n / 10000).toFixed(1)}万`
-    if (n >= 1000) return `${(n / 1000).toFixed(1)}千`
-    return String(n)
+    return n.toLocaleString()
   }
 
   function formatDuration(sec: number): string {

@@ -64,11 +64,13 @@ export default async function AdminDashboard() {
     }
   })
 
+  const fmt = (n: number) => n.toLocaleString()
+
   const stats = [
-    { label: "動画総数", value: videoCount ?? 0, color: "bg-blue-500" },
-    { label: "公開中", value: publishedCount ?? 0, color: "bg-green-500" },
-    { label: "処理待ち", value: pendingJobs ?? 0, color: "bg-yellow-500" },
-    { label: "総再生数", value: totalViews, color: "bg-purple-500" },
+    { label: "動画総数", value: fmt(videoCount ?? 0) },
+    { label: "公開中", value: fmt(publishedCount ?? 0) },
+    { label: "処理待ち", value: fmt(pendingJobs ?? 0) },
+    { label: "総再生数", value: fmt(totalViews) },
   ]
 
   const { data: recentVideos } = await supabase
