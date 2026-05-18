@@ -12,8 +12,8 @@ import path from "path"
 import { existsSync } from "fs"
 import { mkdir, unlink } from "fs/promises"
 
-// 長時間処理のためタイムアウトを延長
-export const maxDuration = 300 // 5分
+// 長時間処理のためタイムアウトを延長（音声DL + Whisper + LLM×4 + 画像×5）
+export const maxDuration = 600 // 10分
 
 /**
  * 自動処理パイプライン: 文字起こし → AI生成 を一気通貫で実行
@@ -36,6 +36,12 @@ export async function POST(
 
   if (videoErr || !video) {
     return NextResponse.json({ error: "動画が見つかりません" }, { status: 404 })
+  }
+
+  // 二重実行防止: 既に処理中なら409を返す
+  const currentStep = video.processing_step ?? "none"
+  if (currentStep !== "none" && currentStep !== "error") {
+    return NextResponse.json({ error: "既に処理中です", step: currentStep }, { status: 409 })
   }
 
   const sourceType = video.source_type ?? "local"
@@ -240,8 +246,8 @@ export async function POST(
 
       const imgResults = await generateThumbnailImages(thumbPrompt, outputDir, fileNames)
 
-      // Update records + set first as primary
-      for (let i = 0; i < thumbIds.length; i++) {
+      // 成功した分だけDBを更新
+      for (let i = 0; i < imgResults.length; i++) {
         await supabase.from("thumbnails").update({
           file_path: imgResults[i].filePath,
           status: "done",
@@ -252,15 +258,26 @@ export async function POST(
         }).eq("id", thumbIds[i])
       }
 
+      // 生成できなかった分はerrorに
+      for (let i = imgResults.length; i < thumbIds.length; i++) {
+        await supabase.from("thumbnails").update({
+          status: "error",
+        }).eq("id", thumbIds[i])
+      }
+
       // Update video thumbnail_path with first
-      await supabase.from("videos").update({
-        thumbnail_path: imgResults[0].filePath,
-        updated_at: new Date().toISOString(),
-      }).eq("id", id)
+      if (imgResults.length > 0) {
+        await supabase.from("videos").update({
+          thumbnail_path: imgResults[0].filePath,
+          updated_at: new Date().toISOString(),
+        }).eq("id", id)
+      }
 
       thumbnailCount = imgResults.length
     } catch {
       // サムネイル生成失敗は全体を止めない（API未設定時等）
+      // pending状態のサムネイルレコードをerrorに更新
+      await supabase.from("thumbnails").update({ status: "error" }).eq("video_id", id).eq("status", "generating")
     }
 
     await supabase.from("videos").update({

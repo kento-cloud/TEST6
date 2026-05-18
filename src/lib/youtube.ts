@@ -108,12 +108,18 @@ export async function downloadYouTubeAudio(videoId: string, savePath: string): P
 
   // yt-dlpは拡張子を自動付与するので確認
   if (!existsSync(savePath)) {
-    // webm→mp3変換後のファイルを探す
     const possiblePath = savePath.replace(/\.mp3$/, ".mp3")
     if (existsSync(possiblePath)) {
       return possiblePath
     }
     throw new Error("YouTube音声のダウンロードに失敗しました")
+  }
+
+  // ファイルサイズ検証（10KB未満は破損とみなす）
+  const { statSync } = await import("fs")
+  const stats = statSync(savePath)
+  if (stats.size < 10240) {
+    throw new Error("YouTube音声ファイルが破損しているか不完全です")
   }
 
   return savePath

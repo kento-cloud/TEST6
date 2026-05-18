@@ -29,6 +29,29 @@ function buildExtraInstruction(opts: PromptOptions): string {
   return instructions ? `\n\n## 追加指示\n${instructions}` : ""
 }
 
+// --- JSON配列の安全な抽出 ---
+
+function extractJsonArray(text: string): string | null {
+  const startIdx = text.indexOf("[")
+  if (startIdx === -1) return null
+
+  let depth = 0
+  for (let i = startIdx; i < text.length; i++) {
+    if (text[i] === "[") depth++
+    if (text[i] === "]") depth--
+    if (depth === 0) {
+      const candidate = text.slice(startIdx, i + 1)
+      try {
+        JSON.parse(candidate)
+        return candidate
+      } catch {
+        return null
+      }
+    }
+  }
+  return null
+}
+
 // --- プロンプト ---
 // 人間らしさ重視: AI感を抑え、自然で読みやすい文章を生成する
 
@@ -246,8 +269,9 @@ export async function generateChapters(videoId: string, transcript: string, titl
 
   try {
     const result = await callLLM(prompt)
-    const jsonMatch = result.content.match(/\[[\s\S]*\]/)
-    const chaptersJson = jsonMatch ? jsonMatch[0] : "[]"
+    // 最初の [ から対応する ] までを抽出（ネストされたブラケットに対応）
+    const jsonMatch = extractJsonArray(result.content)
+    const chaptersJson = jsonMatch ?? "[]"
 
     const { data: existing } = await supabase
       .from("ai_contents")
@@ -329,8 +353,9 @@ export async function generateTags(videoId: string, transcript: string, title: s
 
   try {
     const result = await callLLM(prompt)
-    const jsonMatch = result.content.match(/\[[\s\S]*\]/)
-    const tags = jsonMatch ? JSON.parse(jsonMatch[0]) as string[] : []
+    const jsonStr = extractJsonArray(result.content) ?? "[]"
+    let tags: string[] = []
+    try { tags = JSON.parse(jsonStr) as string[] } catch { tags = [] }
     const tagsJson = JSON.stringify(tags)
 
     const { data: existing } = await supabase

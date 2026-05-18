@@ -72,6 +72,16 @@ export async function generateThumbnailImages(
     }
   }
 
-  const results = await Promise.all(fileNames.map(generateOne))
+  // Promise.allSettledで部分的失敗を許容
+  const settled = await Promise.allSettled(fileNames.map(generateOne))
+  const results: GenerateImageResult[] = []
+  for (const s of settled) {
+    if (s.status === "fulfilled") {
+      results.push(s.value)
+    }
+  }
+  if (results.length === 0) {
+    throw new Error("全ての画像生成に失敗しました")
+  }
   return results
 }
