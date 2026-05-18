@@ -112,11 +112,11 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="flex flex-wrap gap-3 mb-6">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl px-4 py-3 border border-gray-100">
-            <p className="text-[11px] text-gray-400 mb-0.5">{stat.label}</p>
-            <p className="text-[18px] md:text-[22px] font-semibold text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>{stat.value}</p>
+          <div key={stat.label} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-gray-100">
+            <span className="text-[11px] text-gray-400">{stat.label}</span>
+            <span className="text-[14px] font-semibold text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontVariantNumeric: "tabular-nums" }}>{stat.value}</span>
           </div>
         ))}
       </div>
