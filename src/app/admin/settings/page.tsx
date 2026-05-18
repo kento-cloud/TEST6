@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ThumbnailPresetManager } from "@/components/ThumbnailPresetManager"
+import { CategoryManager } from "@/components/CategoryManager"
 
 interface StylePreset {
   id: string
@@ -228,6 +229,17 @@ export default function AdminSettingsPage() {
               <span className={`w-2.5 h-2.5 rounded-full ${ffmpegOk ? "bg-green-500" : ffmpegOk === false ? "bg-red-400" : "bg-gray-300"}`} />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Categories */}
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-[16px] font-bold text-gray-900">カテゴリ管理</h2>
+          <p className="text-[13px] text-gray-400 mt-0.5">動画に設定できるカテゴリを管理します。</p>
+        </div>
+        <div className="p-5">
+          <CategoryManager />
         </div>
       </div>
 

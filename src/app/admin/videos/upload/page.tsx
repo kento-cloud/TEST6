@@ -1,18 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { importYouTube } from "@/lib/admin-api"
 
-const categories = [
-  { code: "", label: "カテゴリを選択" },
-  { code: "business", label: "ビジネス" },
-  { code: "money", label: "マネー" },
-  { code: "career", label: "キャリア" },
-  { code: "life", label: "ライフ" },
-  { code: "technology", label: "テクノロジー" },
-  { code: "global", label: "グローバル" },
-] as const
+function useCategories() {
+  const [categories, setCategories] = useState<{ code: string; label: string }[]>([])
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then(data => { if (Array.isArray(data)) setCategories(data) })
+      .catch(() => {})
+  }, [])
+  return categories
+}
 
 type Tab = "upload" | "youtube"
 
@@ -51,6 +52,7 @@ export default function UploadPage() {
 
 function LocalUploadForm() {
   const router = useRouter()
+  const categories = useCategories()
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [categoryCode, setCategoryCode] = useState("")
@@ -106,6 +108,7 @@ function LocalUploadForm() {
       <div className="mb-5">
         <label htmlFor="local-category" className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
         <select id="local-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+          <option value="">カテゴリを選択</option>
           {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
       </div>
@@ -171,6 +174,7 @@ function LocalUploadForm() {
 
 function YouTubeImportForm() {
   const router = useRouter()
+  const categories = useCategories()
   const [url, setUrl] = useState("")
   const [aiPrompt, setAiPrompt] = useState("")
   const [autoProcess, setAutoProcess] = useState(true)
@@ -255,6 +259,7 @@ function YouTubeImportForm() {
           <div>
             <label htmlFor="yt-category" className="block text-[12px] text-gray-500 mb-1">カテゴリ（任意）</label>
             <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+              <option value="">カテゴリを選択</option>
               {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
             </select>
             <p className="text-[11px] text-gray-400 mt-1">未選択でもOK。汎用プロンプトが自動適用されます。</p>
