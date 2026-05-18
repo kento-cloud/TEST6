@@ -105,13 +105,16 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
               <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
               {item.youtubeVideoId && (
                 <>
-                  <iframe
-                    src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}&iv_load_policy=3&disablekb=1`}
-                    className={`absolute inset-0 w-full h-full z-10 transition-opacity duration-1000 pointer-events-none ${videoLoaded ? "opacity-100" : "opacity-0"}`}
-                    allow="autoplay; encrypted-media"
-                    tabIndex={-1}
-                  />
-                  {/* YouTubeのUIを隠す透明オーバーレイ */}
+                  {/* iframeを120%に拡大してYouTubeのUIバーを枠外にクリップ */}
+                  <div className="absolute inset-[-10%] z-10">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}&iv_load_policy=3&disablekb=1`}
+                      className={`w-full h-full transition-opacity duration-1000 pointer-events-none ${videoLoaded ? "opacity-100" : "opacity-0"}`}
+                      allow="autoplay; encrypted-media"
+                      tabIndex={-1}
+                    />
+                  </div>
+                  {/* 透明オーバーレイでクリックをLinkに通す */}
                   <div className="absolute inset-0 z-20" />
                 </>
               )}
