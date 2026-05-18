@@ -1,36 +1,48 @@
 /**
  * サムネイル生成のデフォルトプロンプト
- * 汎用型: タイトル/要約からテーマと感情を抽出し、抽象ビジュアルで表現
- * ジャンル非依存（ニュース・スポーツ・ビジネス・エンタメ・教育等すべて対応）
+ * 目的: ユーザーの関心を引き、クリック→コンテンツ消費を促すサムネイル
+ * YouTube上位チャンネルのサムネイル設計思想を踏襲
  */
 export function getDefaultThumbnailPrompt(title: string, summary?: string): string {
   const context = summary
-    ? `Video title: "${title}"\nSummary: "${summary}"`
+    ? `Video title: "${title}"\nContent summary: "${summary}"`
     : `Video title: "${title}"`
 
   return [
-    "Create a premium magazine-quality editorial thumbnail for a video.",
+    "Generate a YouTube-style thumbnail designed to maximize click-through rate.",
     "",
     context,
     "",
-    "Use the above information to extract the main theme and emotional tone.",
-    "Represent the content through abstract visual metaphor — symbols, silhouettes, props, light, and color.",
+    "DESIGN GOALS (in priority order):",
+    "1. INSTANTLY communicate what this video is about in under 1 second",
+    "2. Create curiosity gap — viewer must feel 'I need to know more'",
+    "3. Stand out in a feed of other thumbnails",
     "",
-    "Requirements:",
-    "- Premium magazine-quality composition with dramatic, cinematic lighting",
-    "- High contrast, visually striking color palette that reflects the video's topic and mood",
-    "- Abstract imagery: geometric shapes, gradients, symbolic objects, light effects, silhouettes",
-    "- 16:9 aspect ratio, high-resolution, suitable for web thumbnail",
-    "- Clean composition with strong focal point and intentional negative space",
-    "- Genre-agnostic: works for news, sports, business, entertainment, education, science, etc.",
+    "REQUIRED ELEMENTS:",
+    "- A short, punchy Japanese text overlay (2-8 characters max) that captures the hook or key takeaway",
+    "  Examples: '衝撃の結末', '年収3倍', '逆転劇', '知らないと損', '禁断の手法'",
+    "  The text must be derived from the actual video content, not generic clickbait",
+    "- Bold, thick typography with strong outlines/shadows for maximum readability",
+    "- A clear visual element that represents the topic (objects, icons, illustrations, diagrams)",
+    "- High-contrast color scheme (2-3 colors max) with one dominant accent color",
+    "- Split composition or diagonal lines to create visual tension",
+    "",
+    "VISUAL STYLE:",
+    "- 16:9 aspect ratio, web thumbnail resolution",
+    "- YouTube Premium channel quality (think: 中田敦彦, 両学長, PIVOT, NewsPicks)",
+    "- Background: gradient, solid color, or simple blurred scene — never cluttered",
+    "- Text placement: large, occupying 30-50% of the frame, positioned for immediate eye contact",
+    "- Use arrows, circles, underlines, or highlight effects to draw attention to key elements",
     "",
     "STRICTLY FORBIDDEN:",
-    "- Any text, letters, numbers, typography, or writing in any language",
-    "- Human faces or recognizable people (use silhouettes or abstract forms instead)",
-    "- Cluttered or busy compositions",
-    "- Generic stock photo aesthetics",
-    "- Logos, watermarks, or brand marks",
+    "- Human faces or photographs of real people",
+    "- Random English text or unrelated words (only use Japanese text derived from the content)",
+    "- The word 'AI' anywhere on the image",
+    "- Small or hard-to-read text",
+    "- More than 8 characters of text total",
+    "- Cluttered or busy backgrounds that compete with the text",
+    "- Generic stock imagery",
     "",
-    "The thumbnail should intrigue viewers and make them want to click, purely through visual storytelling.",
+    "The thumbnail must make a viewer scrolling through a feed stop and think: 'What is this? I need to watch.'",
   ].join("\n")
 }

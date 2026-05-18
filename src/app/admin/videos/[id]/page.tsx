@@ -6,7 +6,6 @@ import { ThumbnailGrid } from "@/components/ThumbnailGrid"
 import { DeleteButton } from "@/components/DeleteButton"
 import { ActionButton } from "@/components/ActionButton"
 import { PipelinePanel } from "@/components/PipelinePanel"
-import { ThumbnailPipelineRow } from "@/components/ThumbnailPipelineRow"
 import { TranscriptPipelineRow } from "@/components/TranscriptPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { ProcessingPoller } from "@/components/ProcessingPoller"
@@ -169,19 +168,28 @@ export default async function AdminVideoDetailPage({ params }: Props) {
             processingStep={step}
           />
 
-          {/* サムネイル行 */}
-          <ThumbnailPipelineRow
-            videoId={id}
-            videoTitle={video.title}
-            thumbnails={(videoThumbnails ?? []).map(t => ({
-              id: t.id,
-              file_path: t.file_path,
-              status: t.status ?? "unknown",
-              is_primary: t.is_primary ?? false,
-              source: t.source ?? "unknown",
-            }))}
-            isGenerating={step === "generating_thumbnail"}
-          />
+          {/* サムネイルステータス（詳細は下のサムネイル管理セクション） */}
+          {(() => {
+            const doneCount = (videoThumbnails ?? []).filter(t => t.status === "done").length
+            const isGenThumb = step === "generating_thumbnail"
+            return (
+              <div className="border border-gray-100 rounded-lg overflow-hidden mt-2">
+                <div className="flex items-center justify-between px-3 py-2 bg-gray-50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[14px]">{isGenThumb ? "⏳" : doneCount > 0 ? "✅" : "⬜"}</span>
+                    <span className={`text-[13px] font-medium ${isGenThumb ? "text-blue-600" : doneCount > 0 ? "text-green-600" : "text-gray-400"}`}>サムネイル</span>
+                    {doneCount > 0 && <span className="text-[11px] text-gray-400">{doneCount}枚</span>}
+                  </div>
+                  {isGenThumb && (
+                    <span className="inline-flex items-center gap-1 text-[11px] text-blue-500">
+                      <span className="animate-spin w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full" />
+                      生成中
+                    </span>
+                  )}
+                </div>
+              </div>
+            )
+          })()}
 
           {/* Generation Logs */}
           {logs && logs.length > 0 && (
