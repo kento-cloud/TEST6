@@ -2,24 +2,40 @@
 
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 
-const tabs = [
-  { label: "トップ", href: "/", code: null },
-  { label: "ビジネス", href: "/category?category_code=business", code: "business" },
-  { label: "マネー", href: "/category?category_code=money", code: "money" },
-  { label: "キャリア", href: "/category?category_code=career", code: "career" },
-  { label: "ライフ", href: "/category?category_code=life", code: "life" },
-  { label: "テクノロジー", href: "/category?category_code=technology", code: "technology" },
-  { label: "グローバル", href: "/category?category_code=global", code: "global" },
-] as const
+interface Tab {
+  label: string
+  href: string
+  code: string | null
+}
 
 function HeaderTabsInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const { user } = useAuth()
   const currentCode = searchParams.get("category_code")
+
+  const [tabs, setTabs] = useState<Tab[]>([{ label: "トップ", href: "/", code: null }])
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then((data: { code: string; label: string }[]) => {
+        if (Array.isArray(data)) {
+          setTabs([
+            { label: "トップ", href: "/", code: null },
+            ...data.map(c => ({
+              label: c.label,
+              href: `/category?category_code=${c.code}`,
+              code: c.code,
+            })),
+          ])
+        }
+      })
+      .catch(() => {})
+  }, [])
   const isAuthPage = pathname.startsWith("/auth/")
 
   function isActive(tab: (typeof tabs)[number]): boolean {
