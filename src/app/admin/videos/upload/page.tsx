@@ -28,19 +28,19 @@ export default function UploadPage() {
       <div className="flex border-b border-gray-200 mb-6">
         <button
           onClick={() => setActiveTab("upload")}
-          className={`px-6 py-3 text-[14px] font-semibold transition-colors cursor-pointer ${
+          className={`flex-1 py-3 text-[13px] font-semibold transition-colors cursor-pointer whitespace-nowrap ${
             activeTab === "upload" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
           }`}
         >
-          📁 ファイルアップロード
+          📁 ファイル
         </button>
         <button
           onClick={() => setActiveTab("youtube")}
-          className={`px-6 py-3 text-[14px] font-semibold transition-colors cursor-pointer ${
+          className={`flex-1 py-3 text-[13px] font-semibold transition-colors cursor-pointer whitespace-nowrap ${
             activeTab === "youtube" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
           }`}
         >
-          📺 YouTube URL
+          📺 YouTube
         </button>
       </div>
 
