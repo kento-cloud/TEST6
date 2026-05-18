@@ -96,8 +96,8 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   // 未生成 → パイプラインへ誘導
   if ((publishStatus === "draft" && !hasTranscript) || (hasTranscript && !hasAI)) {
     return (
-      <span className="px-4 py-2 text-[13px] text-gray-400">
-        ↓ パイプラインから生成スタート
+      <span className="px-4 py-2 text-[13px] text-gray-400 whitespace-nowrap">
+        ↓ 下の生成スタートから
       </span>
     )
   }
