@@ -110,7 +110,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-white rounded-xl p-5 border border-gray-100">
             <p className="text-[13px] text-gray-500 mb-1">{stat.label}</p>
@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Top viewed videos */}
         <div className="bg-white rounded-xl border border-gray-100">
           <div className="px-5 py-4 border-b border-gray-100">

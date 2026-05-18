@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useState, useEffect } from "react"
 
 const navItems = [
   { label: "ダッシュボード", href: "/admin", icon: "M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" },
@@ -15,6 +16,12 @@ const navItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  // ページ遷移時にメニューを閉じる
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [pathname])
 
   function isActive(href: string): boolean {
     if (href === "/admin") return pathname === "/admin"
@@ -23,15 +30,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen bg-[#f5f5f7]">
-      {/* Sidebar */}
-      <aside className="w-[240px] min-w-[240px] bg-white border-r border-gray-200 fixed h-screen flex flex-col">
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-[56px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+        <Link href="/admin" className="flex items-center gap-2">
+          <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+          <span className="text-[12px] font-semibold text-gray-400">Admin</span>
+        </Link>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="w-10 h-10 flex items-center justify-center cursor-pointer"
+          aria-label="メニュー"
+        >
+          {menuOpen ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Overlay */}
+      {menuOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setMenuOpen(false)} />
+      )}
+
+      {/* Sidebar - PC: fixed, Mobile: slide-in */}
+      <aside className={`
+        fixed h-screen bg-white border-r border-gray-200 flex flex-col z-50
+        w-[260px] lg:w-[240px]
+        transition-transform duration-300 ease-in-out
+        lg:translate-x-0
+        ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+        top-0 lg:top-0
+      `}>
         <div className="h-[60px] flex items-center px-5 border-b border-gray-100">
           <Link href="/admin" className="flex items-center gap-2">
             <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
             <span className="text-[13px] font-semibold text-gray-400">Admin</span>
           </Link>
         </div>
-        <nav className="flex-1 py-3">
+        <nav className="flex-1 py-3 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -57,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main */}
-      <main className="flex-1 ml-[240px] p-6">
+      <main className="flex-1 lg:ml-[240px] pt-[56px] lg:pt-0 p-4 lg:p-6 min-w-0">
         {children}
       </main>
     </div>

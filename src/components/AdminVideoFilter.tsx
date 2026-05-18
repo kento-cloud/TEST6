@@ -41,7 +41,7 @@ export function AdminVideoFilter({ videos }: Props) {
 
   return (
     <div>
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <input
           type="text"
           value={search}
@@ -61,7 +61,7 @@ export function AdminVideoFilter({ videos }: Props) {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-100 bg-gray-50">

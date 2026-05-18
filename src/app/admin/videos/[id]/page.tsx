@@ -49,14 +49,12 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         <Link href="/admin/videos" className="text-[13px] text-gray-400 hover:text-gray-600">← 動画一覧</Link>
       </div>
 
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-[24px] font-bold text-gray-900 mb-2">{video.title}</h1>
+      <div className="mb-6">
+        <h1 className="text-[20px] lg:text-[24px] font-bold text-gray-900 mb-2">{video.title}</h1>
+        <div className="flex flex-wrap items-center gap-2">
           <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${s.style}`}>{s.label}</span>
-        </div>
-        <div className="flex gap-2">
           {video.publish_status === "published" && (
-            <Link href={`/movie/${id}`} target="_blank" className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-600 hover:bg-gray-50">
+            <Link href={`/movie/${id}`} target="_blank" className="px-3 py-1 border border-gray-200 rounded-lg text-[12px] text-gray-600 hover:bg-gray-50">
               フロントで確認 ↗
             </Link>
           )}
