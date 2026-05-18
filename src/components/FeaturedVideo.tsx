@@ -104,19 +104,19 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
             <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
               {/* サムネイル（常に下に表示） */}
               <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
-              {/* YouTube動画（3秒後にフェードイン、上下15%拡大でUIバーをクリップ） */}
+              {/* YouTube動画（3秒後にフェードイン） */}
               {item.youtubeVideoId && (
-                <div className={`absolute -inset-y-[15%] inset-x-0 z-10 transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}>
+                <>
                   <iframe
                     src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}&iv_load_policy=3&disablekb=1&fs=0`}
-                    className="w-full h-full pointer-events-none"
+                    className={`absolute inset-0 w-full h-full z-10 pointer-events-none transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}
                     allow="autoplay; encrypted-media"
                     tabIndex={-1}
                   />
-                </div>
+                  {/* 透明オーバーレイ（YouTubeの操作を遮断） */}
+                  <div className="absolute inset-0 z-20" />
+                </>
               )}
-              {/* 透明オーバーレイ（クリックをLinkに通す＋YouTubeの操作を遮断） */}
-              <div className="absolute inset-0 z-20" />
             </div>
           </Link>
           </AuthPrompt>
