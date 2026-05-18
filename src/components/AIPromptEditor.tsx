@@ -44,7 +44,7 @@ export function AIPromptEditor({ videoId, initialPrompt }: Props) {
             編集
           </button>
         </div>
-        <p className="text-[13px] text-gray-600">{prompt || "未設定（設定画面のベースプロンプトのみが適用されます）"}</p>
+        <p className="text-[13px] text-gray-600">{prompt || "未設定（デフォルトの汎用プロンプトで生成されます）"}</p>
         {message && <p className="text-[12px] text-green-600 mt-1">{message}</p>}
       </div>
     )
