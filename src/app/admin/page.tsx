@@ -103,18 +103,18 @@ export default async function AdminDashboard() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-gray-900">ダッシュボード</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">ダッシュボード</h1>
         <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#b018d8] transition-colors text-center">
           + 動画をアップロード
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white rounded-xl p-4 lg:p-5 border border-gray-100">
-            <p className="text-[12px] lg:text-[13px] text-gray-500 mb-1">{stat.label}</p>
-            <p className="text-[22px] lg:text-[32px] font-bold text-gray-900">{stat.value}</p>
+          <div key={stat.label} className="bg-white rounded-xl p-4 md:p-5 border border-gray-100">
+            <p className="text-[12px] md:text-[13px] text-gray-500 mb-1">{stat.label}</p>
+            <p className="text-[22px] md:text-[32px] font-bold text-gray-900">{stat.value}</p>
           </div>
         ))}
       </div>
@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* Top viewed videos */}
         <div className="bg-white rounded-xl border border-gray-100">
           <div className="px-5 py-4 border-b border-gray-100">

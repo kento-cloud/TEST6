@@ -23,7 +23,7 @@ export default async function AdminVideosPage() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-gray-900">動画管理</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">動画管理</h1>
         <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#b018d8] transition-colors text-center">
           + 新規アップロード
         </Link>

@@ -50,7 +50,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
       </div>
 
       <div className="mb-6">
-        <h1 className="text-[20px] lg:text-[24px] font-bold text-gray-900 mb-2">{video.title}</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-2">{video.title}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${s.style}`}>{s.label}</span>
           {video.publish_status === "published" && (
@@ -103,7 +103,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
       </div>
 
       {/* Video Info */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-gray-100 p-5">
           <h2 className="text-[16px] font-bold text-gray-900 mb-4">動画情報</h2>
           <dl className="space-y-3">

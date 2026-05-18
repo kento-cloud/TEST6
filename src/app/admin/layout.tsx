@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-[#f5f5f7]">
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-[56px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-[56px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
         <Link href="/admin" className="flex items-center gap-2">
           <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
           <span className="text-[12px] font-semibold text-gray-400">Admin</span>
@@ -54,17 +54,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Mobile Overlay */}
       {menuOpen && (
-        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setMenuOpen(false)} />
+        <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setMenuOpen(false)} />
       )}
 
       {/* Sidebar - PC: fixed, Mobile: slide-in */}
       <aside className={`
         fixed h-screen bg-white border-r border-gray-200 flex flex-col z-50
-        w-[260px] lg:w-[240px]
+        w-[260px] md:w-[240px]
         transition-transform duration-300 ease-in-out
-        lg:translate-x-0
+        md:translate-x-0
         ${menuOpen ? "translate-x-0" : "-translate-x-full"}
-        top-0 lg:top-0
+        top-0 md:top-0
       `}>
         <div className="h-[60px] flex items-center px-5 border-b border-gray-100">
           <Link href="/admin" className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main */}
-      <main className="flex-1 lg:ml-[240px] pt-[56px] lg:pt-0 p-4 lg:p-6 min-w-0">
+      <main className="flex-1 md:ml-[240px] pt-[56px] md:pt-0 p-4 md:p-6 min-w-0">
         {children}
       </main>
     </div>
