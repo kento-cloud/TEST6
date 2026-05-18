@@ -11,10 +11,15 @@ export interface SearchResult {
   readonly matchField: string
 }
 
+function escapePostgrestLike(str: string): string {
+  return str.replace(/[%_\\]/g, (c) => `\\${c}`)
+}
+
 export async function search(query: string): Promise<readonly SearchResult[]> {
   if (!query || query.trim().length === 0) return []
 
   const q = query.trim()
+  const escaped = escapePostgrestLike(q)
   const results: SearchResult[] = []
   const seenIds = new Set<string>()
 
@@ -24,7 +29,7 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
       .from("videos")
       .select("*")
       .eq("publish_status", "published")
-      .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
+      .or(`title.ilike.%${escaped}%,description.ilike.%${escaped}%`)
 
     for (const v of dbVideos ?? []) {
       if (seenIds.has(v.id)) continue
@@ -44,7 +49,7 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
     const { data: dbAI } = await supabase
       .from("ai_contents")
       .select("video_id, summary, tags")
-      .or(`summary.ilike.%${q}%,article.ilike.%${q}%,tags.ilike.%${q}%`)
+      .or(`summary.ilike.%${escaped}%,article.ilike.%${escaped}%,tags.ilike.%${escaped}%`)
 
     for (const ai of dbAI ?? []) {
       if (seenIds.has(ai.video_id)) continue
@@ -72,7 +77,7 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
     const { data: dbPrograms } = await supabase
       .from("programs")
       .select("*")
-      .or(`name.ilike.%${q}%,description.ilike.%${q}%`)
+      .or(`name.ilike.%${escaped}%,description.ilike.%${escaped}%`)
 
     for (const p of dbPrograms ?? []) {
       const pid = `program_${p.id}`

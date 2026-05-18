@@ -251,6 +251,22 @@ try {
   console.error("  Nullable migration error:", e)
 }
 
+// Create indexes
+console.log("Creating indexes...")
+const indexes = [
+  "CREATE INDEX IF NOT EXISTS idx_videos_publish_status ON videos(publish_status, published_at)",
+  "CREATE INDEX IF NOT EXISTS idx_transcriptions_video_id ON transcriptions(video_id)",
+  "CREATE INDEX IF NOT EXISTS idx_ai_contents_video_id ON ai_contents(video_id)",
+  "CREATE INDEX IF NOT EXISTS idx_thumbnails_video_id ON thumbnails(video_id)",
+  "CREATE INDEX IF NOT EXISTS idx_metrics_video_id ON metrics(video_id)",
+  "CREATE INDEX IF NOT EXISTS idx_ai_generation_logs_video_id ON ai_generation_logs(video_id)",
+]
+for (const sql of indexes) {
+  sqlite.exec(sql)
+  const indexName = sql.match(/INDEX IF NOT EXISTS (\w+)/)?.[1]
+  console.log(`  ✓ ${indexName}`)
+}
+
 console.log("Migrations complete.")
 
 sqlite.close()

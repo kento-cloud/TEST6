@@ -4,8 +4,12 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Episode } from "@/types"
+import { useAuth } from "@/contexts/AuthContext"
+import { useFavorites } from "@/hooks/useFavorites"
+import { AuthGate } from "@/components/AuthGate"
+import { EpisodeCard } from "@/components/EpisodeCard"
 
-const tabs = ["プレイリスト", "フォロー", "視聴履歴"] as const
+const tabs = ["お気に入り", "プレイリスト", "フォロー", "視聴履歴"] as const
 
 const playlistTitles = [
   { id: "r1", title: "思考OSアップデート講座", count: 30, indices: [0, 4, 5, 1] },
@@ -25,6 +29,71 @@ function buildPlaylists(eps: Episode[]) {
     ...p,
     eps: p.indices.map(i => eps[i % eps.length]).filter(Boolean),
   }))
+}
+
+function FavoritesTab() {
+  const { session } = useAuth()
+  const { favoriteIds, loading: favsLoading } = useFavorites()
+  const [episodes, setEpisodes] = useState<Episode[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/front/episodes?type=all")
+      .then(r => r.json())
+      .then(setEpisodes)
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center py-20">
+        <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </div>
+        <p className="text-[15px] text-[#606370] mb-5">ログインするとお気に入りが表示されます</p>
+        <Link href="/auth/sign_in" className="px-8 py-3 border border-white/30 rounded-full text-[14px] font-bold hover:bg-white/5 transition-colors">
+          ログイン
+        </Link>
+      </div>
+    )
+  }
+
+  if (loading || favsLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <span className="animate-spin w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full" />
+      </div>
+    )
+  }
+
+  const favoriteEpisodes = episodes.filter(ep => favoriteIds.has(ep.id))
+
+  if (favoriteEpisodes.length === 0) {
+    return (
+      <div className="flex flex-col items-center py-20">
+        <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </div>
+        <p className="text-[15px] text-[#606370] text-center mb-5">お気に入りに追加した動画が表示されます</p>
+        <Link href="/" className="px-8 py-3 border border-white/30 rounded-full text-[14px] font-bold hover:bg-white/5 transition-colors">
+          ホームで探す
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap gap-[10px] mt-4">
+      {favoriteEpisodes.map(ep => (
+        <EpisodeCard key={ep.id} episode={ep} />
+      ))}
+    </div>
+  )
 }
 
 export default function MylistPage() {
@@ -57,11 +126,13 @@ export default function MylistPage() {
           ))}
         </div>
 
-        {activeTab === 0 && (
+        {activeTab === 0 && <FavoritesTab />}
+
+        {activeTab === 1 && (
           <div>
             {/* + 新規プレイリストを作成 */}
             <div className="flex justify-end mb-4">
-              <span className="text-[14px] text-white cursor-pointer hover:text-[#cd1cfa]">＋ 新規プレイリストを作成</span>
+              <span className="text-[14px] text-white cursor-pointer hover:text-[#cd1cfa]">+ 新規プレイリストを作成</span>
             </div>
 
             {/* あとで見る - 本家と同じ大きなカード */}
@@ -132,7 +203,7 @@ export default function MylistPage() {
           </div>
         )}
 
-        {activeTab === 1 && (
+        {activeTab === 2 && (
           <div className="flex flex-col items-center py-20">
             <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
@@ -143,7 +214,7 @@ export default function MylistPage() {
           </div>
         )}
 
-        {activeTab === 2 && (
+        {activeTab === 3 && (
           <div className="flex flex-col items-center py-20">
             <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">

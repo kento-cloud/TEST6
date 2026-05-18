@@ -1,49 +1,62 @@
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
+import crypto from "crypto"
 
-// In-memory session token store
-const activeSessions = new Set<string>()
-const revokedSessions = new Set<string>()
+const SESSION_SECRET =
+  process.env.ADMIN_SESSION_SECRET ||
+  process.env.ADMIN_PASSWORD ||
+  "default-secret-change-me"
+const SESSION_MAX_AGE = 24 * 60 * 60 * 1000 // 24 hours
+
+function createHmac(data: string): string {
+  return crypto
+    .createHmac("sha256", SESSION_SECRET)
+    .update(data)
+    .digest("hex")
+}
 
 /**
- * セッショントークンを生成してSetに保存し、返す
+ * HMAC署名付きセッショントークンを生成して返す
  */
 export function createSessionToken(): string {
-  const token = crypto.randomUUID()
-  activeSessions.add(token)
-  revokedSessions.delete(token)
-  return token
+  const timestamp = Date.now().toString()
+  const hmac = createHmac(timestamp)
+  return `${timestamp}.${hmac}`
 }
 
 /**
- * セッショントークンをSetから削除する
+ * セッショントークンを無効化する（ステートレスのためCookie削除で対応）
  */
-export function revokeSessionToken(token: string): void {
-  activeSessions.delete(token)
-  revokedSessions.add(token)
+export function revokeSessionToken(_token: string): void {
+  // HMAC-based tokens are stateless; revocation handled by cookie deletion
 }
 
 /**
- * 管理者セッションが有効かどうかを返す（レスポンスを返さない版）
+ * 管理者セッションが有効かどうかを返す
  */
 export async function isAdmin(): Promise<boolean> {
   const cookieStore = await cookies()
   const session = cookieStore.get("admin_session")
-  if (!session) return false
+  if (!session?.value) return false
 
-  // 明示的にrevokeされたトークンは拒否
-  if (revokedSessions.has(session.value)) return false
+  const parts = session.value.split(".")
+  if (parts.length !== 2) return false
 
-  // セッションがSetに存在するか確認
-  if (activeSessions.has(session.value)) return true
+  const [timestamp, hmac] = parts
 
-  // dev環境: サーバー再起動でSetがクリアされるため、Cookieが存在すれば受け入れる
-  if (process.env.NODE_ENV !== "production" && session.value.length > 0) {
-    activeSessions.add(session.value)
-    return true
-  }
+  // Verify HMAC
+  const expectedHmac = createHmac(timestamp)
+  if (hmac.length !== expectedHmac.length) return false
+  if (
+    !crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(expectedHmac))
+  )
+    return false
 
-  return false
+  // Check expiry
+  const tokenAge = Date.now() - parseInt(timestamp, 10)
+  if (tokenAge > SESSION_MAX_AGE) return false
+
+  return true
 }
 
 /**

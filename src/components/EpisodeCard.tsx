@@ -5,6 +5,7 @@ import Link from "next/link"
 import type { Episode } from "@/types"
 import { rankColors } from "@/lib/constants"
 import { AuthPrompt } from "@/components/AuthPrompt"
+import { FavoriteButton } from "@/components/FavoriteButton"
 
 interface EpisodeCardProps {
   readonly episode: Episode
@@ -48,6 +49,10 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
             {episode.duration}
           </div>
         )}
+        {/* Favorite button */}
+        <div className="absolute top-1 right-1 md:top-2 md:right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <FavoriteButton videoId={episode.id} size="sm" />
+        </div>
         {/* Hover overlay */}
         <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
