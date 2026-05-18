@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { resetVideo, generateAll } from "@/lib/admin-api"
@@ -25,6 +25,7 @@ type ActionState = "idle" | "processing" | "done" | "error"
 
 export function ActionButton({ videoId, publishStatus, processingStep, hasTranscript, hasAI, isProcessing }: Props) {
   const router = useRouter()
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const [state, setState] = useState<ActionState>("idle")
   const [error, setError] = useState("")
   const [showPrompt, setShowPrompt] = useState(false)
@@ -46,6 +47,17 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
       })
       .catch(() => {})
   }, [])
+
+  useEffect(() => {
+    if (!showPrompt) return
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowPrompt(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [showPrompt])
 
   function handlePresetChange(presetId: string) {
     setSelectedPreset(presetId)
@@ -171,7 +183,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
   }
   if (hasTranscript && !hasAI) {
     return (
-      <div className="relative">
+      <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setShowPrompt(!showPrompt)}
           className="px-4 py-2 bg-purple-600 text-white rounded-lg text-[14px] font-semibold hover:bg-purple-700 cursor-pointer"
@@ -179,7 +191,7 @@ export function ActionButton({ videoId, publishStatus, processingStep, hasTransc
           AI生成開始
         </button>
         {showPrompt && (
-          <div className="absolute right-0 top-full mt-2 w-[450px] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50 max-h-[70vh] overflow-y-auto">
+          <div className="absolute right-0 top-full mt-2 w-[450px] max-w-[calc(100vw-2rem)] bg-white rounded-xl border border-gray-200 shadow-lg p-4 z-50 max-h-[70vh] overflow-y-auto">
             <p className="text-[14px] font-bold text-gray-800 mb-3">AI生成の指示（任意）</p>
             <div className="mb-4">
               <label className="block text-[12px] font-semibold text-gray-600 mb-1">記事スタイル</label>

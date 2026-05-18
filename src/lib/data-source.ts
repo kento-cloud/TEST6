@@ -69,7 +69,7 @@ async function fetchPublishedEpisodes(): Promise<readonly Episode[]> {
         title: v.title as string,
         programName: (programId ? programMap.get(programId) : null) ?? "",
         duration: v.duration ? formatDuration(v.duration as number) : "",
-        viewCount: m ? formatViewCount((m.view_count as number) ?? 0) : "0回視聴",
+        viewCount: m && (m.view_count as number) > 0 ? formatViewCount(m.view_count as number) : "",
         publishedAt: v.published_at ? formatRelativeTime(v.published_at as string) : "",
         thumbnailUrl: (v.thumbnail_path as string) ?? FALLBACK_THUMBNAIL,
         commentCount: (m?.comment_count as number) ?? 0,

@@ -78,7 +78,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
           className={`flex items-center gap-2 ${hasDone || hasError ? "cursor-pointer" : "cursor-default"}`}
         >
           <span className="text-[14px]">{icon}</span>
-          <span className={`text-[13px] font-medium ${textColor}`}>{hasDone ? "文字起こし" : "AI生成"}</span>
+          <span className={`text-[13px] font-medium ${textColor}`}>{hasDone ? "文字起こし済み" : isProcessing ? "処理中" : "全自動生成"}</span>
           {hasDone && (
             <>
               <span className="text-[11px] text-gray-400">{transcript.fullText.length.toLocaleString()}文字</span>

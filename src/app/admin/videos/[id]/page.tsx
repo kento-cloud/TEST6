@@ -9,6 +9,7 @@ import { PipelinePanel } from "@/components/PipelinePanel"
 import { ThumbnailPipelineRow } from "@/components/ThumbnailPipelineRow"
 import { TranscriptPipelineRow } from "@/components/TranscriptPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
+import { ProcessingPoller } from "@/components/ProcessingPoller"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
 
@@ -36,7 +37,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
   // 1. アップロード → 2. 文字起こし → 3. AI生成 → 4. 記事編集 → 5. 公開
   const steps = [
     { label: "アップロード", done: true, href: null },
-    { label: "生成", done: !!transcript && transcript.status === "done" && !!aiContent && aiContent.status === "done", href: `/admin/videos/${id}/transcript` },
+    { label: "文字起こし・生成", done: !!transcript && transcript.status === "done" && !!aiContent && aiContent.status === "done", href: `/admin/videos/${id}/transcript` },
     { label: "記事編集", done: !!aiContent?.article, href: `/admin/videos/${id}/article` },
     { label: "公開", done: video.publish_status === "published", href: `/admin/videos/${id}/publish` },
   ]
@@ -97,13 +98,15 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <ProcessingPoller videoId={id} currentStep={step} />
+
       {/* AI Prompt */}
       <div className="mb-6">
         <AIPromptEditor videoId={id} initialPrompt={video.ai_prompt ?? ""} />
       </div>
 
       {/* Video Info */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-gray-100 p-5">
           <h2 className="text-[16px] font-bold text-gray-900 mb-4">動画情報</h2>
           <dl className="space-y-3">

@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { AuthPrompt } from "@/components/AuthPrompt"
 
 export interface FeaturedItem {
@@ -23,6 +23,8 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   const featuredItems = items
   const [current, setCurrent] = useState(0)
   const [hovered, setHovered] = useState(false)
+  const [showVideo, setShowVideo] = useState(false)
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const goTo = useCallback((index: number) => {
     setCurrent(index)
@@ -31,7 +33,20 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   // Reset to 0 when items change
   useEffect(() => {
     setCurrent(0)
+    setShowVideo(false)
   }, [items])
+
+  // Reset showVideo when slide changes
+  useEffect(() => {
+    setShowVideo(false)
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current)
+      hoverTimerRef.current = null
+    }
+    if (hovered) {
+      hoverTimerRef.current = setTimeout(() => setShowVideo(true), 1000)
+    }
+  }, [current, hovered])
 
   useEffect(() => {
     if (featuredItems.length === 0) return
@@ -87,21 +102,30 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
         </div>
         <div
           className="flex-1"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          onMouseEnter={() => {
+            setHovered(true)
+            hoverTimerRef.current = setTimeout(() => setShowVideo(true), 1000)
+          }}
+          onMouseLeave={() => {
+            setHovered(false)
+            setShowVideo(false)
+            if (hoverTimerRef.current) {
+              clearTimeout(hoverTimerRef.current)
+              hoverTimerRef.current = null
+            }
+          }}
         >
           <AuthPrompt>
           <Link href={`/movie/${item.id}`} className="block">
             <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
-              {item.youtubeVideoId ? (
+              <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
+              {item.youtubeVideoId && showVideo && (
                 <iframe
                   src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}`}
                   className="absolute inset-0 w-full h-full z-10"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
                 />
-              ) : (
-                <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
               )}
             </div>
           </Link>

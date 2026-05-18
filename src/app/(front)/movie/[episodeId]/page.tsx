@@ -161,7 +161,11 @@ export default async function MoviePage({ params }: Props) {
 
           {/* Related Episodes */}
           <div className="mt-8">
-            <EpisodeSection title="関連動画" episodes={allEpisodes.filter((e) => e.id !== episode.id).slice(0, 6)} />
+            <EpisodeSection title="関連動画" episodes={(() => {
+              const sameCategory = allEpisodes.filter((e) => e.id !== episode.id && e.categoryCode === episode.categoryCode)
+              const others = allEpisodes.filter((e) => e.id !== episode.id && e.categoryCode !== episode.categoryCode)
+              return [...sameCategory, ...others].slice(0, 6)
+            })()} />
           </div>
         </div>
       </AuthGate>

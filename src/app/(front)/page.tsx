@@ -56,9 +56,9 @@ export default async function HomePage() {
 
       {/* SP: App CTA */}
       <div className="md:hidden px-4 pb-24">
-        <button className="w-full py-4 rounded-xl gradient-button text-white font-bold text-[16px]">
-          アプリでもっとみる
-        </button>
+        <div className="w-full py-4 rounded-xl bg-gray-700 text-gray-400 font-bold text-[16px] text-center">
+          アプリ準備中
+        </div>
       </div>
     </div>
   )

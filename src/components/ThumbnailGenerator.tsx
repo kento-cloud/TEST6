@@ -31,6 +31,13 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
   const [generated, setGenerated] = useState<GeneratedThumb[]>([])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [setting, setSetting] = useState(false)
+  const [elapsedSec, setElapsedSec] = useState(0)
+
+  useEffect(() => {
+    if (state !== "generating") { setElapsedSec(0); return }
+    const timer = setInterval(() => setElapsedSec(s => s + 1), 1000)
+    return () => clearInterval(timer)
+  }, [state])
 
   useEffect(() => {
     fetch("/api/thumbnail-presets")
@@ -121,12 +128,12 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           {state === "generating" ? (
             <span className="inline-flex items-center gap-1">
               <span className="animate-spin w-3 h-3 border-2 border-white border-t-transparent rounded-full" />
-              {count}枚生成中...
+              {count}枚生成中... {elapsedSec}秒
             </span>
           ) : `${count}枚生成`}
         </button>
       </div>
-      <p className="text-[11px] text-gray-400 mt-1">OpenAI Images API (gpt-image-1) で{count}枚を一括生成し、選択できます</p>
+      <p className="text-[11px] text-gray-400 mt-1">英語プロンプトの方が画像生成の精度が高いため、初期値は英語です。日本語でも動作します。</p>
 
       {/* Generated Thumbnails Grid - Selection UI */}
       {state === "selecting" && generated.length > 0 && (
