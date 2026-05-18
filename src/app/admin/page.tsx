@@ -114,7 +114,7 @@ export default async function AdminDashboard() {
         {stats.map((stat) => (
           <div key={stat.label} className="bg-white rounded-xl p-4 md:p-5 border border-gray-100">
             <p className="text-[12px] md:text-[13px] text-gray-500 mb-1">{stat.label}</p>
-            <p className="text-[22px] md:text-[32px] font-bold text-gray-900">{stat.value}</p>
+            <p className="text-[24px] md:text-[32px] font-semibold text-gray-900" style={{ fontFamily: "'Inter', 'SF Pro Display', -apple-system, sans-serif", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>{stat.value}</p>
           </div>
         ))}
       </div>

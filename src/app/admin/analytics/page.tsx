@@ -73,19 +73,19 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div className="bg-white rounded-xl p-4 border border-gray-100">
           <p className="text-[11px] text-gray-400">総再生数</p>
-          <p className="text-[24px] md:text-[28px] font-bold text-gray-900">{formatViews(totalViews)}</p>
+          <p className="text-[24px] md:text-[28px] font-semibold text-gray-900 font-[Inter,sans-serif] tracking-tight">{formatViews(totalViews)}</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-100">
           <p className="text-[11px] text-gray-400">公開動画</p>
-          <p className="text-[24px] md:text-[28px] font-bold text-gray-900">{videoList.length}</p>
+          <p className="text-[24px] md:text-[28px] font-semibold text-gray-900 font-[Inter,sans-serif] tracking-tight">{videoList.length}</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-100">
           <p className="text-[11px] text-gray-400">平均評価</p>
-          <p className="text-[24px] md:text-[28px] font-bold text-gray-900">{avgRating > 0 ? avgRating.toFixed(1) : "—"}</p>
+          <p className="text-[24px] md:text-[28px] font-semibold text-gray-900 font-[Inter,sans-serif] tracking-tight">{avgRating > 0 ? avgRating.toFixed(1) : "—"}</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-100">
           <p className="text-[11px] text-gray-400">総評価数</p>
-          <p className="text-[24px] md:text-[28px] font-bold text-gray-900">{formatViews(totalRatings)}</p>
+          <p className="text-[24px] md:text-[28px] font-semibold text-gray-900 font-[Inter,sans-serif] tracking-tight">{formatViews(totalRatings)}</p>
         </div>
       </div>
 
