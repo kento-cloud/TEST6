@@ -224,30 +224,32 @@ export default async function AdminDashboard() {
             <Link href="/admin/videos/upload" className="text-[14px] text-[#cd1cfa] font-semibold">最初の動画をアップロード →</Link>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-[12px] text-gray-400 uppercase">
-                <th className="px-5 py-3">タイトル</th>
-                <th className="px-5 py-3">ステータス</th>
-                <th className="px-5 py-3">カテゴリ</th>
-                <th className="px-5 py-3">作成日</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentVideos.map((v) => (
-                <tr key={v.id} className="border-t border-gray-50 hover:bg-gray-50">
-                  <td className="px-5 py-3">
-                    <Link href={`/admin/videos/${v.id}`} className="text-[14px] font-semibold text-gray-900 hover:text-[#cd1cfa]">{v.title}</Link>
-                  </td>
-                  <td className="px-5 py-3">
-                    <StatusBadge publishStatus={v.publish_status ?? "draft"} processingStep={v.processing_step ?? "none"} />
-                  </td>
-                  <td className="px-5 py-3 text-[13px] text-gray-500">{v.category_code ?? "\u2014"}</td>
-                  <td className="px-5 py-3 text-[13px] text-gray-500">{v.created_at?.slice(0, 10) ?? "\u2014"}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full table-fixed">
+              <thead>
+                <tr className="text-left text-[12px] text-gray-400 uppercase">
+                  <th className="px-5 py-3 w-[50%]">タイトル</th>
+                  <th className="px-5 py-3 w-[20%]">ステータス</th>
+                  <th className="px-5 py-3 w-[15%] hidden md:table-cell">カテゴリ</th>
+                  <th className="px-5 py-3 w-[15%] hidden md:table-cell">作成日</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recentVideos.map((v) => (
+                  <tr key={v.id} className="border-t border-gray-50 hover:bg-gray-50">
+                    <td className="px-5 py-3">
+                      <Link href={`/admin/videos/${v.id}`} className="text-[13px] font-semibold text-gray-900 hover:text-[#cd1cfa] line-clamp-1 block">{v.title}</Link>
+                    </td>
+                    <td className="px-5 py-3">
+                      <StatusBadge publishStatus={v.publish_status ?? "draft"} processingStep={v.processing_step ?? "none"} />
+                    </td>
+                    <td className="px-5 py-3 text-[13px] text-gray-500 hidden md:table-cell">{v.category_code ?? "\u2014"}</td>
+                    <td className="px-5 py-3 text-[13px] text-gray-500 hidden md:table-cell">{v.created_at?.slice(0, 10) ?? "\u2014"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
