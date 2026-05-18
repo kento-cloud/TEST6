@@ -32,7 +32,7 @@ export async function POST(
     stylePresetId?: string
     count?: number
   }
-  const prompt = body.prompt ?? getDefaultThumbnailPrompt(video.title)
+  const prompt = body.prompt?.trim() || getDefaultThumbnailPrompt(video.title)
   const stylePresetId = body.stylePresetId ?? null
   const count = Math.min(Math.max(body.count ?? DEFAULT_COUNT, 1), MAX_BATCH_SIZE)
 

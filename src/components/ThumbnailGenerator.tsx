@@ -25,7 +25,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
   const router = useRouter()
   const [presets, setPresets] = useState<StylePreset[]>([])
   const [selectedPresetId, setSelectedPresetId] = useState("")
-  const [prompt, setPrompt] = useState(`Premium editorial thumbnail for "${videoTitle}". Abstract visual metaphor, dramatic lighting, high contrast. No text, no faces. 16:9.`)
+  const [prompt, setPrompt] = useState("")
   const [state, setState] = useState<"idle" | "generating" | "selecting" | "done" | "error">("idle")
   const [error, setError] = useState("")
   const [generated, setGenerated] = useState<GeneratedThumb[]>([])
@@ -58,13 +58,13 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
   }
 
   async function handleGenerate() {
-    if (!prompt.trim()) return
     setState("generating")
     setError("")
     setGenerated([])
     setSelectedId(null)
     try {
-      const data = await generateThumbnail(videoId, prompt, count, selectedPresetId || undefined)
+      // 空の場合はAPI側でデフォルトプロンプト（CTR最大化用）が適用される
+      const data = await generateThumbnail(videoId, prompt || "", count, selectedPresetId || undefined)
       const thumbs: GeneratedThumb[] = (data.thumbnails ?? []).map((t: { id: string; filePath: string }) => ({
         id: t.id,
         filePath: t.filePath,
@@ -116,13 +116,13 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           type="text"
           value={prompt}
           onChange={(e) => { setPrompt(e.target.value); setSelectedPresetId("") }}
-          placeholder="サムネイル生成プロンプト..."
+          placeholder="空欄ならデフォルト（キャッチコピー入りYouTube風）で生成"
           disabled={state === "generating"}
           className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] disabled:bg-gray-50 disabled:text-gray-400"
         />
         <button
           onClick={handleGenerate}
-          disabled={state === "generating" || !prompt.trim()}
+          disabled={state === "generating"}
           className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap"
         >
           {state === "generating" ? (
@@ -133,7 +133,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           ) : `${count}枚生成`}
         </button>
       </div>
-      <p className="text-[11px] text-gray-400 mt-1">英語プロンプトの方が画像生成の精度が高いため、初期値は英語です。日本語でも動作します。</p>
+      <p className="text-[11px] text-gray-400 mt-1">空欄のまま生成すると、タイトルからキャッチコピーを抽出したYouTube風サムネイルが自動生成されます</p>
 
       {/* Generated Thumbnails Grid - Selection UI */}
       {state === "selecting" && generated.length > 0 && (
