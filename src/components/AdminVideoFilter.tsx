@@ -61,7 +61,8 @@ export function AdminVideoFilter({ videos }: Props) {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-x-auto">
+      {/* PC: テーブル表示 */}
+      <div className="hidden md:block bg-white rounded-xl border border-gray-100 overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-100 bg-gray-50">
@@ -104,6 +105,36 @@ export function AdminVideoFilter({ videos }: Props) {
             ))}
           </tbody>
         </table>
+        {filtered.length === 0 && (
+          <div className="py-8 text-center text-[14px] text-gray-400">
+            該当する動画がありません
+          </div>
+        )}
+      </div>
+
+      {/* モバイル: カード表示 */}
+      <div className="md:hidden space-y-3">
+        {filtered.map(v => (
+          <Link key={v.id} href={`/admin/videos/${v.id}`} className="flex gap-3 bg-white rounded-xl border border-gray-100 p-3 hover:bg-gray-50 transition-colors">
+            {v.thumbnail_path ? (
+              <img src={v.thumbnail_path} alt="" className="w-[100px] h-[56px] object-cover rounded shrink-0" />
+            ) : (
+              <div className="w-[100px] h-[56px] bg-gray-100 rounded flex items-center justify-center shrink-0">
+                <span className="text-[9px] text-gray-400">No img</span>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-[13px] font-medium text-gray-900 line-clamp-2 leading-tight">{v.title}</p>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${STATUS_STYLES[v.publish_status] ?? "bg-gray-100 text-gray-600"}`}>
+                  {v.publish_status}
+                </span>
+                {v.duration ? <span className="text-[11px] text-gray-400">{formatDuration(v.duration)}</span> : null}
+                <span className="text-[11px] text-gray-300">{v.created_at?.slice(0, 10)}</span>
+              </div>
+            </div>
+          </Link>
+        ))}
         {filtered.length === 0 && (
           <div className="py-8 text-center text-[14px] text-gray-400">
             該当する動画がありません
