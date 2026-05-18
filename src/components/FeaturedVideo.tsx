@@ -23,6 +23,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   const featuredItems = items
   const [current, setCurrent] = useState(0)
   const [hovered, setHovered] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
 
   const goTo = useCallback((index: number) => {
     setCurrent(index)
@@ -31,7 +32,13 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   // Reset to 0 when items change
   useEffect(() => {
     setCurrent(0)
+    setVideoLoaded(false)
   }, [items])
+
+  // スライド変更時にvideoLoadedをリセット
+  useEffect(() => {
+    setVideoLoaded(false)
+  }, [current])
 
   useEffect(() => {
     if (featuredItems.length === 0) return
@@ -97,9 +104,10 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
               {item.youtubeVideoId && (
                 <iframe
                   src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}`}
-                  className="absolute inset-0 w-full h-full z-10"
+                  className={`absolute inset-0 w-full h-full z-10 transition-opacity duration-1000 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                   allow="autoplay; encrypted-media"
                   allowFullScreen
+                  onLoad={() => setVideoLoaded(true)}
                 />
               )}
             </div>
