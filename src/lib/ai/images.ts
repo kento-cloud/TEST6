@@ -46,21 +46,37 @@ export async function generateThumbnailImages(
   }
 
   const generateOne = async (fileName: string): Promise<GenerateImageResult> => {
-    const response = await openai.images.generate({
+    // gpt-image-1はresponse_format対応、gpt-image-2は非対応
+    const useResponseFormat = models.image.includes("gpt-image-1")
+    const params: Record<string, unknown> = {
       model: models.image,
       prompt,
       n: 1,
       size: "1792x1024",
       quality: "medium",
-      response_format: "b64_json",
-    })
+    }
+    if (useResponseFormat) {
+      params.response_format = "b64_json"
+    }
+
+    const response = await openai.images.generate(params as unknown as Parameters<typeof openai.images.generate>[0]) as unknown as { data: Array<{ b64_json?: string; url?: string }> }
 
     const imageData = response.data?.[0]
-    if (!imageData?.b64_json) {
+    if (!imageData) {
       throw new Error("画像生成レスポンスが空です")
     }
 
-    const buffer = Buffer.from(imageData.b64_json, "base64")
+    // b64_json or URL からバッファを取得
+    let buffer: Buffer
+    if (imageData.b64_json) {
+      buffer = Buffer.from(imageData.b64_json, "base64")
+    } else if (imageData.url) {
+      const res = await fetch(imageData.url)
+      if (!res.ok) throw new Error("画像URLからのダウンロードに失敗しました")
+      buffer = Buffer.from(await res.arrayBuffer())
+    } else {
+      throw new Error("画像生成レスポンスにデータがありません")
+    }
     const filePath = path.join(outputDir, fileName)
     await writeFile(filePath, buffer)
 
