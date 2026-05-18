@@ -35,10 +35,10 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
     setVideoReady(false)
   }, [items])
 
-  // スライド変更時: サムネ3秒表示→動画フェードイン
+  // スライド変更時: サムネ4秒表示→動画フェードイン（4秒待つことでYouTubeの初期UIが消えてから表示）
   useEffect(() => {
     setVideoReady(false)
-    const timer = setTimeout(() => setVideoReady(true), 3000)
+    const timer = setTimeout(() => setVideoReady(true), 4000)
     return () => clearTimeout(timer)
   }, [current])
 
@@ -47,7 +47,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
     if (hovered) return // ホバー中はスライド停止
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % featuredItems.length)
-    }, 5000)
+    }, 15000)
     return () => clearInterval(timer)
   }, [featuredItems.length, hovered])
 
