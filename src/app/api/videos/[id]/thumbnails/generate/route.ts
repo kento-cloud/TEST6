@@ -61,17 +61,19 @@ export async function POST(
 
     const results = await generateThumbnailImages(prompt, outputDir, fileNames)
 
-    // Update all records with results
-    const updates = thumbIds.map((thumbId, i) =>
-      supabase.from("thumbnails").update({
+    // 成功した分だけ更新、残りはerrorに
+    for (let i = 0; i < results.length; i++) {
+      await supabase.from("thumbnails").update({
         file_path: results[i].filePath,
         status: "done",
         width: results[i].width,
         height: results[i].height,
         file_size: results[i].fileSize,
-      }).eq("id", thumbId)
-    )
-    await Promise.all(updates)
+      }).eq("id", thumbIds[i])
+    }
+    for (let i = results.length; i < thumbIds.length; i++) {
+      await supabase.from("thumbnails").update({ status: "error" }).eq("id", thumbIds[i])
+    }
 
     // Log to ai_generation_logs
     await supabase.from("ai_generation_logs").insert({
@@ -86,12 +88,12 @@ export async function POST(
       created_at: now,
     })
 
-    const responseData = thumbIds.map((thumbId, i) => ({
-      id: thumbId,
+    const responseData = results.map((r, i) => ({
+      id: thumbIds[i],
       status: "done",
-      filePath: results[i].filePath,
-      width: results[i].width,
-      height: results[i].height,
+      filePath: r.filePath,
+      width: r.width,
+      height: r.height,
     }))
 
     return NextResponse.json({ thumbnails: responseData }, { status: 201 })
