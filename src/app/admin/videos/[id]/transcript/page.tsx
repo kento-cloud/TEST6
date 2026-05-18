@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase"
 import { notFound } from "next/navigation"
 import { ManualTranscriptForm } from "@/components/ManualTranscriptForm"
 import { WhisperTranscribeButton } from "@/components/WhisperTranscribeButton"
+import { ProcessingPoller } from "@/components/ProcessingPoller"
 import { TranscriptEditor } from "@/components/TranscriptEditor"
 
 export const dynamic = "force-dynamic"
@@ -25,10 +26,13 @@ function formatTime(seconds: number): string {
 
 export default async function TranscriptPage({ params }: Props) {
   const { id } = await params
-  const { data: video } = await supabase.from("videos").select("title").eq("id", id).single()
+  const { data: video } = await supabase.from("videos").select("title, processing_step").eq("id", id).single()
   if (!video) notFound()
 
   const { data: transcript } = await supabase.from("transcriptions").select("*").eq("video_id", id).single()
+
+  const processingStep = video.processing_step ?? "none"
+  const isProcessing = processingStep !== "none" && processingStep !== "error"
 
   return (
     <div>
@@ -36,9 +40,14 @@ export default async function TranscriptPage({ params }: Props) {
         <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">文字起こし</h1>
+      <h1 className="text-[24px] font-bold text-gray-900 mb-6">文字起こし・AI生成</h1>
 
-      {!transcript ? (
+      {isProcessing ? (
+        <div>
+          <ProcessingPoller videoId={id} currentStep={processingStep} />
+          <p className="text-[13px] text-gray-500 mt-2">完了すると自動的にページが更新されます。</p>
+        </div>
+      ) : !transcript ? (
         <div className="space-y-6">
           <WhisperTranscribeButton videoId={id} mode="full" />
           <div className="relative">
