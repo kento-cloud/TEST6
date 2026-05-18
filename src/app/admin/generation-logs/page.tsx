@@ -67,13 +67,13 @@ export default function GenerationLogsPage() {
       <div className="flex gap-1.5 mb-4 flex-wrap">
         {[
           { value: "all", label: "すべて" },
+          { value: "full_generate", label: "一括生成" },
+          { value: "transcribe", label: "文字起こし" },
           { value: "summary", label: "要約" },
           { value: "chapters", label: "チャプター" },
           { value: "article", label: "記事" },
           { value: "tags", label: "タグ" },
-          { value: "thumbnail", label: "サムネ" },
-          { value: "transcribe", label: "文字起こし" },
-          { value: "full_generate", label: "一括" },
+          { value: "thumbnail", label: "サムネイル" },
         ].map((f) => (
           <button
             key={f.value}
