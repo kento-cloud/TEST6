@@ -47,7 +47,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
     if (hovered) return // ホバー中はスライド停止
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % featuredItems.length)
-    }, 15000)
+    }, 10000)
     return () => clearInterval(timer)
   }, [featuredItems.length, hovered])
 
