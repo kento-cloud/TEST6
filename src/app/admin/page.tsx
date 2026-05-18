@@ -224,31 +224,19 @@ export default async function AdminDashboard() {
             <Link href="/admin/videos/upload" className="text-[14px] text-[#cd1cfa] font-semibold">最初の動画をアップロード →</Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full table-fixed">
-              <thead>
-                <tr className="text-left text-[12px] text-gray-400 uppercase">
-                  <th className="px-5 py-3 w-[50%]">タイトル</th>
-                  <th className="px-5 py-3 w-[20%]">ステータス</th>
-                  <th className="px-5 py-3 w-[15%] hidden md:table-cell">カテゴリ</th>
-                  <th className="px-5 py-3 w-[15%] hidden md:table-cell">作成日</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentVideos.map((v) => (
-                  <tr key={v.id} className="border-t border-gray-50 hover:bg-gray-50">
-                    <td className="px-5 py-3">
-                      <Link href={`/admin/videos/${v.id}`} className="text-[13px] font-semibold text-gray-900 hover:text-[#cd1cfa] line-clamp-1 block">{v.title}</Link>
-                    </td>
-                    <td className="px-5 py-3">
-                      <StatusBadge publishStatus={v.publish_status ?? "draft"} processingStep={v.processing_step ?? "none"} />
-                    </td>
-                    <td className="px-5 py-3 text-[13px] text-gray-500 hidden md:table-cell">{v.category_code ?? "\u2014"}</td>
-                    <td className="px-5 py-3 text-[13px] text-gray-500 hidden md:table-cell">{v.created_at?.slice(0, 10) ?? "\u2014"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="divide-y divide-gray-50">
+            {recentVideos.map((v) => (
+              <Link key={v.id} href={`/admin/videos/${v.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold text-gray-900 truncate">{v.title}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[11px] text-gray-400">{v.category_code ?? "未分類"}</span>
+                    <span className="text-[11px] text-gray-300">{v.created_at?.slice(0, 10)}</span>
+                  </div>
+                </div>
+                <StatusBadge publishStatus={v.publish_status ?? "draft"} processingStep={v.processing_step ?? "none"} />
+              </Link>
+            ))}
           </div>
         )}
       </div>
