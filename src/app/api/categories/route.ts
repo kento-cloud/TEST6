@@ -34,6 +34,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "codeとlabelは必須です" }, { status: 400 })
   }
 
+  const codePattern = /^[a-z0-9_-]{1,50}$/
+  if (!codePattern.test(body.code)) {
+    return NextResponse.json({ error: "codeは英小文字・数字・ハイフン・アンダースコアのみ（50文字以内）" }, { status: 400 })
+  }
+  if (body.label.length > 50) {
+    return NextResponse.json({ error: "表示名は50文字以内にしてください" }, { status: 400 })
+  }
+
   const { data: maxOrder } = await supabase
     .from("categories")
     .select("sort_order")

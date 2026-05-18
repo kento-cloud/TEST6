@@ -37,11 +37,12 @@ import { createClient } from "@supabase/supabase-js"
  */
 
 function createUserClient(authHeader: string) {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { global: { headers: { Authorization: authHeader } } }
-  )
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) throw new Error("Supabase config missing")
+  return createClient(url, key, {
+    global: { headers: { Authorization: authHeader } }
+  })
 }
 
 async function getAuthUser(request: NextRequest) {

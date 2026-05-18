@@ -40,52 +40,38 @@ export function useFavorites() {
     async (videoId: string) => {
       if (!session) return
 
-      const isFav = favoriteIds.has(videoId)
-
-      // 楽観的更新
+      let wasFav = false
       setFavoriteIds((prev) => {
+        wasFav = prev.has(videoId)
         const next = new Set(prev)
-        if (isFav) {
-          next.delete(videoId)
-        } else {
-          next.add(videoId)
-        }
+        if (wasFav) next.delete(videoId)
+        else next.add(videoId)
         return next
       })
 
       try {
-        const res = await fetch("/api/favorites", {
-          method: isFav ? "DELETE" : "POST",
+        await fetch("/api/favorites", {
+          method: wasFav ? "DELETE" : "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ videoId }),
         })
-
-        if (!res.ok) {
-          throw new Error("API request failed")
-        }
       } catch {
         // エラー時はロールバック
         setFavoriteIds((prev) => {
           const next = new Set(prev)
-          if (isFav) {
-            next.add(videoId)
-          } else {
-            next.delete(videoId)
-          }
+          if (wasFav) next.add(videoId)
+          else next.delete(videoId)
           return next
         })
       }
     },
-    [session, favoriteIds]
+    [session]
   )
 
-  const isFavorite = useCallback(
-    (videoId: string) => favoriteIds.has(videoId),
-    [favoriteIds]
-  )
+  function isFavorite(videoId: string) { return favoriteIds.has(videoId) }
 
   return { favoriteIds, loading, toggle, isFavorite }
 }

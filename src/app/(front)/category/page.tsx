@@ -13,20 +13,29 @@ function CategoryContent() {
   const searchParams = useSearchParams()
   const code = searchParams.get("category_code") ?? "business"
 
-  const categoryLabels: Record<string, string> = {
+  const [categoryLabels, setCategoryLabels] = useState<Record<string, string>>({
     business: "ビジネス",
     money: "マネー",
     career: "キャリア",
     life: "ライフ",
     technology: "テクノロジー",
     global: "グローバル",
-  }
+  })
 
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [rankings, setRankings] = useState<{ label: string; key: string; episodes: Episode[] }[]>([])
   const [featuredItems, setFeaturedItems] = useState<FeaturedItem[]>([])
 
   useEffect(() => {
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then((data: { code: string; label: string }[]) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCategoryLabels(Object.fromEntries(data.map(c => [c.code, c.label])))
+        }
+      })
+      .catch(() => {})
+
     fetch("/api/front/episodes?type=categories")
       .then(r => r.json())
       .then(data => {

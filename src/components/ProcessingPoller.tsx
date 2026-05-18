@@ -24,7 +24,7 @@ export function ProcessingPoller({ videoId, currentStep }: Props) {
       } catch {
         // ignore fetch errors
       }
-    }, 3000)
+    }, 5000)
     return () => clearInterval(interval)
   }, [videoId, currentStep, isProcessing, router])
 

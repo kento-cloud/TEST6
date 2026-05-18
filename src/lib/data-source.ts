@@ -158,18 +158,28 @@ export async function getCategoryEpisodes() {
     const episodes = await getPublishedEpisodes()
     if (episodes.length === 0) return staticCategoryEpisodes
 
-    const categoryLabels: Record<string, string> = {
-      business: "ビジネス", money: "マネー", career: "キャリア",
-      life: "ライフ", technology: "テクノロジー", global: "グローバル",
-    }
-    const categories = Object.keys(categoryLabels)
+    const { data: dbCategories } = await supabase
+      .from("categories")
+      .select("code, label")
+      .order("sort_order", { ascending: true })
 
-    return categories.map((code) => {
+    const categoryList = (dbCategories && dbCategories.length > 0)
+      ? dbCategories.map(c => ({ code: c.code as string, label: c.label as string }))
+      : [
+          { code: "business", label: "ビジネス" },
+          { code: "money", label: "マネー" },
+          { code: "career", label: "キャリア" },
+          { code: "life", label: "ライフ" },
+          { code: "technology", label: "テクノロジー" },
+          { code: "global", label: "グローバル" },
+        ]
+
+    return categoryList.map(({ code, label }) => {
       const filtered = episodes.filter((e) => e.categoryCode === code)
       const staticCat = staticCategoryEpisodes.find((c) => c.code === code)
       return {
         code,
-        label: categoryLabels[code],
+        label,
         episodes: filtered.length > 0 ? filtered : (staticCat?.episodes ?? []),
       }
     })

@@ -58,6 +58,7 @@ export function AdminVideoFilter({ videos }: Props) {
           <option value="draft">下書き</option>
           <option value="review">レビュー</option>
           <option value="published">公開中</option>
+          <option value="unpublished">非公開</option>
         </select>
       </div>
 

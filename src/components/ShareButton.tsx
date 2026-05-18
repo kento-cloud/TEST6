@@ -28,10 +28,14 @@ export function ShareButton({ title, url }: Props) {
     setOpen(!open)
   }
 
-  function handleCopy() {
-    navigator.clipboard.writeText(shareUrl)
-    setCopied(true)
-    setTimeout(() => { setCopied(false); setOpen(false) }, 1500)
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setCopied(true)
+      setTimeout(() => { setCopied(false); setOpen(false) }, 1500)
+    } catch {
+      // クリップボードアクセス失敗時は何もしない
+    }
   }
 
   const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(shareUrl)}`

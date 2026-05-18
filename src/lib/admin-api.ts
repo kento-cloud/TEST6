@@ -46,19 +46,6 @@ export async function transcribeVideo(id: string, manualText?: string) {
 
 // === AI Generation ===
 
-export async function generateAll(id: string, instructions?: Partial<Record<string, string>>, promptMode?: "append" | "override") {
-  const res = await fetch(`/api/videos/${id}/generate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ instructions, promptMode }),
-  })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(data.error ?? "AI生成に失敗しました")
-  }
-  return res.json()
-}
-
 export async function regenerateStep(id: string, step: GenerationStepType, customInstruction?: string, promptMode?: "append" | "override") {
   const res = await fetch(`/api/videos/${id}/regenerate`, {
     method: "POST",

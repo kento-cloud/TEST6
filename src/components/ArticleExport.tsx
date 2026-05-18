@@ -9,17 +9,25 @@ interface Props {
 export function ArticleExport({ article, title }: Props) {
   const [copied, setCopied] = useState(false)
 
-  function handleCopy() {
+  async function handleCopy() {
     const text = `${title}\n\n${article.replace(/##\s/g, "■ ").replace(/###\s/g, "● ").replace(/- /g, "・")}`
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // クリップボードアクセス失敗時は何もしない
+    }
   }
 
-  function handleCopyMarkdown() {
-    navigator.clipboard.writeText(`# ${title}\n\n${article}`)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  async function handleCopyMarkdown() {
+    try {
+      await navigator.clipboard.writeText(`# ${title}\n\n${article}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // クリップボードアクセス失敗時は何もしない
+    }
   }
 
   return (
