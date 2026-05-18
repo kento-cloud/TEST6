@@ -23,6 +23,8 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [autoProcessing, setAutoProcessing] = useState(false)
+  const [showCustomPrompt, setShowCustomPrompt] = useState(false)
+  const [customPrompt, setCustomPrompt] = useState("")
 
   const hasDone = !!transcript && transcript.status === "done"
   const hasError = !!transcript && transcript.status === "error"
@@ -115,7 +117,11 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
                 setAutoProcessing(true)
                 setMessage("")
                 try {
-                  const res = await fetch(`/api/videos/${videoId}/auto-process`, { method: "POST" })
+                  const body = customPrompt.trim() ? JSON.stringify({ aiPrompt: customPrompt.trim() }) : undefined
+                  const res = await fetch(`/api/videos/${videoId}/auto-process`, {
+                    method: "POST",
+                    ...(body ? { headers: { "Content-Type": "application/json" }, body } : {}),
+                  })
                   if (!res.ok) {
                     const data = await res.json().catch(() => ({}))
                     throw new Error(data.error ?? "処理に失敗しました")
@@ -140,6 +146,30 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
           )}
         </div>
       </div>
+
+      {/* Custom prompt toggle (未処理時のみ) */}
+      {!transcript && !isProcessing && (
+        <div className="px-3 border-t border-gray-100">
+          <button
+            onClick={() => setShowCustomPrompt(!showCustomPrompt)}
+            className="text-[11px] text-gray-400 hover:text-[#cd1cfa] py-1.5 cursor-pointer"
+          >
+            {showCustomPrompt ? "▲ 閉じる" : "▼ 指示をカスタマイズ"}
+          </button>
+          {showCustomPrompt && (
+            <div className="pb-3">
+              <textarea
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="特別な指示がある場合のみ入力（例: 初心者向けに、箇条書き多めで）"
+                rows={2}
+                className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              />
+              <p className="text-[10px] text-gray-400 mt-1">未入力の場合はデフォルトの汎用プロンプトが適用されます</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Error display */}
       {expanded && hasError && (
