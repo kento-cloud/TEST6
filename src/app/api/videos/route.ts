@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
       id,
       title,
       description,
-      file_path: `/uploads/videos/${fileName}`,
+      file_path: `/api/uploads/videos/${fileName}`,
       file_size: file.size,
       publish_status: "draft",
       processing_step: "none",

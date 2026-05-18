@@ -82,7 +82,7 @@ export async function POST(
   await supabase.from("thumbnails").insert({
     id: thumbId,
     video_id: id,
-    file_path: `/uploads/thumbnails/${fileName}`,
+    file_path: `/api/uploads/thumbnails/${fileName}`,
     source: "manual",
     is_primary: isPrimary,
     status: "done",

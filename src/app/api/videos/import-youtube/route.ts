@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const id = ulid()
     const thumbPath = path.join(process.cwd(), "uploads", "thumbnails", `${id}.jpg`)
     await downloadYouTubeThumbnail(videoId, thumbPath)
-    const thumbnailRelPath = `/uploads/thumbnails/${id}.jpg`
+    const thumbnailRelPath = `/api/uploads/thumbnails/${id}.jpg`
 
     const now = new Date().toISOString()
 
