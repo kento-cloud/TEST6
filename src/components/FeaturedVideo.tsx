@@ -35,9 +35,11 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
     setVideoLoaded(false)
   }, [items])
 
-  // スライド変更時にvideoLoadedをリセット
+  // スライド変更時: サムネを3秒見せてから動画に切り替え
   useEffect(() => {
     setVideoLoaded(false)
+    const timer = setTimeout(() => setVideoLoaded(true), 3000)
+    return () => clearTimeout(timer)
   }, [current])
 
   useEffect(() => {
@@ -107,7 +109,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
                   className={`absolute inset-0 w-full h-full z-10 transition-opacity duration-1000 ${videoLoaded ? "opacity-100" : "opacity-0"}`}
                   allow="autoplay; encrypted-media"
                   allowFullScreen
-                  onLoad={() => setVideoLoaded(true)}
+                  onLoad={() => { /* videoLoadedはタイマーで制御 */ }}
                 />
               )}
             </div>
