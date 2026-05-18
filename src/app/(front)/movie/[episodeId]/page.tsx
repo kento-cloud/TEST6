@@ -1,6 +1,7 @@
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { EpisodeSection } from "@/components/EpisodeSection"
 import { VideoPlayer } from "@/components/VideoPlayer"
+import { YouTubePlayer } from "@/components/YouTubePlayer"
 import { AuthGate } from "@/components/AuthGate"
 import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
@@ -82,12 +83,7 @@ export default async function MoviePage({ params }: Props) {
               <div className="mb-6 -mx-4 md:-mx-8">
                 <div className="w-full">
                   {sourceType === "youtube" && youtubeVideoId ? (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                      className="w-full aspect-video"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                    <YouTubePlayer videoId={youtubeVideoId} thumbnailUrl={thumbnailUrl} />
                   ) : videoSrc ? (
                     <VideoPlayer src={videoSrc} poster={thumbnailUrl} />
                   ) : null}
