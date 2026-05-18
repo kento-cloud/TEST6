@@ -23,26 +23,6 @@ export async function extractAudio(videoPath: string, outputPath: string): Promi
   ])
 }
 
-export async function extractThumbnail(videoPath: string, outputPath: string): Promise<void> {
-  await execFileAsync(getBinaryPath("ffmpeg"), [
-    "-i", videoPath,
-    "-ss", "00:00:05",
-    "-frames:v", "1",
-    "-q:v", "2",
-    "-y",
-    outputPath,
-  ])
-}
-
-export async function getVideoDuration(videoPath: string): Promise<number> {
-  const { stdout } = await execFileAsync(getBinaryPath("ffprobe"), [
-    "-v", "quiet",
-    "-show_entries", "format=duration",
-    "-of", "csv=p=0",
-    videoPath,
-  ])
-  return Math.round(parseFloat(stdout.trim()))
-}
 
 export async function checkFfmpeg(): Promise<boolean> {
   try {

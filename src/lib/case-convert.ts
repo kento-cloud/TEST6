@@ -13,16 +13,6 @@ export function snakeToCamel<T extends Record<string, unknown>>(obj: T): Record<
   return result
 }
 
-/** camelCase → snake_case */
-export function camelToSnake(obj: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(obj)) {
-    if (value === undefined) continue
-    const snakeKey = key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)
-    result[snakeKey] = value
-  }
-  return result
-}
 
 /** 配列版 snake_case → camelCase */
 export function snakeToCamelArray<T extends Record<string, unknown>>(arr: T[]): Record<string, unknown>[] {

@@ -7,27 +7,6 @@ import type { GenerationStepType } from "@/types/admin"
 
 // === Videos ===
 
-export async function fetchVideos() {
-  const res = await fetch("/api/videos")
-  if (!res.ok) throw new Error("動画一覧の取得に失敗しました")
-  return res.json()
-}
-
-export async function fetchVideo(id: string) {
-  const res = await fetch(`/api/videos/${id}`)
-  if (!res.ok) throw new Error("動画の取得に失敗しました")
-  return res.json()
-}
-
-export async function uploadVideo(formData: FormData) {
-  const res = await fetch("/api/videos", { method: "POST", body: formData })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(data.error ?? "アップロードに失敗しました")
-  }
-  return res.json()
-}
-
 export async function importYouTube(url: string, categoryCode?: string, aiPrompt?: string) {
   const res = await fetch("/api/videos/import-youtube", {
     method: "POST",
@@ -170,15 +149,6 @@ export async function generateThumbnail(id: string, prompt: string, count: numbe
 export async function setPrimaryThumbnail(videoId: string, thumbId: string) {
   const res = await fetch(`/api/videos/${videoId}/thumbnails/${thumbId}`, { method: "PUT" })
   if (!res.ok) throw new Error("プライマリ設定に失敗しました")
-  return res.json()
-}
-
-export async function deleteThumbnail(videoId: string, thumbId: string) {
-  const res = await fetch(`/api/videos/${videoId}/thumbnails/${thumbId}`, { method: "DELETE" })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(data.error ?? "サムネイル削除に失敗しました")
-  }
   return res.json()
 }
 

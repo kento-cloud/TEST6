@@ -167,33 +167,3 @@ export interface PublishChecklist {
   readonly noError: boolean
 }
 
-// === Publish check labels ===
-
-export const PUBLISH_STATUS_LABELS: Record<PublishStatus, string> = {
-  draft: "下書き",
-  review: "レビュー待ち",
-  published: "公開中",
-  unpublished: "非公開",
-}
-
-export const PROCESSING_STEP_LABELS: Record<ProcessingStep, string> = {
-  none: "待機中",
-  extracting_audio: "音声抽出中",
-  transcribing: "文字起こし中",
-  generating: "AI生成中",
-  generating_summary: "要約生成中",
-  generating_chapters: "チャプター生成中",
-  generating_article: "記事生成中",
-  generating_tags: "タグ生成中",
-  generating_thumbnail: "サムネイル生成中",
-  error: "エラー",
-}
-
-export const CATEGORY_LABELS: Record<string, string> = {
-  business: "ビジネス",
-  money: "マネー",
-  career: "キャリア",
-  life: "ライフ",
-  technology: "テクノロジー",
-  global: "グローバル",
-}
