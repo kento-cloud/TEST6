@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { AdminBottomNav } from "@/components/AdminBottomNav"
 
 const navItems = [
   { label: "ダッシュボード", href: "/admin", icon: "M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" },
@@ -13,47 +13,8 @@ const navItems = [
   { label: "設定", href: "/admin/settings", icon: "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" },
 ] as const
 
-function Sidebar({ isActive }: { isActive: (href: string) => boolean }) {
-  return (
-    <>
-      <div className="h-[60px] flex items-center px-5 border-b border-gray-100">
-        <Link href="/admin" className="flex items-center gap-2">
-          <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
-          <span className="text-[13px] font-semibold text-gray-400">Admin</span>
-        </Link>
-      </div>
-      <nav className="flex-1 py-3 overflow-y-auto">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`flex items-center gap-3 px-5 py-[10px] text-[14px] transition-colors ${
-              isActive(item.href)
-                ? "text-[#cd1cfa] bg-purple-50 font-semibold border-r-2 border-[#cd1cfa]"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d={item.icon} /></svg>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-      <div className="p-4 border-t border-gray-100 space-y-2">
-        <a href="/" target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-500 hover:text-blue-700 flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-          サイトを表示
-        </a>
-        <LogoutButton />
-      </div>
-    </>
-  )
-}
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => { setMenuOpen(false) }, [pathname])
 
   function isActive(href: string): boolean {
     if (href === "/admin") return pathname === "/admin"
@@ -62,40 +23,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen bg-[#f5f5f7]">
-      {/* PC Sidebar - 常に表示 */}
+      {/* PC Sidebar */}
       <aside className="hidden md:flex w-[240px] min-w-[240px] bg-white border-r border-gray-200 fixed h-screen flex-col">
-        <Sidebar isActive={isActive} />
+        <div className="h-[60px] flex items-center px-5 border-b border-gray-100">
+          <Link href="/admin" className="flex items-center gap-2">
+            <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+            <span className="text-[13px] font-semibold text-gray-400">Admin</span>
+          </Link>
+        </div>
+        <nav className="flex-1 py-3 overflow-y-auto">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-5 py-[10px] text-[14px] transition-colors ${
+                isActive(item.href)
+                  ? "text-[#cd1cfa] bg-purple-50 font-semibold border-r-2 border-[#cd1cfa]"
+                  : "text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d={item.icon} /></svg>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="p-4 border-t border-gray-100 space-y-2">
+          <a href="/" target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-500 hover:text-blue-700 flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            サイトを表示
+          </a>
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 h-[56px] bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-[48px] bg-white border-b border-gray-200 flex items-center justify-center px-4 z-50">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
-          <span className="text-[12px] font-semibold text-gray-400">Admin</span>
+          <span className="text-[16px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+          <span className="text-[11px] font-semibold text-gray-400">Admin</span>
         </Link>
-        <button onClick={() => setMenuOpen(!menuOpen)} className="w-10 h-10 flex items-center justify-center cursor-pointer" aria-label="メニュー">
-          {menuOpen ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
-          )}
-        </button>
       </div>
 
-      {/* Mobile Overlay + Drawer */}
-      {menuOpen && (
-        <>
-          <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setMenuOpen(false)} />
-          <aside className="md:hidden fixed top-0 left-0 w-[260px] h-screen bg-white border-r border-gray-200 flex flex-col z-50">
-            <Sidebar isActive={isActive} />
-          </aside>
-        </>
-      )}
-
       {/* Main */}
-      <main className="flex-1 md:ml-[240px] pt-[56px] md:pt-0 p-4 md:p-6 min-w-0">
+      <main className="flex-1 md:ml-[240px] pt-[48px] md:pt-0 pb-[60px] md:pb-0 p-4 md:p-6 min-w-0">
         {children}
       </main>
+
+      {/* Mobile Bottom Nav */}
+      <AdminBottomNav />
     </div>
   )
 }
