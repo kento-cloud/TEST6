@@ -71,24 +71,24 @@ export default async function AdminVideoDetailPage({ params }: Props) {
       </div>
 
       {/* Progress Steps */}
-      <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-gray-100 p-3 md:p-5 mb-6 overflow-x-auto">
+        <div className="flex items-center justify-between min-w-0">
           {steps.map((st, i) => (
-            <div key={st.label} className="flex items-center flex-1">
-              <div className="flex flex-col items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold ${
+            <div key={st.label} className="flex items-center flex-1 min-w-0">
+              <div className="flex flex-col items-center shrink-0">
+                <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[11px] md:text-[12px] font-bold ${
                   st.done ? "bg-green-500 text-white" : "bg-gray-200 text-gray-500"
                 }`}>
                   {st.done ? "✓" : i + 1}
                 </div>
                 {st.href ? (
-                  <Link href={st.href} className="text-[12px] mt-1 text-[#cd1cfa] hover:underline">{st.label}</Link>
+                  <Link href={st.href} className="text-[10px] md:text-[12px] mt-1 text-[#cd1cfa] hover:underline text-center whitespace-nowrap">{st.label}</Link>
                 ) : (
-                  <span className="text-[12px] mt-1 text-gray-500">{st.label}</span>
+                  <span className="text-[10px] md:text-[12px] mt-1 text-gray-500 text-center whitespace-nowrap">{st.label}</span>
                 )}
               </div>
               {i < steps.length - 1 && (
-                <div className={`flex-1 h-[2px] mx-2 ${st.done ? "bg-green-500" : "bg-gray-200"}`} />
+                <div className={`flex-1 h-[2px] mx-1 md:mx-2 ${st.done ? "bg-green-500" : "bg-gray-200"}`} />
               )}
             </div>
           ))}

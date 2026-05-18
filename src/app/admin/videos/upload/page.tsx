@@ -21,8 +21,8 @@ export default function UploadPage() {
   const [activeTab, setActiveTab] = useState<Tab>("upload")
 
   return (
-    <div className="max-w-[640px]">
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">動画を追加</h1>
+    <div className="max-w-[640px] mx-auto">
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">動画を追加</h1>
 
       {/* Tab */}
       <div className="flex border-b border-gray-200 mb-6">

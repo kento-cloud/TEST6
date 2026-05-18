@@ -111,19 +111,19 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
       )}
 
       {/* Prompt Input + Generate Button */}
-      <div className="flex gap-2">
+      <div className="space-y-2">
         <input
           type="text"
           value={prompt}
           onChange={(e) => { setPrompt(e.target.value); setSelectedPresetId("") }}
           placeholder="空欄ならデフォルト（キャッチコピー入りYouTube風）で生成"
           disabled={state === "generating"}
-          className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] disabled:bg-gray-50 disabled:text-gray-400"
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] disabled:bg-gray-50 disabled:text-gray-400"
         />
         <button
           onClick={handleGenerate}
           disabled={state === "generating"}
-          className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer whitespace-nowrap"
+          className="w-full px-4 py-2.5 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
         >
           {state === "generating" ? (
             <span className="inline-flex items-center gap-1">
