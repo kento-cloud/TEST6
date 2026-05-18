@@ -170,10 +170,16 @@ async function callLLM(prompt: string, systemPrompt?: string): Promise<GenerateR
   try {
     const defaultSystem = "あなたは読者を惹きつけるプロの編集者・ライターです。ジャンルを問わず、読み始めたら止まらない文章を書きます。AI臭は一切なし。具体性・臨場感・リズム感を重視し、読者の好奇心を最後まで引っ張り続けます。"
 
+    // 新しいモデル(gpt-4.1+)はmax_completion_tokens、旧モデルはmax_tokens
+    const isLegacyModel = models.text.startsWith("gpt-3") || models.text === "gpt-4" || models.text === "gpt-4-turbo"
+    const tokenParam = isLegacyModel
+      ? { max_tokens: 4096 }
+      : { max_completion_tokens: 4096 }
+
     const response = await client.chat.completions.create(
       {
         model: models.text,
-        max_tokens: 4096,
+        ...tokenParam,
         messages: [
           { role: "system", content: systemPrompt ?? defaultSystem },
           { role: "user", content: prompt },
