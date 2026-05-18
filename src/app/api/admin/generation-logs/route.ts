@@ -33,15 +33,19 @@ export async function GET(req: NextRequest) {
   }
   const { data: videos } = await supabase
     .from("videos")
-    .select("id, title")
+    .select("id, title, thumbnail_path")
     .in("id", videoIds)
 
-  const titleMap = new Map((videos ?? []).map(v => [v.id, v.title]))
+  const videoMap = new Map((videos ?? []).map(v => [v.id, { title: v.title, thumbnail: v.thumbnail_path }]))
 
-  const enriched = (logs ?? []).map(log => ({
-    ...log,
-    video_title: titleMap.get(log.video_id) ?? null,
-  }))
+  const enriched = (logs ?? []).map(log => {
+    const video = videoMap.get(log.video_id)
+    return {
+      ...log,
+      video_title: video?.title ?? null,
+      video_thumbnail: video?.thumbnail ?? null,
+    }
+  })
 
   return NextResponse.json(enriched)
 }

@@ -7,6 +7,7 @@ interface LogEntry {
   id: string
   video_id: string
   video_title?: string
+  video_thumbnail?: string | null
   step: string
   status: string
   model: string | null
@@ -57,30 +58,27 @@ export default function GenerationLogsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-[24px] font-bold text-gray-900">AI生成履歴</h1>
-          <p className="text-[13px] text-gray-400 mt-1">全動画のAI生成ログ一覧。プロンプト・結果・エラーを確認できます。</p>
-        </div>
-        <Link href="/admin" className="text-[13px] text-gray-400 hover:text-gray-600">← ダッシュボード</Link>
+      <div className="mb-6">
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">AI生成履歴</h1>
+        <p className="text-[12px] text-gray-400 mt-1">プロンプト・結果・エラーを確認できます</p>
       </div>
 
       {/* Filter */}
-      <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="flex gap-1.5 mb-4 flex-wrap">
         {[
           { value: "all", label: "すべて" },
           { value: "summary", label: "要約" },
           { value: "chapters", label: "チャプター" },
           { value: "article", label: "記事" },
           { value: "tags", label: "タグ" },
-          { value: "thumbnail", label: "サムネイル" },
+          { value: "thumbnail", label: "サムネ" },
           { value: "transcribe", label: "文字起こし" },
-          { value: "full_generate", label: "一括生��" },
+          { value: "full_generate", label: "一括" },
         ].map((f) => (
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
-            className={`px-3 py-1.5 rounded-lg text-[12px] font-medium cursor-pointer transition-colors ${
+            className={`px-2.5 py-1 rounded-lg text-[11px] font-medium cursor-pointer transition-colors ${
               filter === f.value
                 ? "bg-[#cd1cfa] text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -98,84 +96,71 @@ export default function GenerationLogsPage() {
           <p className="text-[14px] text-gray-400">ログがありません</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50">
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">日時</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">動画</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">ステップ</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">ステータス</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">モデル</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">処理時間</th>
-                <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 uppercase">詳細</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-[12px] text-gray-500 whitespace-nowrap">
-                    {log.created_at?.slice(0, 16).replace("T", " ")}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/admin/videos/${log.video_id}`} className="text-[12px] text-[#cd1cfa] hover:underline truncate block max-w-[200px]">
-                      {log.video_title ?? log.video_id.slice(0, 10)}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-[12px] text-gray-700">{STEP_LABELS[log.step] ?? log.step}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded text-[11px] font-medium ${STATUS_STYLES[log.status] ?? "bg-gray-100 text-gray-600"}`}>
+        <div className="space-y-2">
+          {logs.map((log) => (
+            <div key={log.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+              <button
+                onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
+                className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+              >
+                {/* サムネイル */}
+                {log.video_thumbnail ? (
+                  <img src={log.video_thumbnail} alt="" className="w-[56px] h-[32px] object-cover rounded shrink-0" />
+                ) : (
+                  <div className="w-[56px] h-[32px] bg-gray-100 rounded shrink-0" />
+                )}
+
+                {/* 情報 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${STATUS_STYLES[log.status] ?? "bg-gray-100 text-gray-600"}`}>
                       {log.status}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-[11px] text-gray-400 font-mono">{log.model ?? "—"}</td>
-                  <td className="px-4 py-3 text-[12px] text-gray-500">
-                    {log.processing_ms ? `${(log.processing_ms / 1000).toFixed(1)}s` : "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
-                      className="text-[11px] text-blue-600 hover:underline cursor-pointer"
-                    >
-                      {expandedId === log.id ? "閉じる" : "表示"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <span className="text-[12px] font-medium text-gray-700">{STEP_LABELS[log.step] ?? log.step}</span>
+                    {log.processing_ms != null && (
+                      <span className="text-[11px] text-gray-400">{(log.processing_ms / 1000).toFixed(1)}s</span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-gray-400 truncate mt-0.5">
+                    <Link href={`/admin/videos/${log.video_id}`} className="text-[#cd1cfa] hover:underline" onClick={(e) => e.stopPropagation()}>
+                      {log.video_title ?? log.video_id.slice(0, 10)}
+                    </Link>
+                    <span className="ml-2">{log.created_at?.slice(0, 16).replace("T", " ")}</span>
+                  </p>
+                </div>
 
-          {/* Expanded detail */}
-          {expandedId && (() => {
-            const log = logs.find(l => l.id === expandedId)
-            if (!log) return null
-            return (
-              <div className="border-t border-gray-200 bg-gray-50 px-5 py-4">
-                <div className="grid grid-cols-1 gap-3">
+                {/* 開閉矢印 */}
+                <span className="text-[10px] text-gray-400 shrink-0">{expandedId === log.id ? "▲" : "▼"}</span>
+              </button>
+
+              {/* 展開詳細 */}
+              {expandedId === log.id && (
+                <div className="border-t border-gray-100 bg-gray-50 px-4 py-3 space-y-2">
+                  {log.model && (
+                    <p className="text-[11px] text-gray-400">モデル: <span className="font-mono">{log.model}</span></p>
+                  )}
                   {log.prompt && (
                     <div>
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1">プロン���ト</p>
-                      <p className="text-[12px] text-gray-700 bg-white rounded px-3 py-2 whitespace-pre-wrap">{log.prompt}</p>
+                      <p className="text-[10px] font-semibold text-gray-500 mb-1">プロンプト</p>
+                      <p className="text-[11px] text-gray-700 bg-white rounded px-3 py-2 whitespace-pre-wrap max-h-[120px] overflow-y-auto">{log.prompt}</p>
                     </div>
                   )}
                   {log.result_preview && (
                     <div>
-                      <p className="text-[11px] font-semibold text-gray-500 mb-1">結果プレビュー</p>
-                      <p className="text-[12px] text-gray-700 bg-white rounded px-3 py-2 whitespace-pre-wrap">{log.result_preview}</p>
+                      <p className="text-[10px] font-semibold text-gray-500 mb-1">結果</p>
+                      <p className="text-[11px] text-gray-700 bg-white rounded px-3 py-2 whitespace-pre-wrap max-h-[120px] overflow-y-auto">{log.result_preview}</p>
                     </div>
                   )}
                   {log.error_message && (
                     <div>
-                      <p className="text-[11px] font-semibold text-red-500 mb-1">エラー</p>
-                      <p className="text-[12px] text-red-600 bg-red-50 rounded px-3 py-2">{log.error_message}</p>
+                      <p className="text-[10px] font-semibold text-red-500 mb-1">エラー</p>
+                      <p className="text-[11px] text-red-600 bg-red-50 rounded px-3 py-2">{log.error_message}</p>
                     </div>
                   )}
                 </div>
-              </div>
-            )
-          })()}
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
