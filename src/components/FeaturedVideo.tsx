@@ -23,6 +23,7 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   const featuredItems = items
   const [current, setCurrent] = useState(0)
   const [hovered, setHovered] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
 
   const goTo = useCallback((index: number) => {
     setCurrent(index)
@@ -31,7 +32,15 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
   // Reset to 0 when items change
   useEffect(() => {
     setCurrent(0)
+    setVideoReady(false)
   }, [items])
+
+  // スライド変更時: サムネ3秒表示→動画フェードイン
+  useEffect(() => {
+    setVideoReady(false)
+    const timer = setTimeout(() => setVideoReady(true), 3000)
+    return () => clearTimeout(timer)
+  }, [current])
 
   useEffect(() => {
     if (featuredItems.length === 0) return
@@ -93,15 +102,21 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
           <AuthPrompt>
           <Link href={`/movie/${item.id}`} className="block">
             <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
-              <Image
-                src={item.thumbnailUrl}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-[8000ms] ease-linear scale-100 group-hover:scale-105"
-                priority
-                sizes="65vw"
-                style={{ animation: "slowZoom 20s ease-in-out infinite alternate" }}
-              />
+              {/* サムネイル（常に下に表示） */}
+              <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
+              {/* YouTube動画（3秒後にフェードイン、上下15%拡大でUIバーをクリップ） */}
+              {item.youtubeVideoId && (
+                <div className={`absolute -inset-y-[15%] inset-x-0 z-10 transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-0"}`}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${item.youtubeVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${item.youtubeVideoId}&iv_load_policy=3&disablekb=1&fs=0`}
+                    className="w-full h-full pointer-events-none"
+                    allow="autoplay; encrypted-media"
+                    tabIndex={-1}
+                  />
+                </div>
+              )}
+              {/* 透明オーバーレイ（クリックをLinkに通す＋YouTubeの操作を遮断） */}
+              <div className="absolute inset-0 z-20" />
             </div>
           </Link>
           </AuthPrompt>
