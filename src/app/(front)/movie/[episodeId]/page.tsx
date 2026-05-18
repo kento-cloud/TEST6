@@ -4,12 +4,40 @@ import { VideoPlayer } from "@/components/VideoPlayer"
 import { YouTubePlayer } from "@/components/YouTubePlayer"
 import { AuthGate } from "@/components/AuthGate"
 import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
+import { ShareButton } from "@/components/ShareButton"
+import { ArticleExport } from "@/components/ArticleExport"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import type { Chapter } from "@/types/ai"
 
 interface Props {
   params: Promise<{ episodeId: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { episodeId } = await params
+  const detail = await getVideoDetail(episodeId)
+  const title = detail?.video.title ?? "動画"
+  const description = detail?.summary ?? detail?.video.description ?? ""
+  const thumbnail = detail?.video.thumbnailPath ?? "/images/ogp-default.png"
+
+  return {
+    title,
+    description: description.slice(0, 160),
+    openGraph: {
+      title,
+      description: description.slice(0, 160),
+      type: "video.other",
+      images: [{ url: thumbnail }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: description.slice(0, 160),
+      images: [thumbnail],
+    },
+  }
 }
 
 function formatTime(seconds: number): string {
@@ -104,6 +132,8 @@ export default async function MoviePage({ params }: Props) {
                   </span>
                 </>
               )}
+              <span>·</span>
+              <ShareButton title={title} />
             </div>
 
             {/* Tags (from AI) */}
@@ -141,7 +171,10 @@ export default async function MoviePage({ params }: Props) {
             {/* Article (from AI) */}
             {article && (
               <div className="mb-8">
-                <h2 className="text-[18px] font-bold mb-3">記事</h2>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-[18px] font-bold">記事</h2>
+                  <ArticleExport article={article} title={title} />
+                </div>
                 <div className="bg-[#1d2030] rounded-xl p-6 text-[15px] text-[#a9abb8] leading-[1.9]">
                   {article.split("\n").map((line: string, i: number) => {
                     if (line.startsWith("## ")) return <h3 key={i} className="text-[17px] font-bold text-white mt-5 mb-2">{line.slice(3)}</h3>

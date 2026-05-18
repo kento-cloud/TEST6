@@ -6,6 +6,7 @@ import Link from "next/link"
 import type { Episode } from "@/types"
 import { useAuth } from "@/contexts/AuthContext"
 import { useFavorites } from "@/hooks/useFavorites"
+import { useWatchHistory } from "@/hooks/useWatchHistory"
 import { AuthGate } from "@/components/AuthGate"
 import { EpisodeCard } from "@/components/EpisodeCard"
 
@@ -29,6 +30,75 @@ function buildPlaylists(eps: Episode[]) {
     ...p,
     eps: p.indices.map(i => eps[i % eps.length]).filter(Boolean),
   }))
+}
+
+function WatchHistoryTab() {
+  const { session } = useAuth()
+  const { history, loading: histLoading } = useWatchHistory()
+  const [episodes, setEpisodes] = useState<Episode[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/front/episodes?type=all")
+      .then(r => r.json())
+      .then(setEpisodes)
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center py-20">
+        <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
+            <path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+          </svg>
+        </div>
+        <p className="text-[15px] text-[#606370] mb-5">ログインすると視聴履歴が表示されます</p>
+        <Link href="/auth/sign_in" className="px-8 py-3 border border-white/30 rounded-full text-[14px] font-bold hover:bg-white/5 transition-colors">
+          ログイン
+        </Link>
+      </div>
+    )
+  }
+
+  if (loading || histLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <span className="animate-spin w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full" />
+      </div>
+    )
+  }
+
+  // Map history videoIds to episodes, preserving history order
+  const episodeMap = new Map(episodes.map(ep => [ep.id, ep]))
+  const watchedEpisodes = history
+    .map(h => episodeMap.get(h.videoId))
+    .filter((ep): ep is Episode => ep !== undefined)
+
+  if (watchedEpisodes.length === 0) {
+    return (
+      <div className="flex flex-col items-center py-20">
+        <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
+            <path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+          </svg>
+        </div>
+        <p className="text-[15px] text-[#606370] text-center mb-5">視聴した動画が表示されます</p>
+        <Link href="/" className="px-8 py-3 border border-white/30 rounded-full text-[14px] font-bold hover:bg-white/5 transition-colors">
+          ホームで探す
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-wrap gap-[10px] mt-4">
+      {watchedEpisodes.map(ep => (
+        <EpisodeCard key={ep.id} episode={ep} />
+      ))}
+    </div>
+  )
 }
 
 function FavoritesTab() {
@@ -214,16 +284,7 @@ export default function MylistPage() {
           </div>
         )}
 
-        {activeTab === 3 && (
-          <div className="flex flex-col items-center py-20">
-            <div className="w-[80px] h-[80px] rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="#606370">
-                <path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
-              </svg>
-            </div>
-            <p className="text-[15px] text-[#606370]">視聴履歴が表示されます</p>
-          </div>
-        )}
+        {activeTab === 3 && <WatchHistoryTab />}
       </div>
     </div>
   )

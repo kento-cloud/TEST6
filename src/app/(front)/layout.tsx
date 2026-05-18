@@ -1,5 +1,6 @@
 import { Sidebar } from "@/components/Sidebar"
 import { Footer } from "@/components/Footer"
+import { BackToTop } from "@/components/BackToTop"
 
 export default function FrontLayout({
   children,
@@ -17,6 +18,7 @@ export default function FrontLayout({
           <Footer />
         </main>
       </div>
+      <BackToTop />
     </div>
   )
 }

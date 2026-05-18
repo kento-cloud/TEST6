@@ -1,0 +1,115 @@
+"use client"
+import { useState } from "react"
+import Link from "next/link"
+
+interface Video {
+  readonly id: string
+  readonly title: string
+  readonly thumbnail_path: string | null
+  readonly publish_status: string
+  readonly processing_step: string
+  readonly duration: number | null
+  readonly created_at: string
+}
+
+interface Props {
+  readonly videos: Video[]
+}
+
+function formatDuration(sec: number): string {
+  const m = Math.floor(sec / 60)
+  const s = sec % 60
+  return `${m}:${String(s).padStart(2, "0")}`
+}
+
+const STATUS_STYLES: Record<string, string> = {
+  draft: "bg-gray-100 text-gray-600",
+  review: "bg-yellow-100 text-yellow-700",
+  published: "bg-green-100 text-green-700",
+  unpublished: "bg-red-100 text-red-600",
+}
+
+export function AdminVideoFilter({ videos }: Props) {
+  const [search, setSearch] = useState("")
+  const [status, setStatus] = useState("all")
+
+  const filtered = videos.filter(v => {
+    if (search && !v.title.toLowerCase().includes(search.toLowerCase())) return false
+    if (status !== "all" && v.publish_status !== status) return false
+    return true
+  })
+
+  return (
+    <div>
+      <div className="flex gap-3 mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="タイトルで検索..."
+          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+        />
+        <select
+          value={status}
+          onChange={e => setStatus(e.target.value)}
+          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+        >
+          <option value="all">全ステータス</option>
+          <option value="draft">下書き</option>
+          <option value="review">レビュー</option>
+          <option value="published">公開中</option>
+        </select>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-100 bg-gray-50">
+              <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 w-[80px]">サムネ</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500">タイトル</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 w-[80px]">ステータス</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 w-[60px]">時間</th>
+              <th className="px-4 py-3 text-left text-[11px] font-semibold text-gray-500 w-[100px]">作成日</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {filtered.map(v => (
+              <tr key={v.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-4 py-2">
+                  {v.thumbnail_path ? (
+                    <img src={v.thumbnail_path} alt="" className="w-[80px] h-[45px] object-cover rounded" />
+                  ) : (
+                    <div className="w-[80px] h-[45px] bg-gray-100 rounded flex items-center justify-center">
+                      <span className="text-[9px] text-gray-400">No img</span>
+                    </div>
+                  )}
+                </td>
+                <td className="px-4 py-2">
+                  <Link href={`/admin/videos/${v.id}`} className="text-[14px] text-gray-900 hover:text-[#cd1cfa] font-medium line-clamp-1">
+                    {v.title}
+                  </Link>
+                </td>
+                <td className="px-4 py-2">
+                  <span className={`px-2 py-0.5 rounded text-[11px] font-medium ${STATUS_STYLES[v.publish_status] ?? "bg-gray-100 text-gray-600"}`}>
+                    {v.publish_status}
+                  </span>
+                </td>
+                <td className="px-4 py-2 text-[12px] text-gray-500">
+                  {v.duration ? formatDuration(v.duration) : "\u2014"}
+                </td>
+                <td className="px-4 py-2 text-[12px] text-gray-400">
+                  {v.created_at?.slice(0, 10)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {filtered.length === 0 && (
+          <div className="py-8 text-center text-[14px] text-gray-400">
+            該当する動画がありません
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
