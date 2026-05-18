@@ -15,6 +15,25 @@ import { mkdir, unlink } from "fs/promises"
 // 長時間処理のためタイムアウトを延長（音声DL + Whisper + LLM×4 + 画像×5）
 export const maxDuration = 600 // 10分
 
+/** Clean up old temp files (older than 1 hour) */
+async function cleanupOldTempFiles() {
+  try {
+    const tempDir = path.join(process.cwd(), "uploads", "temp")
+    if (existsSync(tempDir)) {
+      const { readdir, stat, unlink: unlinkAsync } = await import("fs/promises")
+      const files = await readdir(tempDir)
+      const oneHourAgo = Date.now() - 60 * 60 * 1000
+      for (const file of files) {
+        const filePath = path.join(tempDir, file)
+        const fileStat = await stat(filePath)
+        if (fileStat.mtimeMs < oneHourAgo) {
+          await unlinkAsync(filePath).catch(() => {})
+        }
+      }
+    }
+  } catch { /* ignore cleanup errors */ }
+}
+
 /**
  * 自動処理パイプライン: 文字起こし → AI生成 を一気通貫で実行
  * ローカル動画: ffmpeg → Whisper → AI生成
@@ -169,6 +188,7 @@ export async function POST(
         updated_at: new Date().toISOString(),
       }).eq("id", id)
 
+      await cleanupOldTempFiles()
       return NextResponse.json({
         error: "文字起こし処理中にエラーが発生しました",
       }, { status: 500 })
@@ -280,11 +300,29 @@ export async function POST(
       await supabase.from("thumbnails").update({ status: "error" }).eq("video_id", id).eq("status", "generating")
     }
 
+    // Clean up old error/orphan thumbnails for this video
+    try {
+      const { data: allThumbs } = await supabase
+        .from("thumbnails")
+        .select("id, status")
+        .eq("video_id", id)
+        .order("created_at", { ascending: false })
+
+      const toDelete = (allThumbs ?? [])
+        .filter((t: { id: string; status: string }) => t.status === "error" || t.status === "generating")
+        .map((t: { id: string; status: string }) => t.id)
+
+      if (toDelete.length > 0) {
+        await supabase.from("thumbnails").delete().in("id", toDelete)
+      }
+    } catch { /* ignore */ }
+
     await supabase.from("videos").update({
       processing_step: "none",
       updated_at: new Date().toISOString(),
     }).eq("id", id)
 
+    await cleanupOldTempFiles()
     return NextResponse.json({
       status: "done",
       transcriptLength: transcriptText.length,
@@ -301,6 +339,7 @@ export async function POST(
     if (isConfigError) {
       const mock = await insertMockAIContents(id)
 
+      await cleanupOldTempFiles()
       return NextResponse.json({
         status: "done",
         mock: true,
@@ -316,6 +355,7 @@ export async function POST(
       updated_at: new Date().toISOString(),
     }).eq("id", id)
 
+    await cleanupOldTempFiles()
     return NextResponse.json({
       error: "AI生成処理中にエラーが発生しました",
     }, { status: 500 })

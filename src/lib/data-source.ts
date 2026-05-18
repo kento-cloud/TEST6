@@ -198,7 +198,10 @@ export async function searchEpisodes(query: string): Promise<readonly Episode[]>
   if (!query.trim()) return episodes
   const q = query.toLowerCase()
   return episodes.filter(
-    (e) => e.title.toLowerCase().includes(q) || e.programName.toLowerCase().includes(q)
+    (e) =>
+      e.title.toLowerCase().includes(q) ||
+      e.description.toLowerCase().includes(q) ||
+      e.programName.toLowerCase().includes(q)
   )
 }
 
