@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 
 // In-memory session token store
 const activeSessions = new Set<string>()
+const revokedSessions = new Set<string>()
 
 /**
  * セッショントークンを生成してSetに保存し、返す
@@ -10,6 +11,7 @@ const activeSessions = new Set<string>()
 export function createSessionToken(): string {
   const token = crypto.randomUUID()
   activeSessions.add(token)
+  revokedSessions.delete(token)
   return token
 }
 
@@ -18,6 +20,7 @@ export function createSessionToken(): string {
  */
 export function revokeSessionToken(token: string): void {
   activeSessions.delete(token)
+  revokedSessions.add(token)
 }
 
 /**
@@ -27,6 +30,9 @@ export async function isAdmin(): Promise<boolean> {
   const cookieStore = await cookies()
   const session = cookieStore.get("admin_session")
   if (!session) return false
+
+  // 明示的にrevokeされたトークンは拒否
+  if (revokedSessions.has(session.value)) return false
 
   // セッションがSetに存在するか確認
   if (activeSessions.has(session.value)) return true
