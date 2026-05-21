@@ -7,6 +7,15 @@ import { rankColors } from "@/lib/constants"
 import { AuthPrompt } from "@/components/AuthPrompt"
 import { FavoriteButton } from "@/components/FavoriteButton"
 
+const CATEGORY_LABELS: Record<string, string> = {
+  race: "レース",
+  betting: "予想",
+  breeding: "血統",
+  training: "調教",
+  science: "サイエンス",
+  global: "海外",
+}
+
 interface EpisodeCardProps {
   readonly episode: Episode
   readonly rank?: number
@@ -45,9 +54,15 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
         )}
         {/* Duration badge */}
         {episode.duration && (
-          <div className="absolute right-1 bottom-1 md:right-2 md:bottom-2 bg-black/75 text-white text-[11px] font-medium px-[5px] py-[1px] rounded-[3px]">
+          <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/80 text-white text-[11px] font-mono rounded">
             {episode.duration}
-          </div>
+          </span>
+        )}
+        {/* Category badge */}
+        {episode.categoryCode && (
+          <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-[#16a34a]/90 text-white text-[10px] font-bold rounded">
+            {CATEGORY_LABELS[episode.categoryCode] ?? episode.categoryCode}
+          </span>
         )}
         {/* Favorite button */}
         <div className="absolute top-1 right-1 md:top-2 md:right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">

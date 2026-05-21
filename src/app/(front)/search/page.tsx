@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { LargeRankingCard } from "@/components/LargeRankingCard"
@@ -25,7 +26,17 @@ const mcList = [
 ] as const
 
 export default function SearchPage() {
-  const [query, setQuery] = useState("")
+  return (
+    <Suspense fallback={null}>
+      <SearchPageInner />
+    </Suspense>
+  )
+}
+
+function SearchPageInner() {
+  const searchParams = useSearchParams()
+  const initialQuery = searchParams.get("q") ?? ""
+  const [query, setQuery] = useState(initialQuery)
   const [allEpisodes, setAllEpisodes] = useState<Episode[]>([])
   const [rankings, setRankings] = useState<{ label: string; key: string; episodes: Episode[] }[]>([])
   const [programs, setPrograms] = useState<Program[]>([])
@@ -35,6 +46,11 @@ export default function SearchPage() {
     fetch("/api/front/episodes?type=rankings").then(r => r.json()).then(setRankings).catch(() => {})
     fetch("/api/front/programs").then(r => r.json()).then(setPrograms).catch(() => {})
   }, [])
+
+  useEffect(() => {
+    const q = searchParams.get("q") ?? ""
+    if (q) setQuery(q)
+  }, [searchParams])
 
   const filtered = query
     ? allEpisodes.filter((e) => e.title.includes(query) || e.programName.includes(query))

@@ -6,6 +6,7 @@ import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
 import { ShareButton } from "@/components/ShareButton"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import type { Metadata } from "next"
 import type { Chapter } from "@/types/ai"
 
@@ -136,7 +137,7 @@ export default async function MoviePage({ params }: Props) {
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.map((tag) => (
-                  <span key={tag} className="px-3 py-1 bg-[#1d2030] text-[#a9abb8] text-[12px] rounded-full">{tag}</span>
+                  <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="px-3 py-1 bg-[#1d2030] text-[#a9abb8] text-[12px] rounded-full hover:bg-[#16a34a]/20 hover:text-[#16a34a] transition-colors">{tag}</Link>
                 ))}
               </div>
             )}

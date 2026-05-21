@@ -41,9 +41,9 @@ export function LargeRankingCard({ episode, rank }: LargeRankingCardProps) {
         </div>
         {/* Duration badge */}
         {episode.duration && (
-          <div className="absolute right-3 bottom-3 bg-black/75 text-white text-[13px] font-medium px-2 py-[2px] rounded">
+          <span className="absolute bottom-3 right-3 px-1.5 py-0.5 bg-black/80 text-white text-[13px] font-mono rounded">
             {episode.duration}
-          </div>
+          </span>
         )}
       </div>
       <div className="mt-2">
