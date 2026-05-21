@@ -60,13 +60,11 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
     <section className="w-full">
       {/* PC Layout */}
       <div className="hidden md:flex flex-row w-full">
-        <div className="flex flex-col justify-center items-start shrink-0 w-[32%] lg:w-[35%] xl:w-[380px] px-6 lg:px-8 py-8">
-          {item.programLogoUrl && (
-            <div className="w-full max-w-[300px] mb-4">
-              <Image src={item.programLogoUrl} alt={item.subtitle} width={300} height={50} className="w-full h-auto" />
-            </div>
+        <div className="flex flex-col justify-center items-start shrink-0 w-[32%] lg:w-[35%] xl:w-[380px] px-6 lg:px-8 py-8 min-h-[320px]">
+          {item.subtitle && (
+            <p className="text-[13px] text-[#16a34a] font-bold mb-2">{item.subtitle}</p>
           )}
-          <h2 className="text-[20px] lg:text-[22px] xl:text-[24px] font-bold mb-2 leading-[1.4] text-white">
+          <h2 className="text-[20px] lg:text-[22px] xl:text-[24px] font-bold mb-2 leading-[1.4] text-white line-clamp-3">
             {item.title}
           </h2>
           <p className="text-[13px] lg:text-[14px] font-normal leading-[1.7] text-[#a9abb8] line-clamp-3 mb-6">
@@ -95,13 +93,13 @@ export function FeaturedVideo({ items }: FeaturedVideoProps) {
           </div>
         </div>
         <div
-          className="flex-1"
+          className="flex-1 pr-4 lg:pr-6"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
           <AuthPrompt>
           <Link href={`/movie/${item.id}`} className="block">
-            <div className="relative w-full aspect-video overflow-hidden bg-[#111]">
+            <div className="relative w-full aspect-video overflow-hidden bg-[#111] rounded-xl">
               {/* サムネイル（常に下に表示） */}
               <Image src={item.thumbnailUrl} alt={item.title} fill className="object-cover" priority sizes="65vw" />
               {/* YouTube動画（3秒後にフェードイン） */}

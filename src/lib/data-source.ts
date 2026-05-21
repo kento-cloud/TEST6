@@ -176,11 +176,10 @@ export async function getCategoryEpisodes() {
 
     return categoryList.map(({ code, label }) => {
       const filtered = episodes.filter((e) => e.categoryCode === code)
-      const staticCat = staticCategoryEpisodes.find((c) => c.code === code)
       return {
         code,
         label,
-        episodes: filtered.length > 0 ? filtered : (staticCat?.episodes ?? []),
+        episodes: filtered.length > 0 ? filtered : episodes.slice(0, 4),
       }
     })
   } catch {
@@ -257,7 +256,7 @@ export async function searchEpisodes(query: string): Promise<readonly Episode[]>
 
     if (error || !videos || videos.length === 0) {
       // DB検索が空の場合は静的データにフォールバック
-      return fallbackSearchEpisodes(q)
+      return await fallbackSearchEpisodes(q)
     }
 
     const videoIds = videos.map((v) => v.id as string)
@@ -295,14 +294,15 @@ export async function searchEpisodes(query: string): Promise<readonly Episode[]>
       }
     })
   } catch {
-    return fallbackSearchEpisodes(q)
+    return await fallbackSearchEpisodes(q)
   }
 }
 
-/** 静的データでのフォールバック検索 */
-function fallbackSearchEpisodes(query: string): readonly Episode[] {
+/** フォールバック検索（DB公開動画で検索） */
+async function fallbackSearchEpisodes(query: string): Promise<readonly Episode[]> {
   const q = query.toLowerCase()
-  return staticEpisodes.filter(
+  const episodes = await getPublishedEpisodes()
+  return episodes.filter(
     (e) =>
       e.title.toLowerCase().includes(q) ||
       e.description.toLowerCase().includes(q) ||

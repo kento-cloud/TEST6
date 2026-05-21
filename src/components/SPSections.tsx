@@ -35,7 +35,7 @@ export function SPSections({ episodes, episodeCount }: SPSectionsProps) {
   const count = episodeCount ?? episodes.length
   const allSections = buildSPSections(episodes)
   // 動画数が少ない場合はセクション数を制限
-  const spSections = count < 4 ? allSections.slice(0, 1) : allSections
+  const spSections = count < 6 ? allSections.slice(0, 2) : count < 10 ? allSections.slice(0, 4) : allSections
   return (
     <div className="md:hidden flex flex-col gap-6">
       {spSections.map((section) => (

@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
-import { getPrograms } from "@/lib/data-source"
+import { getPrograms, getPublishedEpisodes } from "@/lib/data-source"
 
 export const metadata: Metadata = {
   title: "番組一覧 | PADDOCK",
@@ -10,7 +10,13 @@ export const metadata: Metadata = {
 }
 
 export default async function ProgramListPage() {
-  const programs = await getPrograms()
+  const allPrograms = await getPrograms()
+  const episodes = await getPublishedEpisodes()
+  // 動画が紐づいている番組のみ表示
+  const programIdsWithVideos = new Set(episodes.map(e => e.programName).filter(Boolean))
+  const programs = allPrograms.length > 0 && programIdsWithVideos.size > 0
+    ? allPrograms.filter(p => programIdsWithVideos.has(p.name.replace(/\n/g, "")))
+    : allPrograms
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
