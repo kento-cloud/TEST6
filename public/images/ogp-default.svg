@@ -42,10 +42,7 @@
   <rect x="480" y="340" width="240" height="3" rx="1.5" fill="url(#accent)" opacity="0.6"/>
 
   <!-- Tagline -->
-  <text x="600" y="400" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="28" font-weight="400" fill="#86efac" letter-spacing="4">AI</text>
-  <text x="600" y="400" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="28" font-weight="400" fill="#86efac" letter-spacing="4">
-    <tspan>AI</tspan><tspan fill="#a7f3d0" letter-spacing="2">&#x3067;&#x7AF6;&#x99AC;&#x3092;&#x3001;&#x3082;&#x3063;&#x3068;&#x6DF1;&#x304F;&#x3002;</tspan>
-  </text>
+  <text x="600" y="400" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="28" font-weight="400" fill="#a7f3d0" letter-spacing="4">競馬を、もっと深く。</text>
 
   <!-- Bottom border accent -->
   <rect x="0" y="624" width="1200" height="6" fill="url(#accent)" opacity="0.4"/>

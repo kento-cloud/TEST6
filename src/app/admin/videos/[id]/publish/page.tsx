@@ -143,7 +143,7 @@ export default function PublishPage() {
         </div>
         {state.summary && (
           <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-[12px] text-gray-400 mb-1">サマリー</p>
+            <p className="text-[12px] text-gray-400 mb-1">要約</p>
             <p className="text-[14px] text-gray-700 leading-relaxed">{state.summary}</p>
           </div>
         )}

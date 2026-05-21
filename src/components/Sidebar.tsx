@@ -76,7 +76,7 @@ export function Sidebar() {
   return (
     <>
       {/* PC Sidebar */}
-      <aside className="hidden md:flex flex-col w-[72px] min-w-[72px] h-screen bg-[#0e1226] fixed left-0 top-0 z-[500]">
+      <aside className="hidden md:flex flex-col w-[72px] min-w-[72px] h-screen bg-[#0a1a0f] fixed left-0 top-0 z-[500]">
         <div className="flex flex-col items-center w-full">
           <Link href="/" className="flex h-[66px] w-full items-center justify-center">
             <img
@@ -104,13 +104,13 @@ export function Sidebar() {
       </aside>
 
       {/* SP Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[500] flex items-center bg-[#0e1226] border-t border-[#606370]/40">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[500] flex items-center bg-[#0a1a0f]/95 backdrop-blur-sm border-t border-white/10">
         {navItems.map((item) => (
           <Link
             key={item.label}
             href={getHref(item)}
             className={`flex-1 flex flex-col items-center justify-center gap-[3px] h-[60px] transition-colors ${
-              isActive(item.href) ? "text-white" : "text-[#a9abb8]"
+              isActive(item.href) ? "text-[#16a34a]" : "text-[#606370]"
             }`}
           >
             {item.icon}

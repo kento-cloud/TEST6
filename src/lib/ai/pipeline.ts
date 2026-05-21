@@ -55,7 +55,21 @@ function extractJsonArray(text: string): string | null {
 // --- プロンプト ---
 // 人間らしさ重視: AI感を抑え、自然で読みやすい文章を生成する
 
+const KEIBA_NAME_INSTRUCTION = `
+【競馬固有名詞ルール — 最重要】
+この動画は競馬に関するコンテンツです。文字起こしには音声認識の誤変換が含まれています。以下を厳守してください：
+- 馬名はカタカナ表記が正式。漢字やひらがなに変換されていたら、文脈からカタカナの馬名に復元する
+  例: 「重力ピエロ」→「ジュウリョクピエロ」、「星明かり」→「ホシアカリ」、「夢核心」→「ドリームコア」
+- 馬名は必ずカタカナで統一する。漢字表記の馬名は存在しない（競走馬名はJRA登録上すべてカタカナ）
+- 騎手名・調教師名は漢字が正式（例: 武豊、川田将雅、ルメール）
+- レース名は正式名称を使う（例: 東京優駿→日本ダービー、優駿牝馬→オークス）
+- 競馬場名は正式名称（東京競馬場、中山競馬場、阪神競馬場、京都競馬場）
+- 「G1」「G2」「G3」はローマ字+数字で表記
+- 判断に迷う場合は文脈から最も自然な競馬用語を選ぶ
+`
+
 const HUMAN_TONE_INSTRUCTION = `
+${KEIBA_NAME_INSTRUCTION}
 【文体ルール — 読者を惹きつける文章】
 - 冒頭の一文で「え、どういうこと？」と思わせる意外性を仕込む
 - AI特有の「〜と言えるでしょう」「〜が重要です」「〜ではないでしょうか」を絶対に使わない
@@ -71,7 +85,7 @@ const HUMAN_TONE_INSTRUCTION = `
 function summaryPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
   const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。200〜300文字の要約を生成してください。要約のみを出力し、他のテキストは含めないでください。
-
+${KEIBA_NAME_INSTRUCTION}
 【必須ルール】
 - 「この動画では〜」「今回は〜」「本動画では〜」で絶対に始めない
 - 一文目で読者の心を掴む。最もインパクトのある事実・数字・逆説・問いかけから入る
@@ -92,7 +106,7 @@ function chaptersPrompt(title: string, transcript: string, opts: PromptOptions =
     ? `\n\n【重要】この動画の総再生時間は${Math.floor(durationSeconds / 60)}分${Math.floor(durationSeconds % 60)}秒（${durationSeconds}秒）です。チャプターは必ず動画の最後（${durationSeconds}秒付近）までカバーしてください。最後のチャプターのendTimeは${durationSeconds}以下で動画の末尾に近い値にしてください。`
     : ""
   return `以下は動画「${title}」の文字起こしです。チャプターをJSON配列で生成してください。JSON配列のみを出力してください。${durationInfo}
-
+${KEIBA_NAME_INSTRUCTION}
 フォーマット: [{"title":"チャプタータイトル","startTime":0,"endTime":120,"summary":"概要"}]
 
 【チャプター分割ルール】
@@ -146,7 +160,7 @@ ${transcript.slice(0, 30000)}`
 function tagsPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
   const extra = buildExtraInstruction(opts)
   return `以下は動画「${title}」の文字起こしです。7つのタグをJSON配列で生成してください。JSON配列のみ出力してください。例: ["タグ1","タグ2"]
-
+${KEIBA_NAME_INSTRUCTION}
 【タグ選定ルール】
 - この動画でしか使わない固有のキーワードを最優先（人名、企業名、専門概念、独自フレーズ）
 - 「競馬」「レース」「最新」「馬」のような汎用すぎるタグは絶対禁止

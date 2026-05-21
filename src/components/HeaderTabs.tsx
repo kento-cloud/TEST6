@@ -47,9 +47,8 @@ function HeaderTabsInner() {
     <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
       {/* SP Header: PADDOCKロゴ + ログイン/アカウント (48px) */}
       <div className="md:hidden flex items-center justify-between h-[48px] px-4">
-        <Link href="/">
+        <Link href="/" className="flex items-center gap-1">
           <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" width={100} height={24} />
-          <span className="text-[10px] text-[#a9abb8] ml-1 whitespace-nowrap">AIで競馬を、もっと深く。</span>
         </Link>
         {user ? (
           <Link href="/account" className="text-[14px] font-bold text-white">
@@ -60,6 +59,25 @@ function HeaderTabsInner() {
             ログイン
           </Link>
         ) : null}
+      </div>
+
+      {/* SP Category Tabs: 横スクロール */}
+      <div className="md:hidden overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-1 px-4 pb-2">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.label}
+              href={tab.href}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-[12px] font-bold whitespace-nowrap transition-colors ${
+                isActive(tab)
+                  ? "bg-[#16a34a] text-white"
+                  : "bg-white/10 text-[#a9abb8]"
+              }`}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* PC Header: タブ + 認証ボタン/アカウント (88px) */}

@@ -26,7 +26,7 @@ export function ArticleView({ article, title }: ArticleViewProps) {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#16a34a">
             <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2z" />
           </svg>
-          <span className="text-[13px] text-[#a9abb8]">AI生成記事</span>
+          <span className="text-[13px] text-[#a9abb8]">記事</span>
         </div>
         <ArticleExport article={article} title={title} />
       </div>

@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 
 interface Video {
@@ -30,20 +30,25 @@ const STATUS_STYLES: Record<string, string> = {
   unpublished: "bg-red-100 text-red-600",
 }
 
-const CATEGORY_OPTIONS = [
-  { value: "all", label: "全カテゴリ" },
-  { value: "race", label: "レース" },
-  { value: "betting", label: "馬券" },
-  { value: "breeding", label: "血統" },
-  { value: "training", label: "調教" },
-  { value: "science", label: "データ分析" },
-  { value: "global", label: "海外競馬" },
-] as const
-
 export function AdminVideoFilter({ videos }: Props) {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [category, setCategory] = useState("all")
+  const [categoryOptions, setCategoryOptions] = useState<{ value: string; label: string }[]>([{ value: "all", label: "全カテゴリ" }])
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(r => r.json())
+      .then((data: { code: string; label: string }[]) => {
+        if (Array.isArray(data)) {
+          setCategoryOptions([
+            { value: "all", label: "全カテゴリ" },
+            ...data.map(c => ({ value: c.code, label: c.label })),
+          ])
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const filtered = videos.filter(v => {
     if (search && !v.title.toLowerCase().includes(search.toLowerCase())) return false
@@ -78,7 +83,7 @@ export function AdminVideoFilter({ videos }: Props) {
           onChange={e => setCategory(e.target.value)}
           className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
         >
-          {CATEGORY_OPTIONS.map(opt => (
+          {categoryOptions.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>

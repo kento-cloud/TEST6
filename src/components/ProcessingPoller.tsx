@@ -31,10 +31,10 @@ export function ProcessingPoller({ videoId, currentStep }: Props) {
 
   const pollOnce = useCallback(async () => {
     try {
-      const res = await fetch(`/api/videos/${videoId}`)
+      const res = await fetch(`/api/videos/${videoId}/status`, { credentials: "include" })
       if (!res.ok) return
       const data = await res.json()
-      const step = data.processingStep ?? data.processing_step ?? "none"
+      const step = data.processingStep ?? "none"
 
       // ステップが変わったら表示を更新
       if (step !== lastStepRef.current) {

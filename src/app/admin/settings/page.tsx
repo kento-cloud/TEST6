@@ -31,25 +31,22 @@ interface SettingsData {
 }
 
 const TEXT_MODELS = [
-  { id: "gpt-5.5", label: "GPT-5.5（最新・最強）" },
-  { id: "gpt-5.5-pro", label: "GPT-5.5 Pro（精度重視）" },
-  { id: "gpt-5.4", label: "GPT-5.4（バランス）" },
-  { id: "gpt-5.4-mini", label: "GPT-5.4 Mini（軽量）" },
-  { id: "gpt-5.4-nano", label: "GPT-5.4 Nano（最安）" },
-  { id: "gpt-4.1", label: "GPT-4.1（コスパ推奨）" },
-  { id: "gpt-4.1-mini", label: "GPT-4.1 Mini（高速）" },
-  { id: "gpt-4.1-nano", label: "GPT-4.1 Nano（最速）" },
+  { id: "gpt-4o", label: "GPT-4o（推奨・高品質）" },
+  { id: "gpt-4o-mini", label: "GPT-4o Mini（高速・低コスト）" },
+  { id: "gpt-4-turbo", label: "GPT-4 Turbo（高精度）" },
+  { id: "gpt-3.5-turbo", label: "GPT-3.5 Turbo（最安）" },
 ]
 
 const IMAGE_MODELS = [
-  { id: "gpt-image-2", label: "GPT Image 2（最新・高品質）" },
-  { id: "gpt-image-1-mini", label: "GPT Image 1 Mini（軽量）" },
+  { id: "gpt-image-1", label: "GPT Image 1（高品質）" },
+  { id: "dall-e-3", label: "DALL-E 3（標準）" },
+  { id: "dall-e-2", label: "DALL-E 2（軽量）" },
 ]
 
 const TRANSCRIBE_MODELS = [
-  { id: "gpt-4o-transcribe", label: "GPT-4o Transcribe（高品質）" },
+  { id: "whisper-1", label: "Whisper-1（推奨）" },
+  { id: "gpt-4o-transcribe", label: "GPT-4o Transcribe（高精度）" },
   { id: "gpt-4o-mini-transcribe", label: "GPT-4o Mini Transcribe（軽量）" },
-  { id: "whisper-1", label: "Whisper-1（従来版）" },
 ]
 
 export default function AdminSettingsPage() {

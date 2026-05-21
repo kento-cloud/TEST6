@@ -33,7 +33,7 @@ export default async function HomePage() {
       {/* Content Sections */}
       <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-6 lg:px-8 py-5 md:py-8">
         {/* 共通: 新着（フィーチャードと異なる順序で表示） */}
-        <EpisodeSection title="最新レポート" spTitle="最新レポート" episodes={[...episodes].reverse()} href="/new_arrival/episode" />
+        <EpisodeSection title="最新レポート" spTitle="最新レポート" episodes={episodes} href="/new_arrival/episode" />
 
         {/* SP専用セクション（本家SPのセクション構成を再現） */}
         <SPSections episodes={episodes} episodeCount={episodes.length} />
@@ -56,12 +56,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* SP: App CTA */}
-      <div className="md:hidden px-4 pb-24">
-        <div className="w-full py-4 rounded-xl bg-gray-700 text-gray-400 font-bold text-[16px] text-center">
-          アプリ準備中
-        </div>
-      </div>
     </div>
   )
 }
