@@ -50,8 +50,12 @@ export async function POST(req: NextRequest) {
     const categoryCode = formData.get("categoryCode") as string ?? ""
     const programId = formData.get("programId") as string
 
-    if (!file || !title) {
-      return NextResponse.json({ error: "ファイルとタイトルは必須です" }, { status: 400 })
+    if (!file) {
+      return NextResponse.json({ error: "動画ファイルは必須です" }, { status: 400 })
+    }
+
+    if (!title || !title.trim()) {
+      return NextResponse.json({ error: "タイトルは必須です" }, { status: 400 })
     }
 
     const MAX_SIZE = 500 * 1024 * 1024 // 500MB

@@ -28,42 +28,44 @@ export default async function AdminProgramsPage() {
             <Link href="/admin/programs/new" className="text-[14px] text-[#16a34a] font-semibold">最初の番組を作成 →</Link>
           </div>
         ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
-                <th className="px-5 py-3">番組名</th>
-                <th className="px-5 py-3">説明</th>
-                <th className="px-5 py-3">ステータス</th>
-                <th className="px-5 py-3">作成日</th>
-                <th className="px-5 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {allPrograms.map((p) => (
-                <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
-                  <td className="px-5 py-3">
-                    <Link href={`/admin/programs/${p.id}`} className="text-[14px] font-semibold text-gray-900 hover:text-[#16a34a]">
-                      {p.name}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3 text-[13px] text-gray-500 max-w-[300px] truncate">
-                    {p.description || "—"}
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${
-                      p.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                    }`}>
-                      {p.is_active ? "有効" : "無効"}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 text-[13px] text-gray-500">{p.created_at?.slice(0, 10) ?? "—"}</td>
-                  <td className="px-5 py-3">
-                    <Link href={`/admin/programs/${p.id}`} className="text-[13px] text-[#16a34a]">編集 →</Link>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
+                  <th className="px-5 py-3">番組名</th>
+                  <th className="px-5 py-3">説明</th>
+                  <th className="px-5 py-3">ステータス</th>
+                  <th className="px-5 py-3">作成日</th>
+                  <th className="px-5 py-3"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {allPrograms.map((p) => (
+                  <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                    <td className="px-5 py-3">
+                      <Link href={`/admin/programs/${p.id}`} className="text-[14px] font-semibold text-gray-900 hover:text-[#16a34a]">
+                        {p.name}
+                      </Link>
+                    </td>
+                    <td className="px-5 py-3 text-[13px] text-gray-500 max-w-[300px] truncate">
+                      {p.description || "—"}
+                    </td>
+                    <td className="px-5 py-3 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${
+                        p.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
+                      }`}>
+                        {p.is_active ? "有効" : "無効"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 text-[13px] text-gray-500 whitespace-nowrap">{p.created_at?.slice(0, 10) ?? "—"}</td>
+                    <td className="px-5 py-3 whitespace-nowrap">
+                      <Link href={`/admin/programs/${p.id}`} className="text-[13px] text-[#16a34a]">編集 →</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

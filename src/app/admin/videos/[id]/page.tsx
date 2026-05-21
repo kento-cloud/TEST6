@@ -9,6 +9,7 @@ import { PipelinePanel } from "@/components/PipelinePanel"
 import { TranscriptPipelineRow } from "@/components/TranscriptPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { ProcessingPoller } from "@/components/ProcessingPoller"
+import { RetryButton } from "@/components/RetryButton"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
 
@@ -136,8 +137,11 @@ export default async function AdminVideoDetailPage({ params }: Props) {
             </div>
           )}
           {step === "error" && (
-            <div className="mb-4 px-3 py-2 bg-red-50 rounded-lg text-[13px] text-red-600">
-              ❌ エラーが発生しました
+            <div className="mb-4 px-3 py-2 bg-red-50 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] text-red-600">❌ エラーが発生しました。リセットして再試行できます。</span>
+                <RetryButton videoId={id} />
+              </div>
             </div>
           )}
 

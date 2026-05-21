@@ -163,8 +163,8 @@ export default function NewProgramPage() {
           <div className="flex items-center gap-3 pt-2">
             <button
               type="submit"
-              disabled={form.submitting}
-              className="px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
+              disabled={form.submitting || !form.name.trim()}
+              className="px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {form.submitting ? "作成中..." : "番組を作成"}
             </button>

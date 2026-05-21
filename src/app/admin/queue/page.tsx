@@ -82,47 +82,49 @@ export default async function AdminQueuePage() {
             <p className="text-gray-400 text-[15px]">処理キューにジョブがありません</p>
           </div>
         ) : (
-          <table className="w-full" aria-label="処理キュー一覧">
-            <thead>
-              <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
-                <th className="px-5 py-3">動画</th>
-                <th className="px-5 py-3">ジョブ種別</th>
-                <th className="px-5 py-3">ステータス</th>
-                <th className="px-5 py-3">試行回数</th>
-                <th className="px-5 py-3">作成日</th>
-                <th className="px-5 py-3">完了日</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allJobs.map((job) => {
-                const videoTitle = (job.videos as { title: string } | null)?.title ?? job.video_id
-                return (
-                  <tr key={job.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-5 py-3">
-                      <span className="text-[14px] font-semibold text-gray-900">{videoTitle}</span>
-                    </td>
-                    <td className="px-5 py-3 text-[13px] text-gray-600">
-                      {jobTypeLabels[job.job_type] ?? job.job_type}
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${statusStyles[job.status ?? "pending"] ?? statusStyles.pending}`}>
-                        {statusLabels[job.status ?? "pending"] ?? job.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-[13px] text-gray-500">
-                      {job.attempts ?? 0} / {job.max_attempts ?? 3}
-                    </td>
-                    <td className="px-5 py-3 text-[13px] text-gray-500">
-                      {job.created_at?.slice(0, 16).replace("T", " ") ?? "—"}
-                    </td>
-                    <td className="px-5 py-3 text-[13px] text-gray-500">
-                      {job.completed_at?.slice(0, 16).replace("T", " ") ?? "—"}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full" aria-label="処理キュー一覧">
+              <thead>
+                <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">
+                  <th className="px-5 py-3">動画</th>
+                  <th className="px-5 py-3">ジョブ種別</th>
+                  <th className="px-5 py-3">ステータス</th>
+                  <th className="px-5 py-3">試行回数</th>
+                  <th className="px-5 py-3">作成日</th>
+                  <th className="px-5 py-3">完了日</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allJobs.map((job) => {
+                  const videoTitle = (job.videos as { title: string } | null)?.title ?? job.video_id
+                  return (
+                    <tr key={job.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="px-5 py-3">
+                        <span className="text-[14px] font-semibold text-gray-900">{videoTitle}</span>
+                      </td>
+                      <td className="px-5 py-3 text-[13px] text-gray-600 whitespace-nowrap">
+                        {jobTypeLabels[job.job_type] ?? job.job_type}
+                      </td>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${statusStyles[job.status ?? "pending"] ?? statusStyles.pending}`}>
+                          {statusLabels[job.status ?? "pending"] ?? job.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-[13px] text-gray-500 whitespace-nowrap">
+                        {job.attempts ?? 0} / {job.max_attempts ?? 3}
+                      </td>
+                      <td className="px-5 py-3 text-[13px] text-gray-500 whitespace-nowrap">
+                        {job.created_at?.slice(0, 16).replace("T", " ") ?? "—"}
+                      </td>
+                      <td className="px-5 py-3 text-[13px] text-gray-500 whitespace-nowrap">
+                        {job.completed_at?.slice(0, 16).replace("T", " ") ?? "—"}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

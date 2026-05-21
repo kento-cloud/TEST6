@@ -66,6 +66,8 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
   const [ffmpegOk, setFfmpegOk] = useState<boolean | null>(null)
+  const [openaiTestResult, setOpenaiTestResult] = useState<"idle" | "testing" | "success" | "error">("idle")
+  const [openaiTestError, setOpenaiTestError] = useState("")
 
   // Style Presets
   const [presets, setPresets] = useState<StylePreset[]>([])
@@ -217,7 +219,44 @@ export default function AdminSettingsPage() {
           <h2 className="text-[16px] font-bold text-gray-900">環境ステータス</h2>
         </div>
         <div className="divide-y divide-gray-50">
-          <StatusRow label="OPENAI_API_KEY" desc="文字起こし・AI生成・画像生成に使用" status={settings.OPENAI_API_KEY} />
+          <div className="px-5 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-[14px] font-semibold text-gray-900">OPENAI_API_KEY</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">文字起こし・AI生成・画像生成に使用</p>
+              {openaiTestResult === "error" && openaiTestError && (
+                <p className="text-[11px] text-red-500 mt-1">{openaiTestError}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-3 ml-4 shrink-0">
+              <button
+                onClick={async () => {
+                  setOpenaiTestResult("testing")
+                  setOpenaiTestError("")
+                  try {
+                    const res = await fetch("/api/test-openai", { method: "POST" })
+                    const data = await res.json()
+                    if (data.success) {
+                      setOpenaiTestResult("success")
+                    } else {
+                      setOpenaiTestResult("error")
+                      setOpenaiTestError(data.error ?? "接続失敗")
+                    }
+                  } catch {
+                    setOpenaiTestResult("error")
+                    setOpenaiTestError("テストリクエストに失敗しました")
+                  }
+                }}
+                disabled={openaiTestResult === "testing"}
+                className="px-2.5 py-1 border border-gray-200 rounded-lg text-[11px] text-gray-600 hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+              >
+                {openaiTestResult === "testing" ? "テスト中..." : "接続テスト"}
+              </button>
+              {openaiTestResult === "success" && <span className="text-green-500 text-[16px]">✓</span>}
+              {openaiTestResult === "error" && <span className="text-red-500 text-[16px]">✕</span>}
+              <span className="text-[13px] text-gray-500 font-mono">{settings.OPENAI_API_KEY?.set ? settings.OPENAI_API_KEY.masked : "未設定"}</span>
+              <span className={`w-2.5 h-2.5 rounded-full ${settings.OPENAI_API_KEY?.set ? "bg-green-500" : "bg-red-400"}`} />
+            </div>
+          </div>
           <StatusRow label="ADMIN_PASSWORD" desc="管理画面ログインパスワード" status={settings.ADMIN_PASSWORD} />
           <div className="px-5 py-4 flex items-center justify-between">
             <div>

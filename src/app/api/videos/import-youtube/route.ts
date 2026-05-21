@@ -13,13 +13,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json() as { url: string; categoryCode?: string; aiPrompt?: string }
     const { url, categoryCode, aiPrompt } = body
 
-    if (!url) {
+    if (!url || !url.trim()) {
       return NextResponse.json({ error: "URLが必要です" }, { status: 400 })
     }
 
-    const videoId = extractYouTubeVideoId(url)
+    const videoId = extractYouTubeVideoId(url.trim())
     if (!videoId) {
-      return NextResponse.json({ error: "有効なYouTube URLではありません" }, { status: 400 })
+      return NextResponse.json({ error: "有効なYouTube URLではありません（youtube.com/watch?v= または youtu.be/ 形式）" }, { status: 400 })
     }
 
     // Fetch metadata

@@ -33,7 +33,9 @@ export async function GET(
     .single()
 
   const checklist = [
+    { label: "タイトル設定済み", done: !!video.title },
     { label: "文字起こし完了", done: !!transcript && transcript.status === "done" },
+    { label: "サムネイル設定済み", done: !!video.thumbnail_path },
     { label: "AI生成完了", done: !!aiContent && aiContent.status === "done" },
     { label: "記事確認済み", done: !!aiContent?.article },
   ]

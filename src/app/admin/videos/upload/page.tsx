@@ -165,7 +165,10 @@ function LocalUploadForm() {
           {statusText && <p className="text-[12px] text-gray-500 mt-1">{statusText}</p>}
         </div>
       )}
-      <button type="submit" disabled={uploading} className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50">
+      {!title.trim() && !uploading && (
+        <p className="text-orange-500 text-[12px] mb-2">タイトルを入力してください</p>
+      )}
+      <button type="submit" disabled={uploading || !title.trim()} className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50 disabled:cursor-not-allowed">
         {uploading ? "アップロード中..." : "アップロード"}
       </button>
     </form>

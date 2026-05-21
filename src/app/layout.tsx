@@ -12,6 +12,24 @@ export const metadata: Metadata = {
       { url: "/favicon/favicon.svg", type: "image/svg+xml" },
     ],
   },
+  openGraph: {
+    title: "競馬情報メディア「PADDOCK」",
+    description: "PADDOCKは、AIで競馬情報を見極める映像メディアです。",
+    images: [
+      {
+        url: "/images/ogp-default.svg",
+        width: 1200,
+        height: 630,
+        alt: "PADDOCK - AIで競馬を、もっと深く。",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "競馬情報メディア「PADDOCK」",
+    description: "PADDOCKは、AIで競馬情報を見極める映像メディアです。",
+    images: ["/images/ogp-default.svg"],
+  },
 }
 
 export default function RootLayout({

@@ -26,10 +26,27 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
   const [showCustomPrompt, setShowCustomPrompt] = useState(false)
   const [customPrompt, setCustomPrompt] = useState("")
 
+  const [retrying, setRetrying] = useState(false)
+
   const hasDone = !!transcript && transcript.status === "done"
   const hasError = !!transcript && transcript.status === "error"
   const icon = isProcessing ? "⏳" : hasError ? "❌" : hasDone ? "✅" : "⬜"
   const textColor = isProcessing ? "text-blue-600" : hasError ? "text-red-600" : hasDone ? "text-green-600" : "text-gray-400"
+
+  async function handleRetry() {
+    setRetrying(true)
+    setMessage("")
+    try {
+      const resetRes = await fetch(`/api/videos/${videoId}/reset`, { method: "POST" })
+      if (!resetRes.ok) throw new Error("リセットに失敗しました")
+      await fetch(`/api/videos/${videoId}/auto-process`, { method: "POST" })
+      setMessage("再試行を開始しました")
+      router.refresh()
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "再試行に失敗しました")
+    }
+    setRetrying(false)
+  }
 
   async function handleSave() {
     setSaving(true)
@@ -169,13 +186,24 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
         </div>
       )}
 
-      {/* Error display */}
-      {expanded && hasError && (
+      {/* Error display with retry */}
+      {hasError && !isProcessing && (
         <div className="px-3 py-2 border-t border-red-100 bg-red-50">
-          <p className="text-[12px] text-red-600 mb-1">エラー: {transcript.errorMessage}</p>
-          <Link href={`/admin/videos/${videoId}/transcript`} className="text-[11px] text-red-500 hover:underline">
-            文字起こしページで対応 →
-          </Link>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[12px] text-red-600 mb-1">エラー: {transcript.errorMessage}</p>
+              <Link href={`/admin/videos/${videoId}/transcript`} className="text-[11px] text-red-500 hover:underline">
+                文字起こしページで対応 →
+              </Link>
+            </div>
+            <button
+              onClick={handleRetry}
+              disabled={retrying}
+              className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-[11px] font-semibold hover:bg-red-600 disabled:opacity-50 shrink-0 ml-3 cursor-pointer"
+            >
+              {retrying ? "再試行中..." : "再試行"}
+            </button>
+          </div>
         </div>
       )}
 

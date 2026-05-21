@@ -109,17 +109,49 @@ export async function getRankings() {
   }
 }
 
-/** フィーチャードアイテム — 公開済み動画の上位をフィーチャード */
+/** フィーチャードアイテム — 公開済み動画の上位をフィーチャード（視聴数順、フォールバック: 公開日順） */
 export async function getFeaturedItems() {
   try {
-    const { data: videos, error } = await supabase
-      .from("videos")
-      .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
-      .eq("publish_status", "published")
-      .order("published_at", { ascending: false })
-      .limit(5)
+    // 視聴数トップのvideo_idを取得
+    const { data: topMetrics } = await supabase
+      .from("metrics")
+      .select("video_id, view_count")
+      .order("view_count", { ascending: false })
+      .limit(20)
 
-    if (error || !videos || videos.length === 0) return getStaticFeaturedItems()
+    const metricVideoIds = (topMetrics ?? []).map((m) => m.video_id as string)
+    const viewCountMap = new Map((topMetrics ?? []).map((m) => [m.video_id as string, (m.view_count as number) ?? 0]))
+
+    let videos: Record<string, unknown>[] | null = null
+
+    // 視聴数データがある場合はそのIDで公開済みを取得
+    if (metricVideoIds.length > 0) {
+      const result = await supabase
+        .from("videos")
+        .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
+        .eq("publish_status", "published")
+        .in("id", metricVideoIds)
+      videos = result.data
+      // 視聴数順でソート
+      if (videos && videos.length > 0) {
+        videos = [...videos].sort((a, b) =>
+          (viewCountMap.get(b.id as string) ?? 0) - (viewCountMap.get(a.id as string) ?? 0)
+        ).slice(0, 5)
+      }
+    }
+
+    // 視聴数データがない or 公開動画が0件なら公開日順
+    if (!videos || videos.length === 0) {
+      const result = await supabase
+        .from("videos")
+        .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
+        .eq("publish_status", "published")
+        .order("published_at", { ascending: false })
+        .limit(5)
+      videos = result.data
+    }
+
+    if (!videos || videos.length === 0) return getStaticFeaturedItems()
 
     // 番組ロゴも取得
     const { data: allPrograms } = await supabase.from("programs").select("id, name, logo_path")
@@ -199,15 +231,73 @@ export async function getPlaylists() {
 }
 
 /**
- * 検索 — 将来: Supabase Full-Text Search 対応
- * 現在はクライアント側フィルタリング。
- * DB切り替え時はこの関数に Supabase の textSearch/ilike を実装する。
+ * 検索 — Supabase ilike + メトリクス結合
+ * DB接続時はtitle/descriptionでilike検索し、metricsをjoinして返す。
+ * 失敗時は静的データでフォールバック。
  */
 export async function searchEpisodes(query: string): Promise<readonly Episode[]> {
-  const episodes = await getPublishedEpisodes()
-  if (!query.trim()) return episodes
+  if (!query.trim()) return getPublishedEpisodes()
+
+  const q = query.trim()
+
+  try {
+    const escaped = q.replace(/[%_\\]/g, (c) => `\\${c}`)
+
+    const { data: videos, error } = await supabase
+      .from("videos")
+      .select("id, title, description, duration, thumbnail_path, category_code, program_id, published_at")
+      .eq("publish_status", "published")
+      .or(`title.ilike.%${escaped}%,description.ilike.%${escaped}%`)
+      .order("published_at", { ascending: false })
+
+    if (error || !videos || videos.length === 0) {
+      // DB検索が空の場合は静的データにフォールバック
+      return fallbackSearchEpisodes(q)
+    }
+
+    const videoIds = videos.map((v) => v.id as string)
+
+    const { data: allMetrics } = await supabase
+      .from("metrics")
+      .select("video_id, view_count, comment_count, rating")
+      .in("video_id", videoIds)
+    const metricsMap = new Map((allMetrics ?? []).map((m) => [m.video_id as string, m]))
+
+    const programIds = [...new Set(videos.map((v) => v.program_id as number | null).filter((id): id is number => id !== null))]
+    const programMap = new Map<number, string>()
+    if (programIds.length > 0) {
+      const { data: progs } = await supabase.from("programs").select("id, name").in("id", programIds)
+      for (const p of progs ?? []) {
+        programMap.set(p.id as number, p.name as string)
+      }
+    }
+
+    return videos.map((v) => {
+      const m = metricsMap.get(v.id as string)
+      const programId = v.program_id as number | null
+      return {
+        id: v.id as string,
+        title: v.title as string,
+        programName: (programId ? programMap.get(programId) : null) ?? "",
+        duration: v.duration ? formatDuration(v.duration as number) : "",
+        viewCount: m && (m.view_count as number) > 0 ? formatViewCount(m.view_count as number) : "",
+        publishedAt: v.published_at ? formatRelativeTime(v.published_at as string) : "",
+        thumbnailUrl: (v.thumbnail_path as string) ?? FALLBACK_THUMBNAIL,
+        commentCount: (m?.comment_count as number) ?? 0,
+        rating: (m?.rating as number) ?? 0,
+        description: (v.description as string) ?? "",
+        categoryCode: (v.category_code as string) ?? undefined,
+      }
+    })
+  } catch {
+    return fallbackSearchEpisodes(q)
+  }
+}
+
+/** 静的データでのフォールバック検索 */
+function fallbackSearchEpisodes(query: string): readonly Episode[] {
   const q = query.toLowerCase()
-  return episodes.filter(
+  return staticEpisodes.filter(
     (e) =>
       e.title.toLowerCase().includes(q) ||
       e.description.toLowerCase().includes(q) ||
