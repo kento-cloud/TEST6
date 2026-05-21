@@ -44,7 +44,7 @@ export function PlaylistSection({ playlists }: PlaylistSectionProps) {
               </div>
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
             </div>
-            <p className="mt-2 text-[13px] md:text-[14px] font-bold line-clamp-2 leading-[1.4] group-hover:text-[#cd1cfa] transition-colors">
+            <p className="mt-2 text-[13px] md:text-[14px] font-bold line-clamp-2 leading-[1.4] group-hover:text-[#16a34a] transition-colors">
               {pl.title}
             </p>
             <p className="text-[11px] text-[#606370] mt-[2px]">{pl.episodes.length}本のエピソード</p>

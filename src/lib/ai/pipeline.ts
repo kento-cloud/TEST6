@@ -65,7 +65,7 @@ const HUMAN_TONE_INSTRUCTION = `
 - 接続詞は「しかし」「一方で」だけでなく、「ところが」「面白いのは」「ここで話が変わる」など会話的なものも使う
 - 段落の最後に次を読みたくなるフックを入れる（疑問、対比、予告）
 - 読者に語りかけるが、馴れ馴れしくはしない。知的で親しみやすいトーン
-- どんなジャンル（ビジネス・科学・エンタメ・スポーツ・政治）でも対応できる汎用的な文体
+- 競馬メディアとして、レース分析・血統・調教・馬券術など専門的な内容も読者目線で噛み砕いて伝える
 `
 
 function summaryPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
@@ -81,27 +81,31 @@ function summaryPrompt(title: string, transcript: string, opts: PromptOptions = 
 - 最後の一文は余韻か次の展開への期待感で締める
 
 【良い要約の例】
-「年商100億円の会社を潰しかけた男が、たった1つの決断で復活した。その決断とは"社員の半分を解雇する"こと。常識では考えられない選択の裏に、どんな計算があったのか——。」${extra}
+「単勝オッズ58倍。誰もが見向きもしなかった馬が、有馬記念のゴール板を先頭で駆け抜けた。血統表に隠されていた"爆発力の根拠"を、データと映像で解き明かす——。」${extra}
 
 ${transcript.slice(0, 20000)}`
 }
 
-function chaptersPrompt(title: string, transcript: string, opts: PromptOptions = {}): string {
+function chaptersPrompt(title: string, transcript: string, opts: PromptOptions = {}, durationSeconds?: number): string {
   const extra = buildExtraInstruction(opts)
-  return `以下は動画「${title}」の文字起こしです。チャプターをJSON配列で生成してください。JSON配列のみを出力してください。
+  const durationInfo = durationSeconds
+    ? `\n\n【重要】この動画の総再生時間は${Math.floor(durationSeconds / 60)}分${Math.floor(durationSeconds % 60)}秒（${durationSeconds}秒）です。チャプターは必ず動画の最後（${durationSeconds}秒付近）までカバーしてください。最後のチャプターのendTimeは${durationSeconds}以下で動画の末尾に近い値にしてください。`
+    : ""
+  return `以下は動画「${title}」の文字起こしです。チャプターをJSON配列で生成してください。JSON配列のみを出力してください。${durationInfo}
 
 フォーマット: [{"title":"チャプタータイトル","startTime":0,"endTime":120,"summary":"概要"}]
 
 【チャプター分割ルール】
 - 話題が明確に切り替わるポイントで分割する。最低5チャプター、内容が豊富なら8〜12チャプター
 - 1チャプターは30秒〜5分の範囲に収める。長すぎるチャプターは分割する
-- 文字起こしの発話タイミングから正確にstartTime/endTimeを推定する
+- 文字起こしのテキスト全体を均等にカバーし、最初から最後までチャプターを作成する
+- startTime/endTimeは文字起こしの位置から動画全体の尺に比例して推定する
 
 【タイトルルール】
 - 視聴者が「ここ見たい！」とクリックしたくなる具体的なフレーズにする
 - 「〇〇について」「〇〇の話」「導入」「まとめ」のような抽象タイトルは絶対禁止
 - 発言のキーワード、数字、固有名詞、意外性のある表現を含める
-- 例: ✗「経営戦略について」→ ✓「売上3倍を実現した"逆張り"の一手」
+- 例: ✗「血統について」→ ✓「母父ストームキャットが重馬場で炸裂する理由」
 
 【summaryルール】
 - 各チャプター50〜100文字の濃い要約を書く（一言で終わらせない）
@@ -145,7 +149,7 @@ function tagsPrompt(title: string, transcript: string, opts: PromptOptions = {})
 
 【タグ選定ルール】
 - この動画でしか使わない固有のキーワードを最優先（人名、企業名、専門概念、独自フレーズ）
-- 「ビジネス」「経済」「最新」「仕事」のような汎用すぎるタグは絶対禁止
+- 「競馬」「レース」「最新」「馬」のような汎用すぎるタグは絶対禁止
 - 視聴者が検索しそうなフレーズを含める（SEO観点）
 - 7つのうち少なくとも2つは具体的な人名・企業名・作品名にする
 - 残りは動画の核心テーマを端的に表すキーワードにする
@@ -268,10 +272,10 @@ export async function generateSummary(videoId: string, transcript: string, title
   }
 }
 
-export async function generateChapters(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean): Promise<string> {
+export async function generateChapters(videoId: string, transcript: string, title: string, customInstruction?: string, promptMode?: "append" | "override", skipStepUpdate?: boolean, durationSeconds?: number): Promise<string> {
   if (!skipStepUpdate) await setStep(videoId, "generating_chapters")
   const basePrompt = await getConfigValue("AI_CHAPTERS_BASE_PROMPT")
-  const prompt = chaptersPrompt(title, transcript, { customInstruction, promptMode, basePrompt })
+  const prompt = chaptersPrompt(title, transcript, { customInstruction, promptMode, basePrompt }, durationSeconds)
 
   try {
     const result = await callLLM(prompt)
@@ -406,6 +410,14 @@ export interface GenerateAllOptions {
 }
 
 export async function generateAll(videoId: string, transcript: string, title: string, options?: GenerateAllOptions) {
+  // duration取得（チャプター生成の精度向上のため）
+  const { data: videoData } = await supabase
+    .from("videos")
+    .select("duration")
+    .eq("id", videoId)
+    .single()
+  const durationSeconds = (videoData?.duration as number) || undefined
+
   const { data: existing } = await supabase
     .from("ai_contents")
     .select("id")
@@ -437,15 +449,42 @@ export async function generateAll(videoId: string, transcript: string, title: st
     const ins = options?.instructions
 
     // 並列実行（skipStepUpdate=true: generateAllがステップを管理する）
-    const [summary, chapters, article, tags] = await Promise.all([
+    const results = await Promise.allSettled([
       generateSummary(videoId, transcript, title, ins?.summary, mode, true),
-      generateChapters(videoId, transcript, title, ins?.chapters, mode, true),
+      generateChapters(videoId, transcript, title, ins?.chapters, mode, true, durationSeconds),
       generateArticle(videoId, transcript, title, ins?.article, mode, true),
       generateTags(videoId, transcript, title, ins?.tags, mode, true),
     ])
 
+    const summary = results[0].status === "fulfilled" ? results[0].value : ""
+    const chapters = results[1].status === "fulfilled" ? results[1].value : "[]"
+    const article = results[2].status === "fulfilled" ? results[2].value : ""
+    const tags = results[3].status === "fulfilled" ? results[3].value : ([] as string[])
+
+    // 失敗した項目をログに記録
+    const stepNames = ["summary", "chapters", "article", "tags"] as const
+    const failures = results
+      .map((r, i) => r.status === "rejected" ? stepNames[i] : null)
+      .filter(Boolean)
+
+    if (failures.length > 0) {
+      for (const r of results) {
+        if (r.status === "rejected") {
+          const failMsg = r.reason instanceof Error ? r.reason.message : "Unknown error"
+          await logGeneration(videoId, "full_generate", "partial_error", { errorMessage: `Failed steps: ${failures.join(", ")} — ${failMsg}` })
+        }
+      }
+    }
+
+    // 全て失敗した場合のみエラー
+    const successCount = results.filter(r => r.status === "fulfilled").length
+    if (successCount === 0) {
+      const firstError = results.find(r => r.status === "rejected") as PromiseRejectedResult
+      throw firstError.reason instanceof Error ? firstError.reason : new Error("All generation steps failed")
+    }
+
     await supabase.from("ai_contents").update({
-      status: "done",
+      status: failures.length > 0 ? "done" : "done",
       updated_at: new Date().toISOString(),
     }).eq("video_id", videoId)
 
@@ -456,7 +495,7 @@ export async function generateAll(videoId: string, transcript: string, title: st
     }).eq("id", videoId)
 
     const totalMs = Date.now() - startTime
-    await logGeneration(videoId, "full_generate", "done", { processingMs: totalMs, resultPreview: `summary:${summary.length}chars, chapters:${chapters}, article:${article.length}chars, tags:${JSON.stringify(tags)}` })
+    await logGeneration(videoId, "full_generate", failures.length > 0 ? "partial" : "done", { processingMs: totalMs, resultPreview: `summary:${summary.length}chars, chapters:${chapters}, article:${article.length}chars, tags:${JSON.stringify(tags)}${failures.length > 0 ? `, failed:${failures.join(",")}` : ""}` })
 
     return { summary, chapters, article, tags, processingMs: totalMs }
   } catch (error) {

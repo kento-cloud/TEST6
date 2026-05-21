@@ -17,22 +17,10 @@ const infoItems = [
   { label: "運営会社情報", href: "/company" },
 ] as const
 
-function PivotLogoFull() {
+function PaddockLogoFull() {
   return (
     <Link href="/" className="inline-block">
-      <svg width="100" height="24" viewBox="0 0 100 24" fill="none">
-        <text x="0" y="20" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="24">
-          <tspan fill="#cd1cfa">PI</tspan>
-          <tspan fill="url(#accGrad)">V</tspan>
-          <tspan fill="#1e82be">OT</tspan>
-        </text>
-        <defs>
-          <linearGradient id="accGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#cd1cfa" />
-            <stop offset="100%" stopColor="#1e82be" />
-          </linearGradient>
-        </defs>
-      </svg>
+      <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" width={120} height={28} />
     </Link>
   )
 }
@@ -49,7 +37,7 @@ export default function AccountPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="px-6 pt-6 pb-2">
-        <PivotLogoFull />
+        <PaddockLogoFull />
       </div>
 
       <div className="flex-1 flex items-start justify-center px-4 pt-8 pb-16">
@@ -71,13 +59,13 @@ export default function AccountPage() {
             <div className="mb-6 flex gap-3">
               <Link
                 href="/auth/sign_in"
-                className="flex-1 py-3 text-center bg-[#cd1cfa] rounded-lg text-[14px] font-bold hover:bg-[#b018d8] transition-colors"
+                className="flex-1 py-3 text-center bg-[#16a34a] rounded-lg text-[14px] font-bold hover:bg-[#15803d] transition-colors"
               >
                 ログイン
               </Link>
               <Link
                 href="/auth/sign_up"
-                className="flex-1 py-3 text-center border border-[#cd1cfa] rounded-lg text-[14px] font-bold text-[#cd1cfa] hover:bg-[#cd1cfa]/10 transition-colors"
+                className="flex-1 py-3 text-center border border-[#16a34a] rounded-lg text-[14px] font-bold text-[#16a34a] hover:bg-[#16a34a]/10 transition-colors"
               >
                 新規登録
               </Link>

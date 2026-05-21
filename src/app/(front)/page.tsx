@@ -33,7 +33,7 @@ export default async function HomePage() {
       {/* Content Sections */}
       <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-6 lg:px-8 py-5 md:py-8">
         {/* 共通: 新着 */}
-        <EpisodeSection title="新着" spTitle="新着コンテンツ" episodes={episodes} href="/new_arrival/episode" />
+        <EpisodeSection title="最新レポート" spTitle="最新レポート" episodes={episodes} href="/new_arrival/episode" />
 
         {/* SP専用セクション（本家SPのセクション構成を再現） */}
         <SPSections episodes={episodes} />

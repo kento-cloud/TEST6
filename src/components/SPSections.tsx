@@ -15,14 +15,14 @@ interface SPSectionsProps {
 
 function buildSPSections(eps: readonly Episode[]): readonly { readonly title: string; readonly episodes: readonly Episode[] }[] {
   return [
-    { title: "おすすめの映像", episodes: [eps[1], eps[4], eps[7], eps[0]] },
+    { title: "今週の注目レポート", episodes: [eps[0], eps[4], eps[5], eps[1]] },
     { title: "★4.5超え 高評価コンテンツ", episodes: [eps[3], eps[4], eps[2], eps[0]] },
-    { title: "アプリ・Web限定コンテンツ", episodes: [eps[5], eps[6], eps[8], eps[9]] },
-    { title: "ビジネス", episodes: [eps[1], eps[7], eps[6], eps[4]] },
-    { title: "キャリア", episodes: [eps[7], eps[1], eps[8], eps[6]] },
-    { title: "テクノロジー・サイエンス", episodes: [eps[0], eps[3], eps[4], eps[5]] },
-    { title: "健康", episodes: [eps[3], eps[8], eps[2], eps[9]] },
-    { title: "スポーツ", episodes: [eps[6], eps[1], eps[0], eps[7]] },
+    { title: "PADDOCK限定コンテンツ", episodes: [eps[5], eps[6], eps[8], eps[9]] },
+    { title: "レース分析", episodes: [eps[0], eps[4], eps[5], eps[9]] },
+    { title: "馬券・予想", episodes: [eps[2], eps[4], eps[0], eps[7]] },
+    { title: "血統・生産", episodes: [eps[1], eps[6], eps[3], eps[9]] },
+    { title: "調教・馬体", episodes: [eps[7], eps[8], eps[3], eps[2]] },
+    { title: "海外競馬", episodes: [eps[5], eps[9], eps[1], eps[6]] },
     { title: "マネジメント", episodes: [eps[7], eps[4], eps[1], eps[8]] },
     { title: "マーケティング", episodes: [eps[8], eps[5], eps[6], eps[2]] },
     { title: "教育", episodes: [eps[9], eps[3], eps[0], eps[4]] },

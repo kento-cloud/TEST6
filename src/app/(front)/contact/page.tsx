@@ -38,7 +38,7 @@ export default function ContactPage() {
             お問い合わせいただきありがとうございます。<br />
             内容を確認の上、ご連絡いたします。
           </p>
-          <Link href="/" className="text-[14px] text-[#cd1cfa] hover:underline">
+          <Link href="/" className="text-[14px] text-[#16a34a] hover:underline">
             トップに戻る
           </Link>
         </div>
@@ -53,7 +53,7 @@ export default function ContactPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="山田 太郎"
               required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#cd1cfa]"
+              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a]"
             />
           </div>
           <div>
@@ -65,7 +65,7 @@ export default function ContactPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@email.com"
               required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#cd1cfa]"
+              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a]"
             />
           </div>
           <div>
@@ -77,14 +77,14 @@ export default function ContactPage() {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="お問い合わせ内容をご入力ください"
               required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#cd1cfa] resize-none"
+              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a] resize-none"
             />
           </div>
           <button
             type="submit"
             disabled={status === "sending"}
             className="w-full py-3 rounded-lg text-sm font-medium text-white disabled:opacity-50 cursor-pointer"
-            style={{ background: "linear-gradient(90deg, #cd1cfa, #1e82be)" }}
+            style={{ background: "linear-gradient(90deg, #16a34a, #d4a017)" }}
           >
             {status === "sending" ? "送信中..." : "送信する"}
           </button>

@@ -9,7 +9,7 @@ export default async function StaffRecommendPage() {
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
       <div className="px-4 md:px-8 py-6">
-        <h1 className="text-[22px] font-bold mb-6">スタッフおすすめプレイリスト</h1>
+        <h1 className="text-[22px] font-bold mb-6">編集部のイチ推しプレイリスト</h1>
         <PlaylistSection playlists={playlists} />
       </div>
     </div>

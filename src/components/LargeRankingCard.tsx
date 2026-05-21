@@ -47,7 +47,7 @@ export function LargeRankingCard({ episode, rank }: LargeRankingCardProps) {
         )}
       </div>
       <div className="mt-2">
-        <h3 className="text-[15px] font-bold leading-[1.4] line-clamp-2 group-hover:text-[#cd1cfa] transition-colors">
+        <h3 className="text-[15px] font-bold leading-[1.4] line-clamp-2 group-hover:text-[#16a34a] transition-colors">
           {episode.title}
         </h3>
         <div className="flex items-center gap-1 mt-1 text-[13px] text-[#999]">

@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-pivot-darkest: #0e1226;
-  --color-pivot-dark: #1d2030;
-  --color-pivot-mid: #303240;
+  --color-pivot-darkest: #0a1a0f;
+  --color-pivot-dark: #142118;
+  --color-pivot-mid: #1e3527;
   --color-pivot-border: #606370;
   --color-pivot-pale: #a9abb8;
-  --color-pivot-accent: #cd1cfa;
-  --color-pivot-blue: #1e82be;
+  --color-pivot-accent: #16a34a;
+  --color-pivot-blue: #d4a017;
   --color-pivot-text: #ffffff;
   --color-pivot-subtext: #999999;
   --color-pivot-card-bg: rgba(14, 18, 38, 0.5);
@@ -43,7 +43,7 @@ body {
   padding: 0;
   height: 100%;
   font-family: "Noto Sans JP", sans-serif;
-  background: #0e1226;
+  background: #0a1a0f;
   color: #fff;
   -webkit-font-smoothing: antialiased;
 }
@@ -83,14 +83,14 @@ a {
 }
 
 .gradient-text {
-  background: linear-gradient(90deg, #cd1cfa, #764fdc 60%, #1e82be);
+  background: linear-gradient(90deg, #16a34a, #2d8a4e 60%, #d4a017);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-button {
-  background: linear-gradient(90deg, #cd1cfa, #764fdc 60%, #1e82be);
+  background: linear-gradient(90deg, #16a34a, #2d8a4e 60%, #d4a017);
 }
 
 .scrollbar-hide {

@@ -3,11 +3,14 @@ import { AuthProvider } from "@/contexts/AuthContext"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "ビジネス映像メディア「PIVOT」",
+  title: "競馬情報メディア「PADDOCK」",
   description:
-    "PIVOTは、「日本をPIVOTする」をミッションに掲げるビジネス映像メディアです。",
+    "PADDOCKは、AIで競馬情報を見極める映像メディアです。",
   icons: {
-    icon: "/favicon/favicon.ico",
+    icon: [
+      { url: "/favicon/favicon.ico", sizes: "any" },
+      { url: "/favicon/favicon.svg", type: "image/svg+xml" },
+    ],
   },
 }
 

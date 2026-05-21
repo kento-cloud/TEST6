@@ -24,7 +24,7 @@ export default async function AdminVideosPage() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">動画管理</h1>
-        <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#b018d8] transition-colors text-center">
+        <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#15803d] transition-colors text-center">
           + 新規アップロード
         </Link>
       </div>
@@ -35,7 +35,7 @@ export default async function AdminVideosPage() {
             <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
           </svg>
           <p className="text-gray-400 text-[15px] mb-3">動画がまだありません</p>
-          <Link href="/admin/videos/upload" className="text-[14px] text-[#cd1cfa] font-semibold">最初の動画をアップロード →</Link>
+          <Link href="/admin/videos/upload" className="text-[14px] text-[#16a34a] font-semibold">最初の動画をアップロード →</Link>
         </div>
       ) : (
         <AdminVideoFilter videos={videos} />

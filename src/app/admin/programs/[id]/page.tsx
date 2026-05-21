@@ -124,7 +124,7 @@ export default function ProgramDetailPage() {
   if (state.loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#16a34a] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -133,7 +133,7 @@ export default function ProgramDetailPage() {
     return (
       <div className="text-center py-20">
         <p className="text-red-500 text-[14px]">{state.error}</p>
-        <Link href="/admin/programs" className="text-[13px] text-[#cd1cfa] mt-3 inline-block">← 番組一覧に戻る</Link>
+        <Link href="/admin/programs" className="text-[13px] text-[#16a34a] mt-3 inline-block">← 番組一覧に戻る</Link>
       </div>
     )
   }
@@ -168,7 +168,7 @@ export default function ProgramDetailPage() {
               type="text"
               value={state.name}
               onChange={(e) => setState((prev) => ({ ...prev, name: e.target.value, success: false }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors"
             />
           </div>
 
@@ -181,7 +181,7 @@ export default function ProgramDetailPage() {
               value={state.description}
               onChange={(e) => setState((prev) => ({ ...prev, description: e.target.value, success: false }))}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors resize-none"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors resize-none"
             />
           </div>
 
@@ -191,7 +191,7 @@ export default function ProgramDetailPage() {
               type="checkbox"
               checked={state.isActive}
               onChange={(e) => setState((prev) => ({ ...prev, isActive: e.target.checked, success: false }))}
-              className="w-4 h-4 rounded border-gray-300 text-[#cd1cfa] focus:ring-[#cd1cfa]"
+              className="w-4 h-4 rounded border-gray-300 text-[#16a34a] focus:ring-[#16a34a]"
             />
             <label htmlFor="isActive" className="text-[13px] font-semibold text-gray-700">
               有効
@@ -211,7 +211,7 @@ export default function ProgramDetailPage() {
                   value={state.aiPrompt}
                   onChange={(e) => setState((prev) => ({ ...prev, aiPrompt: e.target.value, success: false }))}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors resize-none"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors resize-none"
                   placeholder="この番組の動画に対するAI生成の指示を入力（例：ビジネス向けのフォーマルな文体で生成してください）"
                 />
                 <p className="text-[11px] text-gray-400 mt-1">番組に紐づく動画のAI生成時にデフォルト指示として使用されます。動画個別の指示がある場合はそちらが優先されます。</p>
@@ -224,7 +224,7 @@ export default function ProgramDetailPage() {
                   id="aiStylePresetId"
                   value={state.aiStylePresetId}
                   onChange={(e) => setState((prev) => ({ ...prev, aiStylePresetId: e.target.value, success: false }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors bg-white"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors bg-white"
                 >
                   <option value="">プリセットなし</option>
                   {state.presets.map((p) => (
@@ -248,7 +248,7 @@ export default function ProgramDetailPage() {
             <button
               type="submit"
               disabled={state.saving}
-              className="px-6 py-2.5 bg-[#cd1cfa] text-white rounded-lg text-[14px] font-semibold hover:bg-[#b018d8] transition-colors disabled:opacity-50"
+              className="px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
             >
               {state.saving ? "保存中..." : "保存"}
             </button>

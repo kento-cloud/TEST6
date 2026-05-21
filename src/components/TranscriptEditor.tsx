@@ -73,7 +73,7 @@ export function TranscriptEditor({ videoId, initialText }: Props) {
           <button
             onClick={handleSave}
             disabled={saving || saved}
-            className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+            className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
           >
             {saving ? "保存中..." : saved ? "保存済み" : "保存"}
           </button>
@@ -87,7 +87,7 @@ export function TranscriptEditor({ videoId, initialText }: Props) {
       <textarea
         value={text}
         onChange={(e) => handleChange(e.target.value)}
-        className="w-full px-4 py-3 text-[14px] text-gray-700 leading-[1.8] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#cd1cfa] resize-none"
+        className="w-full px-4 py-3 text-[14px] text-gray-700 leading-[1.8] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#16a34a] resize-none"
         rows={15}
       />
       <p className="text-[11px] text-gray-400 mt-1">{text.length.toLocaleString()}文字</p>

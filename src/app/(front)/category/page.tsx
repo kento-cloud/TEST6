@@ -11,15 +11,15 @@ import type { Episode } from "@/types"
 
 function CategoryContent() {
   const searchParams = useSearchParams()
-  const code = searchParams.get("category_code") ?? "business"
+  const code = searchParams.get("category_code") ?? "race"
 
   const [categoryLabels, setCategoryLabels] = useState<Record<string, string>>({
-    business: "ビジネス",
-    money: "マネー",
-    career: "キャリア",
-    life: "ライフ",
-    technology: "テクノロジー",
-    global: "グローバル",
+    race: "レース分析",
+    betting: "馬券・予想",
+    breeding: "血統・生産",
+    training: "調教・馬体",
+    science: "競馬サイエンス",
+    global: "海外競馬",
   })
 
   const [episodes, setEpisodes] = useState<Episode[]>([])

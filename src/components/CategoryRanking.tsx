@@ -5,12 +5,12 @@ import { EpisodeCard } from "./EpisodeCard"
 import type { Episode } from "@/types"
 
 const categories = [
-  { code: "business", label: "ビジネス" },
-  { code: "money", label: "マネー" },
-  { code: "career", label: "キャリア" },
-  { code: "life", label: "ライフ" },
-  { code: "technology", label: "テクノロジー" },
-  { code: "global", label: "グローバル" },
+  { code: "race", label: "レース分析" },
+  { code: "betting", label: "馬券・予想" },
+  { code: "breeding", label: "血統・生産" },
+  { code: "training", label: "調教・馬体" },
+  { code: "science", label: "競馬サイエンス" },
+  { code: "global", label: "海外競馬" },
 ] as const
 
 interface CategoryRankingProps {

@@ -100,7 +100,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
             value={selectedPresetId}
             onChange={(e) => handlePresetChange(e.target.value)}
             disabled={state === "generating"}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] disabled:bg-gray-50"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] disabled:bg-gray-50"
           >
             <option value="">カスタム（自由入力）</option>
             {presets.map((p) => (
@@ -118,12 +118,12 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           onChange={(e) => { setPrompt(e.target.value); setSelectedPresetId("") }}
           placeholder="空欄ならデフォルト（キャッチコピー入りYouTube風）で生成"
           disabled={state === "generating"}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] disabled:bg-gray-50 disabled:text-gray-400"
+          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] disabled:bg-gray-50 disabled:text-gray-400"
         />
         <button
           onClick={handleGenerate}
           disabled={state === "generating"}
-          className="w-full px-4 py-2.5 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+          className="w-full px-4 py-2.5 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
         >
           {state === "generating" ? (
             <span className="inline-flex items-center gap-1">
@@ -148,7 +148,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
                 onClick={() => setSelectedId(thumb.id)}
                 className={`relative w-[150px] aspect-video rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
                   selectedId === thumb.id
-                    ? "border-[#cd1cfa] ring-2 ring-[#cd1cfa]/30 scale-[1.02]"
+                    ? "border-[#16a34a] ring-2 ring-[#16a34a]/30 scale-[1.02]"
                     : "border-gray-200 hover:border-gray-400"
                 }`}
               >
@@ -158,7 +158,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 {selectedId === thumb.id && (
-                  <div className="absolute top-1 right-1 w-5 h-5 bg-[#cd1cfa] rounded-full flex items-center justify-center">
+                  <div className="absolute top-1 right-1 w-5 h-5 bg-[#16a34a] rounded-full flex items-center justify-center">
                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
@@ -181,7 +181,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
             <button
               onClick={handleSelect}
               disabled={!selectedId || setting}
-              className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
             >
               {setting ? "設定中..." : "この画像をメインに設定"}
             </button>

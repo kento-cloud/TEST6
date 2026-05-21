@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
       <main className="w-full max-w-[380px] bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <header className="text-center mb-8">
           <h1 className="inline-flex items-baseline gap-2">
-            <span className="text-[24px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+            <span className="text-[24px] font-black bg-gradient-to-r from-[#16a34a] to-[#059669] bg-clip-text text-transparent">PADDOCK</span>
             <span className="text-[14px] font-semibold text-gray-400">Admin</span>
           </h1>
           <p className="text-[14px] text-gray-500 mt-2">管理画面にログイン</p>
@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="管理者パスワード"
               disabled={state === "loading"}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa] transition-colors disabled:bg-gray-50"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#16a34a] transition-colors disabled:bg-gray-50"
               autoFocus
             />
           </div>
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={state === "loading" || !password}
-            className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors"
+            className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors"
           >
             {state === "loading" ? (
               <span className="inline-flex items-center gap-2">

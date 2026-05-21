@@ -43,8 +43,8 @@ export function AuthPrompt({ children }: { readonly children: React.ReactNode })
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-[#cd1cfa]/10 flex items-center justify-center mx-auto mb-4">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="#cd1cfa">
+              <div className="w-16 h-16 rounded-full bg-[#16a34a]/10 flex items-center justify-center mx-auto mb-4">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#16a34a">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>

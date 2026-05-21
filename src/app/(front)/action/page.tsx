@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-const tabs = ["ミッション", "マイル特典", "クイズ"] as const
+const tabs = ["ミッション", "パドP特典", "クイズ"] as const
 
 const streakMilestones = [
   { label: "2週", points: "+300" },
@@ -37,17 +37,17 @@ export default function ActionPage() {
 
         {activeTab === 0 && (
           <div className="flex flex-col gap-3">
-            {/* 保有マイル */}
+            {/* 保有パドP */}
             <div className="gradient-button rounded-xl px-6 py-5 flex items-center justify-between">
               <div>
-                <p className="text-[12px] text-white/70 mb-1">保有マイル</p>
+                <p className="text-[12px] text-white/70 mb-1">保有パドP</p>
                 <p className="text-[28px] font-bold flex items-center gap-2">
-                  <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[11px] font-black" style={{ color: "#cd1cfa" }}>P</span>
+                  <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[11px] font-black" style={{ color: "#16a34a" }}>P</span>
                   0
                 </p>
               </div>
               <div className="flex items-center gap-1">
-                <p className="text-[12px] text-white/70 text-right">動画を視聴完了する毎に<br />+50マイル自動付与</p>
+                <p className="text-[12px] text-white/70 text-right">動画を視聴完了する毎に<br />+50パドP自動付与</p>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="white" fillOpacity="0.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>
               </div>
             </div>
@@ -80,7 +80,7 @@ export default function ActionPage() {
               <div className="flex flex-col gap-[2px]">
                 <div className="bg-[#252738] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[15px]">動画を2つ視聴完了する</p>
+                    <p className="font-bold text-[15px]">レース分析を2本視聴する</p>
                     <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex justify-end text-[13px] text-[#a9abb8] mb-2">0/2</div>
@@ -91,7 +91,7 @@ export default function ActionPage() {
                 </div>
                 <div className="bg-[#252738] rounded-b-xl p-5">
                   <div className="flex items-center justify-between">
-                    <p className="font-bold text-[15px]">エピソードを評価する</p>
+                    <p className="font-bold text-[15px]">予想動画を評価する</p>
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] text-[#a9abb8]">+10</span>
                       <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
@@ -110,7 +110,7 @@ export default function ActionPage() {
               <div className="flex flex-col gap-[2px]">
                 <div className="bg-[#252738] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[15px]">動画を視聴完了する</p>
+                    <p className="font-bold text-[15px]">パドック映像を視聴する</p>
                     <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex items-center justify-between text-[13px] text-[#a9abb8] mb-2">
@@ -125,7 +125,7 @@ export default function ActionPage() {
                 </div>
                 <div className="bg-[#252738] rounded-b-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[15px]">クイズで正答率100%を達成する</p>
+                    <p className="font-bold text-[15px]">予想クイズで全問正解する</p>
                     <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex items-center justify-between text-[13px] text-[#a9abb8] mb-2">
@@ -145,7 +145,7 @@ export default function ActionPage() {
             <section>
               <h2 className="text-[16px] font-bold mb-3">初回限定ミッション</h2>
               <div className="flex flex-col gap-[2px]">
-                {["プレイリストを作成する", "番組をフォローする", "あとで見るを利用する"].map((title, i, arr) => (
+                {["予想プレイリストを作成する", "番組をフォローする", "あとで見るを利用する"].map((title, i, arr) => (
                   <div key={title} className={`bg-[#252738] p-5 flex items-center justify-between ${
                     i === 0 ? "rounded-t-xl" : i === arr.length - 1 ? "rounded-b-xl" : ""
                   }`}>
@@ -164,7 +164,7 @@ export default function ActionPage() {
             </button>
 
             <p className="text-center text-[12px] text-[#606370] mt-3">
-              動画の視聴・クイズへの参加でマイルが貯まります。マイルは特典と交換できます。
+              レース動画の視聴・予想クイズへの参加でパドPが貯まります。パドPは特典と交換できます。
             </p>
           </div>
         )}
@@ -174,7 +174,7 @@ export default function ActionPage() {
             <div className="w-16 h-16 rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="#606370"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" /></svg>
             </div>
-            <p className="text-[15px] text-[#606370] mb-2">マイルを貯めて特典と交換しよう</p>
+            <p className="text-[15px] text-[#606370] mb-2">パドPを貯めて特典と交換しよう</p>
             <p className="text-[12px] text-[#606370]">特典は今後追加予定です</p>
           </div>
         )}
@@ -184,8 +184,8 @@ export default function ActionPage() {
             <div className="w-16 h-16 rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="#606370"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" /></svg>
             </div>
-            <p className="text-[15px] text-[#606370] mb-2">クイズに挑戦してマイルを獲得しよう</p>
-            <p className="text-[12px] text-[#606370]">クイズ機能は今後追加予定です</p>
+            <p className="text-[15px] text-[#606370] mb-2">予想クイズに挑戦してパドPを獲得しよう</p>
+            <p className="text-[12px] text-[#606370]">予想クイズ機能は今後追加予定です</p>
           </div>
         )}
       </div>

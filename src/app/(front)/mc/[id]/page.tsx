@@ -3,12 +3,12 @@ import { EpisodeCard } from "@/components/EpisodeCard"
 import { getAllEpisodes } from "@/lib/data-source"
 
 const mcData: Record<string, { name: string; thumb: string }> = {
-  "1": { name: "佐々木紀彦", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
-  "2": { name: "小手森千紗", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  "3": { name: "野嶋紗己子", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
-  "4": { name: "西川貴季", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  "5": { name: "富山ハセン", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
-  "7": { name: "竹内由恵", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  "1": { name: "武豊", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
+  "2": { name: "藤田菜七子", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
+  "3": { name: "亀谷敬正", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
+  "4": { name: "井崎脩五郎", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
+  "5": { name: "細江純子", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
+  "6": { name: "須田鷹雄", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
 }
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 export default async function MCDetailPage({ params }: Props) {
   const { id } = await params
   const newEpisodes = await getAllEpisodes()
-  const mc = mcData[id] ?? { name: "MC", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" }
+  const mc = mcData[id] ?? { name: "解説者", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" }
 
   return (
     <div className="flex flex-col min-h-screen max-w-5xl mx-auto w-full px-6 md:px-10 py-8">

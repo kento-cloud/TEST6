@@ -99,7 +99,7 @@ export default async function AIResultPage({ params }: Props) {
               <h2 className="text-[16px] font-bold text-gray-900 mb-3">タグ</h2>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
-                  <span key={tag} className="px-3 py-1 bg-purple-50 text-purple-700 text-[13px] rounded-full font-medium">{tag}</span>
+                  <span key={tag} className="px-3 py-1 bg-green-50 text-green-700 text-[13px] rounded-full font-medium">{tag}</span>
                 ))}
               </div>
             </div>
@@ -110,7 +110,7 @@ export default async function AIResultPage({ params }: Props) {
             <div className="bg-white rounded-xl border border-gray-100 p-5">
               <div className="flex items-center justify-between">
                 <h2 className="text-[16px] font-bold text-gray-900">記事</h2>
-                <Link href={`/admin/videos/${id}/article`} className="text-[14px] text-[#cd1cfa] font-semibold">記事を確認 →</Link>
+                <Link href={`/admin/videos/${id}/article`} className="text-[14px] text-[#16a34a] font-semibold">記事を確認 →</Link>
               </div>
               <p className="text-[13px] text-gray-500 mt-2">{aiContent.article.length.toLocaleString()}文字</p>
             </div>

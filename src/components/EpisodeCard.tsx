@@ -59,7 +59,7 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
 
       {/* Info */}
       <div className="mt-1">
-        <h3 className="text-[12px] md:text-[13px] font-bold leading-[1.3] line-clamp-2 text-white group-hover:text-[#cd1cfa] transition-colors">
+        <h3 className="text-[12px] md:text-[13px] font-bold leading-[1.3] line-clamp-2 text-white group-hover:text-[#16a34a] transition-colors">
           {episode.title}
         </h3>
         <div className="flex items-center gap-1 mt-[2px] text-[11px] text-[#999]">

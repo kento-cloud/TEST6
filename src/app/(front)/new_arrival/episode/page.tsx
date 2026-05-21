@@ -38,10 +38,10 @@ export default async function NewArrivalPage() {
                 )}
               </div>
               <div className="flex-1 py-1">
-                <h3 className="text-[16px] font-bold leading-[1.4] line-clamp-2 group-hover:text-[#cd1cfa] transition-colors mb-2">
+                <h3 className="text-[16px] font-bold leading-[1.4] line-clamp-2 group-hover:text-[#16a34a] transition-colors mb-2">
                   {ep.title}
                 </h3>
-                <p className="text-[13px] text-[#cd1cfa] mb-1">{ep.programName}</p>
+                <p className="text-[13px] text-[#16a34a] mb-1">{ep.programName}</p>
                 <p className="text-[13px] text-[#999] line-clamp-2 mb-2">{ep.description}</p>
                 <div className="flex items-center gap-2 text-[12px] text-[#606370]">
                   <span>{ep.viewCount}</span>

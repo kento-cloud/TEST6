@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const rows = [
-  { label: "事業者名", value: "株式会社PIVOT" },
-  { label: "代表者", value: "佐々木 紀彦" },
-  { label: "所在地", value: "〒107-0062 東京都港区南青山3丁目1番36号" },
-  { label: "電話番号", value: "03-XXXX-XXXX（お問い合わせはメールにて受付）" },
-  { label: "メールアドレス", value: "support@pivot.inc" },
-  { label: "サービスURL", value: "https://pivotmedia.co.jp/" },
+  { label: "事業者名", value: "株式会社PADDOCK" },
+  { label: "代表者", value: "非公開" },
+  { label: "所在地", value: "東京都" },
+  { label: "電話番号", value: "お問い合わせはメールにて受付" },
+  { label: "メールアドレス", value: "support@paddock.jp" },
+  { label: "サービスURL", value: "https://paddock.jp/" },
   {
     label: "販売価格",
     value:

@@ -1,11 +1,9 @@
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { EpisodeSection } from "@/components/EpisodeSection"
-import { VideoPlayer } from "@/components/VideoPlayer"
-import { YouTubePlayer } from "@/components/YouTubePlayer"
+import { ContentModeSwitch } from "@/components/ContentModeSwitch"
 import { AuthGate } from "@/components/AuthGate"
 import { MovieThumbnailPreview } from "@/components/MovieThumbnailPreview"
 import { ShareButton } from "@/components/ShareButton"
-import { ArticleExport } from "@/components/ArticleExport"
 import { getAllEpisodes, getVideoDetail } from "@/lib/data-source"
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
@@ -96,7 +94,7 @@ export default async function MoviePage({ params }: Props) {
       <div className="px-4 md:px-8 pt-6">
         <div className="max-w-[960px]">
           {programName && (
-            <p className="text-[13px] text-[#cd1cfa] font-bold mb-2">{programName}</p>
+            <p className="text-[13px] text-[#16a34a] font-bold mb-2">{programName}</p>
           )}
           <h1 className="text-[22px] md:text-[26px] font-bold leading-[1.4] mb-3">{title}</h1>
         </div>
@@ -106,18 +104,16 @@ export default async function MoviePage({ params }: Props) {
       <AuthGate fallbackTitle={title}>
         <div className="px-4 md:px-8 pb-6">
           <div className="max-w-[960px]">
-            {/* 動画プレーヤー（ログイン後に表示） */}
-            {(sourceType === "youtube" && youtubeVideoId) || videoSrc ? (
-              <div className="mb-6 -mx-4 md:-mx-8">
-                <div className="w-full">
-                  {sourceType === "youtube" && youtubeVideoId ? (
-                    <YouTubePlayer videoId={youtubeVideoId} thumbnailUrl={thumbnailUrl} />
-                  ) : videoSrc ? (
-                    <VideoPlayer src={videoSrc} poster={thumbnailUrl} />
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
+            {/* 3モード切替（動画/音声/記事） */}
+            <ContentModeSwitch
+              sourceType={sourceType}
+              youtubeVideoId={youtubeVideoId}
+              videoSrc={videoSrc}
+              thumbnailUrl={thumbnailUrl}
+              title={title}
+              programName={programName ?? undefined}
+              article={article ?? null}
+            />
 
             <div className="flex items-center gap-3 text-[14px] text-[#999] mb-4">
               <span>{episode.viewCount}</span>
@@ -155,7 +151,7 @@ export default async function MoviePage({ params }: Props) {
                 <div className="bg-[#1d2030] rounded-xl p-4 space-y-1">
                   {chapters.map((ch: Chapter, i: number) => (
                     <div key={i} className="flex items-start gap-3 py-3 border-b border-[#303240] last:border-0 cursor-pointer hover:bg-[#303240]/50 rounded px-2 transition-colors">
-                      <span className="text-[13px] text-[#cd1cfa] font-mono shrink-0 pt-0.5">{formatTime(ch.startTime)}</span>
+                      <span className="text-[13px] text-[#16a34a] font-mono shrink-0 pt-0.5">{formatTime(ch.startTime)}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] text-white leading-snug">{ch.title}</p>
                         {ch.summary && (
@@ -168,24 +164,7 @@ export default async function MoviePage({ params }: Props) {
               </div>
             )}
 
-            {/* Article (from AI) */}
-            {article && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-[18px] font-bold">記事</h2>
-                  <ArticleExport article={article} title={title} />
-                </div>
-                <div className="bg-[#1d2030] rounded-xl p-6 text-[15px] text-[#a9abb8] leading-[1.9]">
-                  {article.split("\n").map((line: string, i: number) => {
-                    if (line.startsWith("## ")) return <h3 key={i} className="text-[17px] font-bold text-white mt-5 mb-2">{line.slice(3)}</h3>
-                    if (line.startsWith("### ")) return <h4 key={i} className="text-[15px] font-bold text-white mt-4 mb-1">{line.slice(4)}</h4>
-                    if (line.startsWith("- ")) return <li key={i} className="ml-4 mb-1">{line.slice(2)}</li>
-                    if (line.trim() === "") return <br key={i} />
-                    return <p key={i} className="mb-2">{line}</p>
-                  })}
-                </div>
-              </div>
-            )}
+            {/* 記事セクション（記事モードで全面表示されるが、動画モード時にも下部に表示） */}
           </div>
 
           {/* Related Episodes */}

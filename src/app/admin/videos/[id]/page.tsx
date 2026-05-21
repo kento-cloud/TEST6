@@ -82,7 +82,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
                   {st.done ? "✓" : i + 1}
                 </div>
                 {st.href ? (
-                  <Link href={st.href} className="text-[10px] md:text-[12px] mt-1 text-[#cd1cfa] hover:underline text-center whitespace-nowrap">{st.label}</Link>
+                  <Link href={st.href} className="text-[10px] md:text-[12px] mt-1 text-[#16a34a] hover:underline text-center whitespace-nowrap">{st.label}</Link>
                 ) : (
                   <span className="text-[10px] md:text-[12px] mt-1 text-gray-500 text-center whitespace-nowrap">{st.label}</span>
                 )}

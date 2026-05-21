@@ -199,7 +199,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
       return (
         <div>
           <p className="text-[13px] text-gray-700 leading-[1.7]">{preview}{currentValue.length > 200 ? "..." : ""}</p>
-          <Link href={`/admin/videos/${videoId}/article`} className="text-[12px] text-[#cd1cfa] hover:underline mt-1 inline-block">
+          <Link href={`/admin/videos/${videoId}/article`} className="text-[12px] text-[#16a34a] hover:underline mt-1 inline-block">
             記事エディタで開く →
           </Link>
         </div>
@@ -214,7 +214,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
       return (
         <div className="flex flex-wrap gap-1">
           {tags.map((tag) => (
-            <span key={tag} className="px-2 py-0.5 bg-purple-50 text-purple-700 text-[11px] rounded-full">{tag}</span>
+            <span key={tag} className="px-2 py-0.5 bg-green-50 text-green-700 text-[11px] rounded-full">{tag}</span>
           ))}
         </div>
       )
@@ -247,9 +247,9 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
         <div>
           <div className="flex flex-wrap gap-1 mb-2">
             {tags.map((tag, i) => (
-              <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 text-[11px] rounded-full">
+              <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 text-[11px] rounded-full">
                 {tag}
-                <button onClick={() => removeTag(i)} className="text-purple-400 hover:text-red-500 cursor-pointer">×</button>
+                <button onClick={() => removeTag(i)} className="text-green-400 hover:text-red-500 cursor-pointer">×</button>
               </span>
             ))}
           </div>
@@ -260,7 +260,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag() } }}
               placeholder="タグを入力してEnter"
-              className="flex-1 px-2 py-1 border border-gray-200 rounded text-[12px] outline-none focus:border-[#cd1cfa]"
+              className="flex-1 px-2 py-1 border border-gray-200 rounded text-[12px] outline-none focus:border-[#16a34a]"
             />
             <button onClick={addTag} className="px-2 py-1 bg-gray-100 rounded text-[11px] text-gray-600 hover:bg-gray-200 cursor-pointer">追加</button>
           </div>
@@ -272,7 +272,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
       <textarea
         value={editValue}
         onChange={(e) => setEditValue(e.target.value)}
-        className="w-full px-3 py-2 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#cd1cfa] resize-none"
+        className="w-full px-3 py-2 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#16a34a] resize-none"
         rows={stepKey === "article" ? 12 : stepKey === "chapters" ? 8 : 4}
       />
     )
@@ -314,7 +314,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
               )}
               <button
                 onClick={() => { setShowRegen(!showRegen); setExpanded(true) }}
-                className="px-2.5 py-0.5 border border-[#cd1cfa] text-[#cd1cfa] rounded text-[11px] font-semibold hover:bg-purple-50 cursor-pointer"
+                className="px-2.5 py-0.5 border border-[#16a34a] text-[#16a34a] rounded text-[11px] font-semibold hover:bg-green-50 cursor-pointer"
               >
                 再生成
               </button>
@@ -339,7 +339,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-3 py-1 bg-[#cd1cfa] text-white rounded text-[11px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+                  className="px-3 py-1 bg-[#16a34a] text-white rounded text-[11px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
                 >
                   {saving ? "保存中..." : "保存"}
                 </button>
@@ -353,14 +353,14 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
 
       {/* Regenerate Panel */}
       {showRegen && (
-        <div className="px-3 py-3 border-t border-purple-100 bg-purple-50">
+        <div className="px-3 py-3 border-t border-green-100 bg-green-50">
           <p className="text-[12px] font-semibold text-gray-700 mb-1.5">{label}を再生成</p>
           {stepKey === "article" && presets.length > 0 && (
             <div className="mb-2">
               <select
                 value={selectedPreset}
                 onChange={(e) => handlePresetChange(e.target.value)}
-                className="w-full px-2 py-1.5 border border-purple-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] bg-white"
+                className="w-full px-2 py-1.5 border border-green-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a] bg-white"
               >
                 <option value="">カスタム（自由入力）</option>
                 {presets.map((p) => (
@@ -373,17 +373,17 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
             value={regenInstruction}
             onChange={(e) => { setRegenInstruction(e.target.value); setSelectedPreset("") }}
             placeholder={placeholder}
-            className="w-full px-2 py-1.5 border border-purple-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none bg-white"
+            className="w-full px-2 py-1.5 border border-green-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a] resize-none bg-white"
             rows={2}
           />
           {regenInstruction && (
             <div className="flex gap-3 mt-1.5">
               <label className="flex items-center gap-1 cursor-pointer">
-                <input type="radio" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
+                <input type="radio" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#16a34a]" />
                 <span className="text-[11px] text-gray-600">ベースに追加</span>
               </label>
               <label className="flex items-center gap-1 cursor-pointer">
-                <input type="radio" checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
+                <input type="radio" checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#16a34a]" />
                 <span className="text-[11px] text-gray-600">この指示のみ</span>
               </label>
             </div>

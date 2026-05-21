@@ -45,22 +45,11 @@ function HeaderTabsInner() {
 
   return (
     <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
-      {/* SP Header: PIVOTロゴ + ログイン/アカウント (48px) */}
+      {/* SP Header: PADDOCKロゴ + ログイン/アカウント (48px) */}
       <div className="md:hidden flex items-center justify-between h-[48px] px-4">
         <Link href="/">
-          <svg width="60" height="16" viewBox="0 0 80 18" fill="none">
-            <text x="0" y="15" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="18">
-              <tspan fill="#cd1cfa">PI</tspan>
-              <tspan fill="url(#spgrad)">V</tspan>
-              <tspan fill="#1e82be">OT</tspan>
-            </text>
-            <defs>
-              <linearGradient id="spgrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#cd1cfa" />
-                <stop offset="100%" stopColor="#1e82be" />
-              </linearGradient>
-            </defs>
-          </svg>
+          <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" width={100} height={24} />
+          <span className="text-[10px] text-[#a9abb8] ml-1 whitespace-nowrap">AIで競馬を、もっと深く。</span>
         </Link>
         {user ? (
           <Link href="/account" className="text-[14px] font-bold text-white">
@@ -104,7 +93,7 @@ function HeaderTabsInner() {
               href="/account"
               className="flex items-center gap-2 h-[40px] px-4 text-[14px] font-bold text-white border border-white/30 rounded-full hover:bg-white/10 transition-colors"
             >
-              <span className="w-6 h-6 rounded-full bg-[#cd1cfa] flex items-center justify-center text-[12px] font-bold">
+              <span className="w-6 h-6 rounded-full bg-[#16a34a] flex items-center justify-center text-[12px] font-bold">
                 {(user.user_metadata?.display_name || user.email || "U")[0].toUpperCase()}
               </span>
               {user.user_metadata?.display_name || "アカウント"}

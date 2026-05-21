@@ -95,7 +95,7 @@ export default function PublishPage() {
   if (state.loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#16a34a] border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -104,7 +104,7 @@ export default function PublishPage() {
     return (
       <div className="text-center py-20">
         <p className="text-red-500 text-[14px]">{state.error}</p>
-        <Link href={`/admin/videos/${id}`} className="text-[13px] text-[#cd1cfa] mt-3 inline-block">← 動画詳細に戻る</Link>
+        <Link href={`/admin/videos/${id}`} className="text-[13px] text-[#16a34a] mt-3 inline-block">← 動画詳細に戻る</Link>
       </div>
     )
   }
@@ -164,7 +164,7 @@ export default function PublishPage() {
                 {item.label}
               </span>
               {!item.done && (
-                <Link href={item.label.includes("文字起こし") ? `/admin/videos/${id}/transcript` : `/admin/videos/${id}`} className="text-[12px] text-[#cd1cfa] hover:underline">
+                <Link href={item.label.includes("文字起こし") ? `/admin/videos/${id}/transcript` : `/admin/videos/${id}`} className="text-[12px] text-[#16a34a] hover:underline">
                   対応する →
                 </Link>
               )}

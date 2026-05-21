@@ -138,10 +138,13 @@ export async function POST(
 
     transcriptText = result.text
 
-    // durationを推定して更新（0の場合のみ）
+    // durationを更新（Whisperから返された実測値を優先）
     if (!video.duration || video.duration === 0) {
       let estimatedDuration = 0
-      if (result.segments.length > 0) {
+      // Whisperが返したduration（ffprobeベースの実測値）を優先
+      if ((result as { duration?: number }).duration) {
+        estimatedDuration = Math.ceil((result as { duration?: number }).duration!)
+      } else if (result.segments.length > 0) {
         const lastSeg = result.segments[result.segments.length - 1]
         estimatedDuration = Math.ceil(lastSeg.end)
       } else {
@@ -162,6 +165,7 @@ export async function POST(
     // 一時音声ファイルを削除（エラー時も）
     try { await unlink(audioPath) } catch { /* ignore */ }
     const message = error instanceof Error ? error.message : "Unknown error"
+    console.error(`[auto-process] Transcription error for ${id}:`, message)
     const isApiKeyError = message.includes("API_KEY") && message.includes("設定されていません")
 
     if (isApiKeyError) {
@@ -334,6 +338,7 @@ export async function POST(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
+    console.error(`[auto-process] AI generation error for ${id}:`, message, error instanceof Error ? error.stack : "")
     const isConfigError = message.includes("設定されていません")
 
     if (isConfigError) {

@@ -20,7 +20,7 @@ export default function WatchLaterPage() {
           <div className="mb-6 opacity-10">
             <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
               <rect width="80" height="80" rx="16" fill="white" />
-              <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="#0e1226" fontSize="20" fontWeight="bold" fontFamily="sans-serif">PIVOT</text>
+              <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="#0e1226" fontSize="20" fontWeight="bold" fontFamily="sans-serif">PADDOCK</text>
             </svg>
           </div>
           <p className="text-[#a9abb8] text-sm mb-6">
@@ -29,7 +29,7 @@ export default function WatchLaterPage() {
           <Link
             href="/"
             className="inline-flex items-center justify-center px-8 py-3 rounded-lg text-sm font-medium text-white"
-            style={{ background: "linear-gradient(90deg, #cd1cfa, #1e82be)" }}
+            style={{ background: "linear-gradient(90deg, #16a34a, #d4a017)" }}
           >
             ホームで探す
           </Link>

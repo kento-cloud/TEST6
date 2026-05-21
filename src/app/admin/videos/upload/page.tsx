@@ -30,7 +30,7 @@ export default function UploadPage() {
         <button
           onClick={() => setActiveTab("upload")}
           className={`flex-1 py-3 text-[13px] font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-            activeTab === "upload" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
+            activeTab === "upload" ? "text-[#16a34a] border-b-2 border-[#16a34a] -mb-[1px]" : "text-gray-400"
           }`}
         >
           📁 ファイル
@@ -38,7 +38,7 @@ export default function UploadPage() {
         <button
           onClick={() => setActiveTab("youtube")}
           className={`flex-1 py-3 text-[13px] font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-            activeTab === "youtube" ? "text-[#cd1cfa] border-b-2 border-[#cd1cfa] -mb-[1px]" : "text-gray-400"
+            activeTab === "youtube" ? "text-[#16a34a] border-b-2 border-[#16a34a] -mb-[1px]" : "text-gray-400"
           }`}
         >
           📺 YouTube
@@ -99,22 +99,22 @@ function LocalUploadForm() {
     <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6">
       <div className="mb-5">
         <label htmlFor="local-title" className="block text-[13px] font-semibold text-gray-700 mb-1">タイトル *</label>
-        <input id="local-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="動画のタイトル" className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
+        <input id="local-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="動画のタイトル" className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#16a34a]" />
       </div>
       <div className="mb-5">
         <label htmlFor="local-description" className="block text-[13px] font-semibold text-gray-700 mb-1">説明</label>
-        <textarea id="local-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="動画の説明" rows={3} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none" />
+        <textarea id="local-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="動画の説明" rows={3} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#16a34a] resize-none" />
       </div>
       <div className="mb-5">
         <label htmlFor="local-category" className="block text-[13px] font-semibold text-gray-700 mb-1">カテゴリ</label>
-        <select id="local-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+        <select id="local-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#16a34a]">
           <option value="">カテゴリを選択</option>
           {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
       </div>
       <div className="mb-6">
         <label htmlFor="local-file" className="block text-[13px] font-semibold text-gray-700 mb-1">動画ファイル *</label>
-        <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-[#cd1cfa] transition-colors relative">
+        <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-[#16a34a] transition-colors relative">
           {file ? (
             <div>
               <p className="text-[14px] font-semibold text-gray-900">{file.name}</p>
@@ -138,7 +138,7 @@ function LocalUploadForm() {
           onChange={(e) => setAiPrompt(e.target.value)}
           placeholder="例: 初心者向けにわかりやすい記事にして、箇条書き多めで、要約は100文字程度で"
           rows={3}
-          className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+          className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
         />
         <p className="text-[11px] text-gray-400 mt-1">文字起こし後のAI生成（要約・チャプター・記事・タグ）に適用されます。後から変更も可能です。</p>
       </div>
@@ -148,7 +148,7 @@ function LocalUploadForm() {
             type="checkbox"
             checked={autoProcess}
             onChange={(e) => setAutoProcess(e.target.checked)}
-            className="w-4 h-4 accent-[#cd1cfa]"
+            className="w-4 h-4 accent-[#16a34a]"
           />
           <div>
             <span className="text-[14px] font-semibold text-gray-700">自動AI処理</span>
@@ -160,12 +160,12 @@ function LocalUploadForm() {
       {uploading && (
         <div className="mb-4">
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] transition-all duration-500" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-gradient-to-r from-[#16a34a] to-[#d4a017] transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
           {statusText && <p className="text-[12px] text-gray-500 mt-1">{statusText}</p>}
         </div>
       )}
-      <button type="submit" disabled={uploading} className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50">
+      <button type="submit" disabled={uploading} className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50">
         {uploading ? "アップロード中..." : "アップロード"}
       </button>
     </form>
@@ -216,7 +216,7 @@ function YouTubeImportForm() {
     <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6">
       <div className="mb-5">
         <label htmlFor="yt-url" className="block text-[13px] font-semibold text-gray-700 mb-1">YouTube URL *</label>
-        <input id="yt-url" type="text" value={url} onChange={(e) => handleUrlChange(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
+        <input id="yt-url" type="text" value={url} onChange={(e) => handleUrlChange(e.target.value)} placeholder="https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[15px] text-gray-900 outline-none focus:border-[#16a34a]" />
       </div>
 
       {/* Preview */}
@@ -236,7 +236,7 @@ function YouTubeImportForm() {
             type="checkbox"
             checked={autoProcess}
             onChange={(e) => setAutoProcess(e.target.checked)}
-            className="w-4 h-4 accent-[#cd1cfa]"
+            className="w-4 h-4 accent-[#16a34a]"
           />
           <div>
             <span className="text-[14px] font-semibold text-gray-700">自動AI処理</span>
@@ -249,7 +249,7 @@ function YouTubeImportForm() {
       <button
         type="button"
         onClick={() => setShowOptions(!showOptions)}
-        className="text-[12px] text-gray-400 hover:text-[#cd1cfa] mb-4 cursor-pointer"
+        className="text-[12px] text-gray-400 hover:text-[#16a34a] mb-4 cursor-pointer"
       >
         {showOptions ? "▲ オプションを閉じる" : "▼ オプション（カテゴリ・AIへの指示）"}
       </button>
@@ -258,7 +258,7 @@ function YouTubeImportForm() {
         <div className="space-y-4 mb-5 pl-3 border-l-2 border-gray-100">
           <div>
             <label htmlFor="yt-category" className="block text-[12px] text-gray-500 mb-1">カテゴリ（任意）</label>
-            <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]">
+            <select id="yt-category" value={categoryCode} onChange={(e) => setCategoryCode(e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]">
               <option value="">カテゴリを選択</option>
               {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
             </select>
@@ -272,7 +272,7 @@ function YouTubeImportForm() {
               onChange={(e) => setAiPrompt(e.target.value)}
               placeholder="特別な指示がある場合のみ入力（例: 初心者向けに、箇条書き多めで）"
               rows={2}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
             />
             <p className="text-[11px] text-gray-400 mt-1">未入力の場合、汎用プロンプトで自動生成されます。</p>
           </div>
@@ -281,7 +281,7 @@ function YouTubeImportForm() {
 
       {error && <p className="text-red-500 text-[13px] mb-4">{error}</p>}
 
-      <button type="submit" disabled={loading} className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50">
+      <button type="submit" disabled={loading} className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50">
         {loading ? "取得中..." : "YouTubeから登録"}
       </button>
     </form>

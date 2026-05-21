@@ -93,7 +93,7 @@ export function WhisperTranscribeButton({ videoId, mode = "full" }: Props) {
         <button
           onClick={handleStart}
           disabled={state === "processing"}
-          className="flex-1 px-6 py-3 bg-[#cd1cfa] text-white rounded-lg text-[14px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+          className="flex-1 px-6 py-3 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
         >
           {state === "processing"
             ? "処理中...（数分かかります）"

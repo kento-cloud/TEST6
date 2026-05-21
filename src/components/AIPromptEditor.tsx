@@ -34,12 +34,12 @@ export function AIPromptEditor({ videoId, initialPrompt }: Props) {
 
   if (!editing) {
     return (
-      <div className="bg-purple-50 rounded-xl border border-purple-100 p-4">
+      <div className="bg-green-50 rounded-xl border border-green-100 p-4">
         <div className="flex items-center justify-between mb-1">
           <p className="text-[13px] font-semibold text-gray-700">AIへの指示</p>
           <button
             onClick={() => setEditing(true)}
-            className="text-[12px] text-[#cd1cfa] hover:underline cursor-pointer"
+            className="text-[12px] text-[#16a34a] hover:underline cursor-pointer"
           >
             編集
           </button>
@@ -51,13 +51,13 @@ export function AIPromptEditor({ videoId, initialPrompt }: Props) {
   }
 
   return (
-    <div className="bg-purple-50 rounded-xl border border-purple-100 p-4">
+    <div className="bg-green-50 rounded-xl border border-green-100 p-4">
       <p className="text-[13px] font-semibold text-gray-700 mb-2">AIへの指示</p>
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="例: 初心者向けにわかりやすく、箇条書き多めで、要約は短めに"
-        className="w-full px-3 py-2 border border-purple-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none bg-white"
+        className="w-full px-3 py-2 border border-green-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none bg-white"
         rows={3}
       />
       <p className="text-[11px] text-gray-400 mt-1 mb-2">全AI生成項目（要約・チャプター・記事・タグ）に適用されます</p>
@@ -71,7 +71,7 @@ export function AIPromptEditor({ videoId, initialPrompt }: Props) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+          className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
         >
           {saving ? "保存中..." : "保存"}
         </button>

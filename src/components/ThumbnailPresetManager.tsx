@@ -73,12 +73,12 @@ export function ThumbnailPresetManager() {
             <div key={preset.id} className="border border-gray-100 rounded-lg p-4">
               {editingId === preset.id ? (
                 <div className="space-y-2">
-                  <input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} placeholder="テンプレート名" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
-                  <textarea value={editForm.promptTemplate} onChange={(e) => setEditForm({ ...editForm, promptTemplate: e.target.value })} placeholder="プロンプトテンプレート" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none" rows={3} />
+                  <input type="text" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} placeholder="テンプレート名" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]" />
+                  <textarea value={editForm.promptTemplate} onChange={(e) => setEditForm({ ...editForm, promptTemplate: e.target.value })} placeholder="プロンプトテンプレート" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none" rows={3} />
                   <p className="text-[10px] text-gray-400">{"{{title}}"} でタイトルが自動挿入されます</p>
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => setEditingId(null)} className="px-3 py-1.5 text-[12px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">キャンセル</button>
-                    <button onClick={() => handleUpdate(preset.id)} className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer">保存</button>
+                    <button onClick={() => handleUpdate(preset.id)} className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] cursor-pointer">保存</button>
                   </div>
                 </div>
               ) : (
@@ -88,7 +88,7 @@ export function ThumbnailPresetManager() {
                       <div className="flex items-center gap-2">
                         <p className="text-[14px] font-semibold text-gray-900">{preset.name}</p>
                         {preset.is_default === 1 && (
-                          <span className="px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded text-[10px] font-semibold">デフォルト</span>
+                          <span className="px-1.5 py-0.5 bg-green-100 text-green-600 rounded text-[10px] font-semibold">デフォルト</span>
                         )}
                       </div>
                       <p className="text-[12px] text-gray-500 mt-1.5 bg-gray-50 rounded px-2 py-1.5 leading-relaxed line-clamp-2">{preset.prompt_template}</p>
@@ -108,16 +108,16 @@ export function ThumbnailPresetManager() {
 
       <div className="mt-4">
         {showNewForm ? (
-          <div className="border border-dashed border-purple-200 rounded-lg p-4 space-y-2">
-            <input type="text" value={newForm.name} onChange={(e) => setNewForm({ ...newForm, name: e.target.value })} placeholder="テンプレート名" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]" />
-            <textarea value={newForm.promptTemplate} onChange={(e) => setNewForm({ ...newForm, promptTemplate: e.target.value })} placeholder="プロンプトテンプレート（{{title}} でタイトル自動挿入）" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none" rows={3} />
+          <div className="border border-dashed border-green-200 rounded-lg p-4 space-y-2">
+            <input type="text" value={newForm.name} onChange={(e) => setNewForm({ ...newForm, name: e.target.value })} placeholder="テンプレート名" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]" />
+            <textarea value={newForm.promptTemplate} onChange={(e) => setNewForm({ ...newForm, promptTemplate: e.target.value })} placeholder="プロンプトテンプレート（{{title}} でタイトル自動挿入）" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none" rows={3} />
             <div className="flex gap-2 justify-end">
               <button onClick={() => { setShowNewForm(false); setNewForm({ name: "", promptTemplate: "" }) }} className="px-3 py-1.5 text-[12px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">キャンセル</button>
-              <button onClick={handleCreate} className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer">追加</button>
+              <button onClick={handleCreate} className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] cursor-pointer">追加</button>
             </div>
           </div>
         ) : (
-          <button onClick={() => setShowNewForm(true)} className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:border-[#cd1cfa] hover:text-[#cd1cfa] transition-colors cursor-pointer">
+          <button onClick={() => setShowNewForm(true)} className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:border-[#16a34a] hover:text-[#16a34a] transition-colors cursor-pointer">
             + 新規テンプレートを追加
           </button>
         )}

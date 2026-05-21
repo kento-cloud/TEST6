@@ -103,7 +103,7 @@ export default function NewProgramPage() {
               type="text"
               value={form.name}
               onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors"
               placeholder="番組名を入力"
             />
           </div>
@@ -117,7 +117,7 @@ export default function NewProgramPage() {
               value={form.description}
               onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors resize-none"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors resize-none"
               placeholder="番組の説明を入力"
             />
           </div>
@@ -135,7 +135,7 @@ export default function NewProgramPage() {
                   value={form.aiPrompt}
                   onChange={(e) => setForm((prev) => ({ ...prev, aiPrompt: e.target.value }))}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors resize-none"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors resize-none"
                   placeholder="この番組の動画に対するAI生成の指示を入力（例：ビジネス向けのフォーマルな文体で生成してください）"
                 />
                 <p className="text-[11px] text-gray-400 mt-1">番組に紐づく動画のAI生成時にデフォルト指示として使用されます。動画個別の指示がある場合はそちらが優先されます。</p>
@@ -148,7 +148,7 @@ export default function NewProgramPage() {
                   id="aiStylePresetId"
                   value={form.aiStylePresetId}
                   onChange={(e) => setForm((prev) => ({ ...prev, aiStylePresetId: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#cd1cfa] focus:ring-1 focus:ring-[#cd1cfa] transition-colors bg-white"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 focus:outline-none focus:border-[#16a34a] focus:ring-1 focus:ring-[#16a34a] transition-colors bg-white"
                 >
                   <option value="">プリセットなし</option>
                   {form.presets.map((p) => (
@@ -164,7 +164,7 @@ export default function NewProgramPage() {
             <button
               type="submit"
               disabled={form.submitting}
-              className="px-6 py-2.5 bg-[#cd1cfa] text-white rounded-lg text-[14px] font-semibold hover:bg-[#b018d8] transition-colors disabled:opacity-50"
+              className="px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50"
             >
               {form.submitting ? "作成中..." : "番組を作成"}
             </button>

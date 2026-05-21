@@ -29,7 +29,7 @@ export function AdminBottomNav() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
-                active ? "text-[#cd1cfa]" : "text-gray-400"
+                active ? "text-[#16a34a]" : "text-gray-400"
               }`}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d={item.icon} /></svg>

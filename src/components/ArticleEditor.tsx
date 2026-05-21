@@ -91,7 +91,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
           <button
             onClick={handleSave}
             disabled={saving || saved}
-            className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+            className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
           >
             {saving ? "保存中..." : saved ? "保存済み" : "保存"}
           </button>
@@ -111,7 +111,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
 
       {/* Regenerate panel */}
       {showRegen && (
-        <div className="bg-purple-50 rounded-xl border border-purple-100 p-4 mb-4">
+        <div className="bg-green-50 rounded-xl border border-green-100 p-4 mb-4">
           <p className="text-[13px] font-semibold text-gray-700 mb-2">記事への指示（任意）</p>
           {presets.length > 0 && (
             <div className="mb-3">
@@ -119,7 +119,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
               <select
                 value={selectedPreset}
                 onChange={(e) => handlePresetChange(e.target.value)}
-                className="w-full px-3 py-2 border border-purple-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] bg-white"
+                className="w-full px-3 py-2 border border-green-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] bg-white"
               >
                 <option value="">カスタム（自由入力）</option>
                 {presets.map((p) => (
@@ -132,17 +132,17 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
             placeholder="例: もっと具体例を入れて、初心者向けにわかりやすく"
-            className="w-full px-3 py-2 border border-purple-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none bg-white"
+            className="w-full px-3 py-2 border border-green-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none bg-white"
             rows={2}
           />
           {instruction && (
             <div className="flex gap-3 mt-2">
               <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#cd1cfa]" />
+                <input type="radio" checked={promptMode === "append"} onChange={() => setPromptMode("append")} className="accent-[#16a34a]" />
                 <span className="text-[12px] text-gray-600">ベースに追加</span>
               </label>
               <label className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#cd1cfa]" />
+                <input type="radio" checked={promptMode === "override"} onChange={() => setPromptMode("override")} className="accent-[#16a34a]" />
                 <span className="text-[12px] text-gray-600">この指示のみ</span>
               </label>
             </div>
@@ -157,7 +157,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
             <button
               onClick={handleRegenerate}
               disabled={regenerating}
-              className="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-[13px] font-semibold hover:bg-purple-700 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 bg-green-600 text-white rounded-lg text-[13px] font-semibold hover:bg-green-700 disabled:opacity-50 cursor-pointer"
             >
               {regenerating ? "生成中..." : "再生成する"}
             </button>
@@ -173,7 +173,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
           <textarea
             value={article}
             onChange={(e) => handleChange(e.target.value)}
-            className="w-full px-4 py-3 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#cd1cfa] resize-none"
+            className="w-full px-4 py-3 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#16a34a] resize-none"
             rows={25}
           />
         </div>

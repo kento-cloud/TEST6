@@ -24,7 +24,7 @@ export function Footer() {
           ))}
         </div>
         <p className="text-center text-[11px] text-[#606370]">
-          &copy; {new Date().getFullYear()} PIVOT Inc. All rights reserved.
+          &copy; {new Date().getFullYear()} PADDOCK Inc. All rights reserved.
         </p>
       </div>
     </footer>

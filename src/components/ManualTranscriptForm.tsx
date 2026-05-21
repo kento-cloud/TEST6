@@ -54,7 +54,7 @@ export function ManualTranscriptForm({ videoId }: Props) {
         placeholder="文字起こしテキストをここに入力..."
         rows={10}
         disabled={state === "submitting"}
-        className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none disabled:bg-gray-50 disabled:text-gray-400 mb-3"
+        className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a] resize-none disabled:bg-gray-50 disabled:text-gray-400 mb-3"
       />
       <div className="flex items-center justify-between">
         <span className="text-[12px] text-gray-400">{text.length.toLocaleString()} 文字</span>

@@ -255,7 +255,7 @@ export default function AdminSettingsPage() {
             <select
               value={textModel}
               onChange={(e) => setTextModel(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
             >
               {TEXT_MODELS.map((m) => (
                 <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
@@ -269,7 +269,7 @@ export default function AdminSettingsPage() {
             <select
               value={imageModel}
               onChange={(e) => setImageModel(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
             >
               {IMAGE_MODELS.map((m) => (
                 <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
@@ -283,7 +283,7 @@ export default function AdminSettingsPage() {
             <select
               value={transcribeModel}
               onChange={(e) => setTranscribeModel(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
             >
               {TRANSCRIBE_MODELS.map((m) => (
                 <option key={m.id} value={m.id}>{m.id} — {m.label}</option>
@@ -318,20 +318,20 @@ export default function AdminSettingsPage() {
                         value={editForm.name}
                         onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                         placeholder="プリセット名"
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]"
                       />
                       <input
                         type="text"
                         value={editForm.description}
                         onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                         placeholder="説明"
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]"
                       />
                       <textarea
                         value={editForm.promptTemplate}
                         onChange={(e) => setEditForm({ ...editForm, promptTemplate: e.target.value })}
                         placeholder="プロンプトテンプレート"
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
                         rows={3}
                       />
                       <div className="flex gap-2 justify-end">
@@ -343,7 +343,7 @@ export default function AdminSettingsPage() {
                         </button>
                         <button
                           onClick={() => savePresetEdit(preset.id)}
-                          className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer"
+                          className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] cursor-pointer"
                         >
                           保存
                         </button>
@@ -356,7 +356,7 @@ export default function AdminSettingsPage() {
                           <div className="flex items-center gap-2">
                             <p className="text-[14px] font-semibold text-gray-900">{preset.name}</p>
                             {preset.is_default === 1 && (
-                              <span className="px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded text-[10px] font-semibold">デフォルト</span>
+                              <span className="px-1.5 py-0.5 bg-green-100 text-green-600 rounded text-[10px] font-semibold">デフォルト</span>
                             )}
                           </div>
                           <p className="text-[12px] text-gray-400 mt-0.5">{preset.description}</p>
@@ -391,27 +391,27 @@ export default function AdminSettingsPage() {
           {/* New preset form */}
           <div className="mt-4">
             {showNewForm ? (
-              <div className="border border-dashed border-purple-200 rounded-lg p-4 space-y-2">
+              <div className="border border-dashed border-green-200 rounded-lg p-4 space-y-2">
                 <p className="text-[13px] font-semibold text-gray-700 mb-2">新規プリセット</p>
                 <input
                   type="text"
                   value={newPreset.name}
                   onChange={(e) => setNewPreset({ ...newPreset, name: e.target.value })}
                   placeholder="プリセット名（例: 技術解説）"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]"
                 />
                 <input
                   type="text"
                   value={newPreset.description}
                   onChange={(e) => setNewPreset({ ...newPreset, description: e.target.value })}
                   placeholder="説明（例: エンジニア向けの技術解説記事）"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a]"
                 />
                 <textarea
                   value={newPreset.promptTemplate}
                   onChange={(e) => setNewPreset({ ...newPreset, promptTemplate: e.target.value })}
                   placeholder="プロンプトテンプレート（例: 技術者向けに、コード例やアーキテクチャの解説を含めて...）"
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
                   rows={3}
                 />
                 <div className="flex gap-2 justify-end">
@@ -423,7 +423,7 @@ export default function AdminSettingsPage() {
                   </button>
                   <button
                     onClick={addPreset}
-                    className="px-4 py-1.5 bg-[#cd1cfa] text-white rounded-lg text-[12px] font-semibold hover:bg-[#b018d8] cursor-pointer"
+                    className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] cursor-pointer"
                   >
                     追加
                   </button>
@@ -432,7 +432,7 @@ export default function AdminSettingsPage() {
             ) : (
               <button
                 onClick={() => setShowNewForm(true)}
-                className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:border-[#cd1cfa] hover:text-[#cd1cfa] transition-colors cursor-pointer"
+                className="w-full py-2.5 border border-dashed border-gray-300 rounded-lg text-[13px] text-gray-500 hover:bg-gray-50 hover:border-[#16a34a] hover:text-[#16a34a] transition-colors cursor-pointer"
               >
                 + 新規プリセットを追加
               </button>
@@ -464,8 +464,8 @@ export default function AdminSettingsPage() {
             <textarea
               value={summaryBasePrompt}
               onChange={(e) => setSummaryBasePrompt(e.target.value)}
-              placeholder="例: 専門用語を避け、一般のビジネスパーソンにわかる表現で"
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              placeholder="例: 競馬ファンが読んでワクワクする表現で、馬名・レース名を正確に"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />
           </div>
@@ -475,7 +475,7 @@ export default function AdminSettingsPage() {
               value={chaptersBasePrompt}
               onChange={(e) => setChaptersBasePrompt(e.target.value)}
               placeholder="例: 5分以内の細かいチャプターに分けて"
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />
           </div>
@@ -484,8 +484,8 @@ export default function AdminSettingsPage() {
             <textarea
               value={articleBasePrompt}
               onChange={(e) => setArticleBasePrompt(e.target.value)}
-              placeholder="例: ビジネスパーソン向けにわかりやすく、具体的な数字やデータを含めて"
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              placeholder="例: 競馬ファン向けにわかりやすく、タイムや着差などデータを含めて"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />
           </div>
@@ -495,7 +495,7 @@ export default function AdminSettingsPage() {
               value={tagsBasePrompt}
               onChange={(e) => setTagsBasePrompt(e.target.value)}
               placeholder="例: SEOを意識したキーワードを含めて"
-              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />
           </div>
@@ -517,7 +517,7 @@ export default function AdminSettingsPage() {
               value={openaiKey}
               onChange={(e) => setOpenaiKey(e.target.value)}
               placeholder={settings.OPENAI_API_KEY?.set ? "設定済み（変更する場合のみ入力）" : "sk-..."}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa] font-mono"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
             />
             <p className="text-[11px] text-gray-400 mt-1">Whisper（文字起こし）・テキスト生成・画像生成の全てに使用</p>
           </div>
@@ -529,7 +529,7 @@ export default function AdminSettingsPage() {
               value={adminPassword}
               onChange={(e) => setAdminPassword(e.target.value)}
               placeholder="変更する場合のみ入力"
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
             />
           </div>
 
@@ -540,7 +540,7 @@ export default function AdminSettingsPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full py-3 bg-[#cd1cfa] text-white rounded-lg text-[15px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 transition-colors cursor-pointer"
+            className="w-full py-3 bg-[#16a34a] text-white rounded-lg text-[15px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
           >
             {saving ? "保存中..." : "保存する"}
           </button>

@@ -144,11 +144,11 @@ export async function getFeaturedItems() {
 
 function getStaticFeaturedItems() {
   return [
-    { id: "EP_14365", title: "宇宙開発の課題 \"交通整備\"は誰がする？", subtitle: "宇宙ビジネス最前線", description: "宇宙ビジネスは、ロケットや衛星だけでは成り立たない。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg", youtubeVideoId: null },
-    { id: "EP_14305", title: "北朝鮮・迎撃不可能なドローン攻撃の恐怖", subtitle: "9 questions", description: "北朝鮮は「抑止」から「実行」可能な現実の脅威へ。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg", youtubeVideoId: null },
-    { id: "EP_14317", title: "Geminiで学ぶ・稼ぐ術／AI家庭教師", subtitle: "ランキング超分析", description: "ランキングを専門家と共に徹底分析。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg", youtubeVideoId: null },
-    { id: "EP_14325", title: "「山下本気うどん」売却までの経緯", subtitle: "MONEY SKILL SET", description: "借金1000万円から資産2.5億円を築いた芸人。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg", youtubeVideoId: null },
-    { id: "EP_14328", title: "5年で株価3倍。JTが稼げる理由", subtitle: "TOP TALK", description: "海外市場での成長が続くJT。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg", youtubeVideoId: null },
+    { id: "14365", title: "有馬記念の展望 \"最強ステイヤー\"はどの馬か？", subtitle: "PADDOCK TALK", description: "今年の有馬記念、出走予定馬の適性と展開を徹底分析。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg", youtubeVideoId: null },
+    { id: "14305", title: "凱旋門賞に挑む日本馬。海外遠征の壁とは", subtitle: "PADDOCK GLOBAL", description: "日本馬の海外挑戦。馬場適性と輸送の影響を検証。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg", youtubeVideoId: null },
+    { id: "14317", title: "AIで予想する日本ダービー／過去データ分析／穴馬の見つけ方", subtitle: "レース超分析", description: "注目レースをデータとAIで徹底分析。穴馬候補も。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg", youtubeVideoId: null },
+    { id: "14325", title: "馬券で月収100万円を達成した男の回収率管理術【馬券師タケシ】", subtitle: "馬券ラボ", description: "データ派馬券師が明かす資金管理と期待値計算の全貌。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg", youtubeVideoId: null },
+    { id: "14328", title: "ノーザンファーム一強時代は終わるのか？【吉田勝己代表】", subtitle: "オーナーズEYE", description: "社台グループの戦略と競馬界の勢力図の変化を追う。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg", youtubeVideoId: null },
   ] as const
 }
 
@@ -166,12 +166,12 @@ export async function getCategoryEpisodes() {
     const categoryList = (dbCategories && dbCategories.length > 0)
       ? dbCategories.map(c => ({ code: c.code as string, label: c.label as string }))
       : [
-          { code: "business", label: "ビジネス" },
-          { code: "money", label: "マネー" },
-          { code: "career", label: "キャリア" },
-          { code: "life", label: "ライフ" },
-          { code: "technology", label: "テクノロジー" },
-          { code: "global", label: "グローバル" },
+          { code: "race", label: "レース分析" },
+          { code: "betting", label: "馬券・予想" },
+          { code: "breeding", label: "血統・生産" },
+          { code: "training", label: "調教・馬体" },
+          { code: "science", label: "競馬サイエンス" },
+          { code: "global", label: "海外競馬" },
         ]
 
     return categoryList.map(({ code, label }) => {

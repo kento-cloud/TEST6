@@ -8,18 +8,18 @@ import { AuthPrompt } from "@/components/AuthPrompt"
 import type { Episode, Program } from "@/types"
 
 const genres = [
-  "経営哲学", "ブランド戦略", "健康医療",
-  "成功法則", "役員キャリア", "日本文化",
-  "AGI展望", "ビジネススキル", "グローバルビジネス",
+  "重賞予想", "血統分析", "調教評価",
+  "馬場読み", "騎手データ", "パドック診断",
+  "AI予想", "回収率UP", "海外競馬",
 ] as const
 
 const mcList = [
-  { name: "佐々木紀彦", id: 1, thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
-  { name: "小手森千紗", id: 2, thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  { name: "野嶋紗己子", id: 3, thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
-  { name: "西川貴季", id: 4, thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  { name: "富山ハセン", id: 5, thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
-  { name: "竹内由恵", id: 6, thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  { name: "武豊", id: 1, thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
+  { name: "藤田菜七子", id: 2, thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
+  { name: "亀谷敬正", id: 3, thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
+  { name: "井崎脩五郎", id: 4, thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
+  { name: "細江純子", id: 5, thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
+  { name: "須田鷹雄", id: 6, thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
 ] as const
 
 export default function SearchPage() {
@@ -49,7 +49,7 @@ export default function SearchPage() {
           </svg>
           <input
             type="text"
-            placeholder="タイトル、出演者などからさがす"
+            placeholder="レース名、騎手、種牡馬などからさがす"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-white text-[15px] outline-none placeholder:text-[#606370]"
@@ -68,7 +68,7 @@ export default function SearchPage() {
                   <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#1d2030]">
                     <Image src={ep.thumbnailUrl} alt={ep.title} fill className="object-cover" sizes="33vw" />
                   </div>
-                  <p className="mt-2 text-[14px] font-bold line-clamp-2 group-hover:text-[#cd1cfa]">{ep.title}</p>
+                  <p className="mt-2 text-[14px] font-bold line-clamp-2 group-hover:text-[#16a34a]">{ep.title}</p>
                 </Link>
                 </AuthPrompt>
               ))}
@@ -91,10 +91,10 @@ export default function SearchPage() {
               </div>
             </section>
 
-            {/* MCからさがす */}
+            {/* 解説者からさがす */}
             <section aria-labelledby="search-mc" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 id="search-mc" className="text-[15px] font-bold">MCからさがす</h2>
+                <h2 id="search-mc" className="text-[15px] font-bold">解説者からさがす</h2>
                 <Link href="/mc" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">

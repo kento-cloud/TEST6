@@ -106,8 +106,8 @@ export default async function AdminDashboard() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">ダッシュボード</h1>
-        <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#b018d8] transition-colors text-center">
-          + 動画をアップロード
+        <Link href="/admin/videos/upload" className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] sm:text-[14px] font-semibold hover:bg-[#15803d] transition-colors text-center">
+          + 新規アップロード
         </Link>
       </div>
 
@@ -171,7 +171,7 @@ export default async function AdminDashboard() {
                 <div key={v.id} className="px-5 py-3 flex items-center gap-3">
                   <span className="text-[20px] font-bold text-gray-300 w-[28px] text-center">{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/admin/videos/${v.id}`} className="text-[14px] font-medium text-gray-900 hover:text-[#cd1cfa] line-clamp-1">
+                    <Link href={`/admin/videos/${v.id}`} className="text-[14px] font-medium text-gray-900 hover:text-[#16a34a] line-clamp-1">
                       {v.title}
                     </Link>
                   </div>
@@ -218,12 +218,12 @@ export default async function AdminDashboard() {
       <div className="bg-white rounded-xl border border-gray-100">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="text-[16px] font-bold text-gray-900">最近の動画</h2>
-          <Link href="/admin/videos" className="text-[13px] text-[#cd1cfa]">すべて表示 →</Link>
+          <Link href="/admin/videos" className="text-[13px] text-[#16a34a]">すべて表示 →</Link>
         </div>
         {!recentVideos || recentVideos.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <p className="text-gray-400 text-[14px] mb-3">まだ動画がありません</p>
-            <Link href="/admin/videos/upload" className="text-[14px] text-[#cd1cfa] font-semibold">最初の動画をアップロード →</Link>
+            <Link href="/admin/videos/upload" className="text-[14px] text-[#16a34a] font-semibold">最初の動画をアップロード →</Link>
           </div>
         ) : (
           <div className="divide-y divide-gray-50">

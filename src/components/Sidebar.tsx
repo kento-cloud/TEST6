@@ -80,10 +80,10 @@ export function Sidebar() {
         <div className="flex flex-col items-center w-full">
           <Link href="/" className="flex h-[66px] w-full items-center justify-center">
             <img
-              src="/assets/logo/logo_mark.png"
-              alt="PIVOT"
-              width={22}
-              height={25}
+              src="/assets/logo/paddock_mark.svg"
+              alt="PADDOCK"
+              width={24}
+              height={24}
               className="object-contain"
             />
           </Link>

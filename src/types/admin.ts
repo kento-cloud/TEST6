@@ -116,7 +116,7 @@ export type ThumbnailSource = "manual" | "ffmpeg" | "ai" | "youtube"
 
 export type StepStatus = "pending" | "processing" | "done" | "error"
 
-export type CategoryCode = "business" | "money" | "career" | "life" | "technology" | "global"
+export type CategoryCode = "race" | "betting" | "breeding" | "training" | "science" | "global"
 
 export type PromptMode = "append" | "override"
 

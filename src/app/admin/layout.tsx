@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="hidden md:flex w-[240px] min-w-[240px] bg-white border-r border-gray-200 fixed h-screen flex-col">
         <div className="h-[60px] flex items-center px-5 border-b border-gray-100">
           <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-[18px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+            <span className="text-[18px] font-black bg-gradient-to-r from-[#16a34a] to-[#059669] bg-clip-text text-transparent">PADDOCK</span>
             <span className="text-[13px] font-semibold text-gray-400">Admin</span>
           </Link>
         </div>
@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               href={item.href}
               className={`flex items-center gap-3 px-5 py-[10px] text-[14px] transition-colors ${
                 isActive(item.href)
-                  ? "text-[#cd1cfa] bg-purple-50 font-semibold border-r-2 border-[#cd1cfa]"
+                  ? "text-[#16a34a] bg-green-50 font-semibold border-r-2 border-[#16a34a]"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-[48px] bg-white border-b border-gray-200 flex items-center justify-center px-4 z-50">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="text-[16px] font-black bg-gradient-to-r from-[#cd1cfa] to-[#1e82be] bg-clip-text text-transparent">PIVOT</span>
+          <span className="text-[16px] font-black bg-gradient-to-r from-[#16a34a] to-[#059669] bg-clip-text text-transparent">PADDOCK</span>
           <span className="text-[11px] font-semibold text-gray-400">Admin</span>
         </Link>
       </div>

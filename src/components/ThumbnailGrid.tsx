@@ -53,13 +53,13 @@ export function ThumbnailGrid({ videoId, thumbnails }: Props) {
             disabled={!!t.is_primary || settingId === t.id}
             className={`relative group w-[160px] aspect-video rounded-lg overflow-hidden bg-gray-100 border-2 transition-all shrink-0 ${
               t.is_primary
-                ? "border-[#cd1cfa] ring-2 ring-[#cd1cfa]/30 cursor-default"
-                : "border-gray-200 hover:border-[#cd1cfa] cursor-pointer"
+                ? "border-[#16a34a] ring-2 ring-[#16a34a]/30 cursor-default"
+                : "border-gray-200 hover:border-[#16a34a] cursor-pointer"
             } ${settingId === t.id ? "opacity-50" : ""}`}
           >
             <img src={t.file_path!} alt="" className="absolute inset-0 w-full h-full object-cover" />
             {t.is_primary && (
-              <div className="absolute top-1 right-1 px-1.5 py-0.5 bg-[#cd1cfa] rounded text-[9px] text-white font-semibold">
+              <div className="absolute top-1 right-1 px-1.5 py-0.5 bg-[#16a34a] rounded text-[9px] text-white font-semibold">
                 メイン
               </div>
             )}

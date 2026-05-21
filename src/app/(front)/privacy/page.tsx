@@ -16,7 +16,7 @@ export default function PrivacyPage() {
 
       <div className="text-sm text-[#a9abb8] leading-relaxed space-y-6">
         <p>
-          株式会社PIVOT（以下「当社」といいます）は、当社が提供するサービス「PIVOT」（以下「本サービス」といいます）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
+          株式会社PADDOCK（以下「当社」といいます）は、当社が提供するサービス「PADDOCK」（以下「本サービス」といいます）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
         </p>
 
         <section>
@@ -100,9 +100,9 @@ export default function PrivacyPage() {
             本ポリシーに関するお問い合わせは、下記の窓口までお願いいたします。
           </p>
           <p className="mt-2">
-            株式会社PIVOT 個人情報保護担当
+            株式会社PADDOCK 個人情報保護担当
             <br />
-            メール: privacy@pivot.inc
+            メール: privacy@paddock.jp
           </p>
         </section>
 

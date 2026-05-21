@@ -99,12 +99,12 @@ export default function AccountSettingPage() {
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#cd1cfa]"
+                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
               />
               <button
                 onClick={handleNickname}
                 disabled={nickSaving}
-                className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-sm font-bold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer shrink-0"
+                className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-sm font-bold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer shrink-0"
               >
                 {nickSaving ? "保存中..." : "変更"}
               </button>
@@ -121,12 +121,12 @@ export default function AccountSettingPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#cd1cfa]"
+                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
               />
               <button
                 onClick={handleEmail}
                 disabled={emailSaving || email === user?.email}
-                className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-sm font-bold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer shrink-0"
+                className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-sm font-bold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer shrink-0"
               >
                 {emailSaving ? "送信中..." : "変更"}
               </button>
@@ -144,19 +144,19 @@ export default function AccountSettingPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="新しいパスワード（8文字以上）"
-                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#cd1cfa]"
+                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
               />
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="新しいパスワード（確認）"
-                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#cd1cfa]"
+                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
               />
               <button
                 onClick={handlePassword}
                 disabled={pwSaving || !newPassword}
-                className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-sm font-bold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+                className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-sm font-bold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
               >
                 {pwSaving ? "変更中..." : "パスワードを変更"}
               </button>

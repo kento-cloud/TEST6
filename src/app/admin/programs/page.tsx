@@ -13,7 +13,7 @@ export default async function AdminProgramsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-[24px] font-bold text-gray-900">番組管理</h1>
-        <Link href="/admin/programs/new" className="px-4 py-2 bg-[#cd1cfa] text-white rounded-lg text-[14px] font-semibold hover:bg-[#b018d8] transition-colors">
+        <Link href="/admin/programs/new" className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors">
           + 新規番組
         </Link>
       </div>
@@ -25,7 +25,7 @@ export default async function AdminProgramsPage() {
               <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z" />
             </svg>
             <p className="text-gray-400 text-[15px] mb-3">番組がまだありません</p>
-            <Link href="/admin/programs/new" className="text-[14px] text-[#cd1cfa] font-semibold">最初の番組を作成 →</Link>
+            <Link href="/admin/programs/new" className="text-[14px] text-[#16a34a] font-semibold">最初の番組を作成 →</Link>
           </div>
         ) : (
           <table className="w-full">
@@ -42,7 +42,7 @@ export default async function AdminProgramsPage() {
               {allPrograms.map((p) => (
                 <tr key={p.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-3">
-                    <Link href={`/admin/programs/${p.id}`} className="text-[14px] font-semibold text-gray-900 hover:text-[#cd1cfa]">
+                    <Link href={`/admin/programs/${p.id}`} className="text-[14px] font-semibold text-gray-900 hover:text-[#16a34a]">
                       {p.name}
                     </Link>
                   </td>
@@ -58,7 +58,7 @@ export default async function AdminProgramsPage() {
                   </td>
                   <td className="px-5 py-3 text-[13px] text-gray-500">{p.created_at?.slice(0, 10) ?? "—"}</td>
                   <td className="px-5 py-3">
-                    <Link href={`/admin/programs/${p.id}`} className="text-[13px] text-[#cd1cfa]">編集 →</Link>
+                    <Link href={`/admin/programs/${p.id}`} className="text-[13px] text-[#16a34a]">編集 →</Link>
                   </td>
                 </tr>
               ))}

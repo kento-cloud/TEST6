@@ -47,12 +47,12 @@ export function AdminVideoFilter({ videos }: Props) {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="タイトルで検索..."
-          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
         />
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#cd1cfa]"
+          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
         >
           <option value="all">全ステータス</option>
           <option value="draft">下書き</option>
@@ -87,7 +87,7 @@ export function AdminVideoFilter({ videos }: Props) {
                   )}
                 </td>
                 <td className="px-4 py-2">
-                  <Link href={`/admin/videos/${v.id}`} className="text-[14px] text-gray-900 hover:text-[#cd1cfa] font-medium line-clamp-1">
+                  <Link href={`/admin/videos/${v.id}`} className="text-[14px] text-gray-900 hover:text-[#16a34a] font-medium line-clamp-1">
                     {v.title}
                   </Link>
                 </td>

@@ -106,43 +106,41 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
               >
                 {editing ? "キャンセル" : "編集"}
               </button>
-              <Link href={`/admin/videos/${videoId}/transcript`} className="text-[11px] text-[#cd1cfa] hover:underline">
+              <Link href={`/admin/videos/${videoId}/transcript`} className="text-[11px] text-[#16a34a] hover:underline">
                 詳細
               </Link>
             </>
           )}
-          {!transcript && !isProcessing && (
+          {!transcript && !isProcessing && !autoProcessing && (
             <button
-              onClick={async () => {
+              onClick={() => {
                 setAutoProcessing(true)
                 setMessage("")
-                try {
-                  const body = customPrompt.trim() ? JSON.stringify({ aiPrompt: customPrompt.trim() }) : undefined
-                  const res = await fetch(`/api/videos/${videoId}/auto-process`, {
-                    method: "POST",
-                    ...(body ? { headers: { "Content-Type": "application/json" }, body } : {}),
-                  })
-                  if (!res.ok) {
-                    const data = await res.json().catch(() => ({}))
-                    throw new Error(data.error ?? "処理に失敗しました")
+                const body = customPrompt.trim() ? JSON.stringify({ aiPrompt: customPrompt.trim() }) : undefined
+                fetch(`/api/videos/${videoId}/auto-process`, {
+                  method: "POST",
+                  ...(body ? { headers: { "Content-Type": "application/json" }, body } : {}),
+                }).then(res => {
+                  if (res.status === 409) {
+                    setMessage("バックグラウンドで処理中です。しばらくお待ちください。")
                   }
-                  setMessage("生成完了")
-                  router.refresh()
-                } catch (e) {
-                  setMessage(e instanceof Error ? e.message : "エラー")
-                }
+                }).catch(() => {
+                  // fire-and-forget: エラーは無視
+                })
+                setMessage("処理を開始しました")
                 setAutoProcessing(false)
+                router.refresh()
               }}
-              disabled={autoProcessing}
-              className="px-2.5 py-0.5 bg-[#cd1cfa] text-white rounded text-[11px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+              className="px-2.5 py-0.5 bg-[#16a34a] text-white rounded text-[11px] font-semibold hover:bg-[#15803d] cursor-pointer"
             >
-              {autoProcessing ? (
-                <span className="inline-flex items-center gap-1">
-                  <span className="animate-spin w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full" />
-                  生成中...
-                </span>
-              ) : "生成スタート"}
+              生成スタート
             </button>
+          )}
+          {autoProcessing && (
+            <span className="inline-flex items-center gap-1 text-[11px] text-blue-500">
+              <span className="animate-spin w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full" />
+              処理開始中...
+            </span>
           )}
         </div>
       </div>
@@ -152,7 +150,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
         <div className="px-3 border-t border-gray-100">
           <button
             onClick={() => setShowCustomPrompt(!showCustomPrompt)}
-            className="text-[11px] text-gray-400 hover:text-[#cd1cfa] py-1.5 cursor-pointer"
+            className="text-[11px] text-gray-400 hover:text-[#16a34a] py-1.5 cursor-pointer"
           >
             {showCustomPrompt ? "▲ 閉じる" : "▼ 指示をカスタマイズ"}
           </button>
@@ -163,7 +161,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
                 onChange={(e) => setCustomPrompt(e.target.value)}
                 placeholder="特別な指示がある場合のみ入力（例: 初心者向けに、箇条書き多めで）"
                 rows={2}
-                className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#cd1cfa] resize-none"
+                className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               />
               <p className="text-[10px] text-gray-400 mt-1">未入力の場合はデフォルトの汎用プロンプトが適用されます</p>
             </div>
@@ -189,7 +187,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
               <textarea
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                className="w-full px-3 py-2 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#cd1cfa] resize-none"
+                className="w-full px-3 py-2 text-[13px] text-gray-700 leading-[1.7] font-mono bg-gray-50 rounded-lg border border-gray-200 outline-none focus:border-[#16a34a] resize-none"
                 rows={10}
               />
               <div className="flex items-center justify-between mt-2">
@@ -209,7 +207,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="px-3 py-1 bg-[#cd1cfa] text-white rounded text-[11px] font-semibold hover:bg-[#b018d8] disabled:opacity-50 cursor-pointer"
+                    className="px-3 py-1 bg-[#16a34a] text-white rounded text-[11px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
                   >
                     {saving ? "保存中..." : "保存"}
                   </button>

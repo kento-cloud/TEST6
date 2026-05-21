@@ -13,16 +13,16 @@ import { EpisodeCard } from "@/components/EpisodeCard"
 const tabs = ["お気に入り", "プレイリスト", "フォロー", "視聴履歴"] as const
 
 const playlistTitles = [
-  { id: "r1", title: "思考OSアップデート講座", count: 30, indices: [0, 4, 5, 1] },
-  { id: "r2", title: "人生を変える経営戦略", count: 19, indices: [1, 7, 8, 2] },
-  { id: "r3", title: "マネジメント上級", count: 19, indices: [2, 3, 6, 9] },
-  { id: "r4", title: "金融資産を増やす投資戦略", count: 26, indices: [4, 0, 3, 5] },
-  { id: "r5", title: "イラン情勢", count: 22, indices: [9, 5, 6, 0] },
-  { id: "r6", title: "健康資産という考え方", count: 22, indices: [3, 6, 9, 4] },
-  { id: "r7", title: "年収1000万超への道", count: 17, indices: [2, 8, 1, 7] },
-  { id: "r8", title: "財務分析実践", count: 27, indices: [7, 1, 8, 4] },
-  { id: "r9", title: "会計・財務入門", count: 23, indices: [5, 0, 2, 6] },
-  { id: "r10", title: "会計とファイナンスはどう違うのか", count: 18, indices: [8, 3, 7, 9] },
+  { id: "r1", title: "G1レース完全予想ガイド", count: 30, indices: [0, 4, 5, 1] },
+  { id: "r2", title: "血統で読む有力馬の適性", count: 19, indices: [1, 7, 8, 2] },
+  { id: "r3", title: "馬券回収率UP講座", count: 19, indices: [2, 3, 6, 9] },
+  { id: "r4", title: "パドック診断マスター", count: 26, indices: [4, 0, 3, 5] },
+  { id: "r5", title: "海外競馬の魅力", count: 22, indices: [9, 5, 6, 0] },
+  { id: "r6", title: "調教タイムの読み方", count: 22, indices: [3, 6, 9, 4] },
+  { id: "r7", title: "穴馬発見テクニック集", count: 17, indices: [2, 8, 1, 7] },
+  { id: "r8", title: "データ予想の基礎", count: 27, indices: [7, 1, 8, 4] },
+  { id: "r9", title: "騎手・厩舎の傾向分析", count: 23, indices: [5, 0, 2, 6] },
+  { id: "r10", title: "新馬戦から見抜くクラシック候補", count: 18, indices: [8, 3, 7, 9] },
 ] as const
 
 function buildPlaylists(eps: Episode[]) {
@@ -65,7 +65,7 @@ function WatchHistoryTab() {
   if (loading || histLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <span className="animate-spin w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full" />
+        <span className="animate-spin w-6 h-6 border-2 border-[#16a34a] border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -134,7 +134,7 @@ function FavoritesTab() {
   if (loading || favsLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <span className="animate-spin w-6 h-6 border-2 border-[#cd1cfa] border-t-transparent rounded-full" />
+        <span className="animate-spin w-6 h-6 border-2 border-[#16a34a] border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -202,17 +202,17 @@ export default function MylistPage() {
           <div>
             {/* + 新規プレイリストを作成 */}
             <div className="flex justify-end mb-4">
-              <span className="text-[14px] text-white cursor-pointer hover:text-[#cd1cfa]">+ 新規プレイリストを作成</span>
+              <span className="text-[14px] text-white cursor-pointer hover:text-[#16a34a]">+ 新規プレイリストを作成</span>
             </div>
 
             {/* あとで見る - 本家と同じ大きなカード */}
             <Link href="/watch-later" className="block w-[494px] mb-12 group">
               <div
-                className="w-[494px] h-[346px] rounded-2xl flex items-center justify-center relative overflow-hidden border border-[#cd1cfa]/30 group-hover:border-[#cd1cfa]/60 transition-colors"
+                className="w-[494px] h-[346px] rounded-2xl flex items-center justify-center relative overflow-hidden border border-[#16a34a]/30 group-hover:border-[#16a34a]/60 transition-colors"
                 style={{ background: "linear-gradient(135deg, #3d084a 0%, #2a1040 50%, #1a0a30 100%)" }}
               >
                 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" opacity="0.15">
-                  <text x="50" y="160" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="200" fill="#cd1cfa">P</text>
+                  <text x="50" y="160" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="200" fill="#16a34a">P</text>
                 </svg>
               </div>
               <div className="flex items-center justify-between mt-3">
@@ -259,10 +259,10 @@ export default function MylistPage() {
                       ))}
                     </div>
                     <div className="flex-1 py-1">
-                      <p className="text-[15px] font-bold line-clamp-2 mb-2 group-hover:text-[#cd1cfa] transition-colors">{pl.title}</p>
+                      <p className="text-[15px] font-bold line-clamp-2 mb-2 group-hover:text-[#16a34a] transition-colors">{pl.title}</p>
                       <div className="flex items-center gap-2 text-[12px] text-[#606370]">
-                        <span className="w-[16px] h-[16px] rounded-full bg-[#cd1cfa]/20 flex items-center justify-center text-[8px] font-black text-[#cd1cfa]">P</span>
-                        <span>PIVOT運営</span>
+                        <span className="w-[16px] h-[16px] rounded-full bg-[#16a34a]/20 flex items-center justify-center text-[8px] font-black text-[#16a34a]">P</span>
+                        <span>PADDOCK運営</span>
                       </div>
                       <p className="text-[12px] text-[#606370] mt-[2px]">{pl.count}エピソード</p>
                     </div>
