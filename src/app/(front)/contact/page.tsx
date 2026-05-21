@@ -1,22 +1,6 @@
-"use client"
-
-import { useState } from "react"
 import Link from "next/link"
 
 export default function ContactPage() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [message, setMessage] = useState("")
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle")
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!name.trim() || !email.trim() || !message.trim()) return
-    setStatus("sending")
-    // 実際のメール送信APIは将来実装。現在は送信完了UIを表示。
-    setTimeout(() => setStatus("sent"), 1000)
-  }
-
   return (
     <div className="max-w-3xl mx-auto px-6 md:px-10 py-8">
       <Link
@@ -28,68 +12,27 @@ export default function ContactPage() {
 
       <h1 className="text-2xl font-bold text-white mb-8">お問い合わせ</h1>
 
-      {status === "sent" ? (
-        <div className="text-center py-16">
-          <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="#22c55e"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
-          </div>
-          <h2 className="text-[20px] font-bold mb-2">送信が完了しました</h2>
-          <p className="text-[14px] text-[#a9abb8] mb-6">
-            お問い合わせいただきありがとうございます。<br />
-            内容を確認の上、ご連絡いたします。
-          </p>
-          <Link href="/" className="text-[14px] text-[#16a34a] hover:underline">
-            トップに戻る
-          </Link>
+      <div className="bg-[#1a1c30] rounded-2xl border border-[#303240]/50 p-8 text-center">
+        <div className="w-16 h-16 rounded-full bg-[#303240] flex items-center justify-center mx-auto mb-5">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a9abb8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="name" className="block text-sm text-[#a9abb8] mb-2">お名前</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="山田 太郎"
-              required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a]"
-            />
-          </div>
-          <div>
-            <label htmlFor="contact-email" className="block text-sm text-[#a9abb8] mb-2">メールアドレス</label>
-            <input
-              id="contact-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a]"
-            />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-sm text-[#a9abb8] mb-2">お問い合わせ内容</label>
-            <textarea
-              id="message"
-              rows={6}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="お問い合わせ内容をご入力ください"
-              required
-              className="w-full bg-[#1d2030] border border-[#606370] rounded-lg px-4 py-3 text-sm text-white placeholder-[#606370] focus:outline-none focus:border-[#16a34a] resize-none"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={status === "sending"}
-            className="w-full py-3 rounded-lg text-sm font-medium text-white disabled:opacity-50 cursor-pointer"
-            style={{ background: "linear-gradient(90deg, #16a34a, #d4a017)" }}
-          >
-            {status === "sending" ? "送信中..." : "送信する"}
-          </button>
-        </form>
-      )}
+        <p className="text-[16px] font-bold text-white mb-3">
+          お問い合わせ機能は現在準備中です。
+        </p>
+        <p className="text-[14px] text-[#a9abb8] mb-6 leading-relaxed">
+          ご質問はメールにてお問い合わせください。
+        </p>
+        <a
+          href="mailto:support@paddock.jp"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-medium text-white hover:opacity-90 transition-opacity"
+          style={{ background: "linear-gradient(90deg, #16a34a, #d4a017)" }}
+        >
+          support@paddock.jp
+        </a>
+      </div>
     </div>
   )
 }

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
       { url: "/favicon/favicon.svg", type: "image/svg+xml" },
     ],
   },
+  manifest: "/manifest.json",
   openGraph: {
     title: "競馬情報メディア「PADDOCK」",
     description: "PADDOCKは、AIで競馬情報を見極める映像メディアです。",

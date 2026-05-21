@@ -170,9 +170,11 @@ export default async function MoviePage({ params }: Props) {
           {/* Related Episodes */}
           <div className="mt-8">
             <EpisodeSection title="関連動画" episodes={(() => {
-              const sameCategory = allEpisodes.filter((e) => e.id !== episode.id && e.categoryCode === episode.categoryCode)
-              const others = allEpisodes.filter((e) => e.id !== episode.id && e.categoryCode !== episode.categoryCode)
-              return [...sameCategory, ...others].slice(0, 6)
+              const filtered = allEpisodes.filter((e) => e.id !== episode.id)
+              const sameCategory = filtered.filter((e) => e.categoryCode === episode.categoryCode)
+              const others = filtered.filter((e) => e.categoryCode !== episode.categoryCode)
+              const maxRelated = Math.min(6, filtered.length)
+              return [...sameCategory, ...others].slice(0, maxRelated)
             })()} />
           </div>
         </div>

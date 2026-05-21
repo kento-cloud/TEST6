@@ -11,26 +11,31 @@ import type { Episode } from "@/types"
 
 interface SPSectionsProps {
   readonly episodes: readonly Episode[]
+  readonly episodeCount?: number
+}
+
+function pick(eps: readonly Episode[], indices: number[]): readonly Episode[] {
+  return indices.map(i => eps[i % eps.length]).filter(Boolean)
 }
 
 function buildSPSections(eps: readonly Episode[]): readonly { readonly title: string; readonly episodes: readonly Episode[] }[] {
+  if (eps.length === 0) return []
   return [
-    { title: "今週の注目レポート", episodes: [eps[0], eps[4], eps[5], eps[1]] },
-    { title: "★4.5超え 高評価コンテンツ", episodes: [eps[3], eps[4], eps[2], eps[0]] },
-    { title: "PADDOCK限定コンテンツ", episodes: [eps[5], eps[6], eps[8], eps[9]] },
-    { title: "レース分析", episodes: [eps[0], eps[4], eps[5], eps[9]] },
-    { title: "馬券・予想", episodes: [eps[2], eps[4], eps[0], eps[7]] },
-    { title: "血統・生産", episodes: [eps[1], eps[6], eps[3], eps[9]] },
-    { title: "調教・馬体", episodes: [eps[7], eps[8], eps[3], eps[2]] },
-    { title: "海外競馬", episodes: [eps[5], eps[9], eps[1], eps[6]] },
-    { title: "マネジメント", episodes: [eps[7], eps[4], eps[1], eps[8]] },
-    { title: "マーケティング", episodes: [eps[8], eps[5], eps[6], eps[2]] },
-    { title: "教育", episodes: [eps[9], eps[3], eps[0], eps[4]] },
+    { title: "今週の注目レポート", episodes: pick(eps, [0, 1, 2, 3]) },
+    { title: "★4.5超え 高評価コンテンツ", episodes: pick(eps, [1, 2, 3, 0]) },
+    { title: "レース分析", episodes: pick(eps, [0, 2, 4, 1]) },
+    { title: "馬券・予想", episodes: pick(eps, [2, 0, 3, 4]) },
+    { title: "血統・生産", episodes: pick(eps, [1, 3, 0, 2]) },
+    { title: "調教・馬体", episodes: pick(eps, [3, 4, 1, 0]) },
+    { title: "海外競馬", episodes: pick(eps, [4, 0, 2, 3]) },
   ]
 }
 
-export function SPSections({ episodes }: SPSectionsProps) {
-  const spSections = buildSPSections(episodes)
+export function SPSections({ episodes, episodeCount }: SPSectionsProps) {
+  const count = episodeCount ?? episodes.length
+  const allSections = buildSPSections(episodes)
+  // 動画数が少ない場合はセクション数を制限
+  const spSections = count < 4 ? allSections.slice(0, 1) : allSections
   return (
     <div className="md:hidden flex flex-col gap-6">
       {spSections.map((section) => (

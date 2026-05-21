@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic"
 export default async function AdminVideosPage() {
   const { data: allVideos } = await supabase
     .from("videos")
-    .select("id, title, thumbnail_path, publish_status, processing_step, duration, created_at")
+    .select("id, title, thumbnail_path, publish_status, processing_step, category_code, duration, created_at")
     .order("created_at", { ascending: false })
 
   const videos = (allVideos ?? []).map(v => ({
@@ -16,6 +16,7 @@ export default async function AdminVideosPage() {
     thumbnail_path: (v.thumbnail_path as string | null) ?? null,
     publish_status: (v.publish_status as string) ?? "draft",
     processing_step: (v.processing_step as string) ?? "none",
+    category_code: (v.category_code as string | null) ?? null,
     duration: (v.duration as number | null) ?? null,
     created_at: (v.created_at as string) ?? "",
   }))

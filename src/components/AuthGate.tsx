@@ -35,9 +35,14 @@ export function AuthGate({ children, fallbackTitle }: Props) {
           {fallbackTitle && (
             <p className="text-[14px] text-[#606370] mb-2">{fallbackTitle}</p>
           )}
-          <h2 className="text-[20px] font-bold mb-2">会員登録でフル視聴</h2>
+          <h2 className="text-[20px] font-bold mb-2">会員登録で全動画のAI要約・チャプター・記事が読み放題</h2>
+          <div className="flex justify-center gap-4 text-[13px] text-[#16a34a] font-medium mb-3">
+            <span>✓ AI生成記事</span>
+            <span>✓ チャプター</span>
+            <span>✓ 音声モード</span>
+          </div>
           <p className="text-[14px] text-[#a9abb8] mb-6">
-            このコンテンツを視聴するには、ログインまたは会員登録が必要です。
+            無料登録で全コンテンツにアクセスできます。
           </p>
           <div className="flex flex-col gap-3">
             <Link

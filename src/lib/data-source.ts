@@ -109,47 +109,15 @@ export async function getRankings() {
   }
 }
 
-/** フィーチャードアイテム — 公開済み動画の上位をフィーチャード（視聴数順、フォールバック: 公開日順） */
+/** フィーチャードアイテム — 公開済み動画の最新5件をフィーチャード（新しい順） */
 export async function getFeaturedItems() {
   try {
-    // 視聴数トップのvideo_idを取得
-    const { data: topMetrics } = await supabase
-      .from("metrics")
-      .select("video_id, view_count")
-      .order("view_count", { ascending: false })
-      .limit(20)
-
-    const metricVideoIds = (topMetrics ?? []).map((m) => m.video_id as string)
-    const viewCountMap = new Map((topMetrics ?? []).map((m) => [m.video_id as string, (m.view_count as number) ?? 0]))
-
-    let videos: Record<string, unknown>[] | null = null
-
-    // 視聴数データがある場合はそのIDで公開済みを取得
-    if (metricVideoIds.length > 0) {
-      const result = await supabase
-        .from("videos")
-        .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
-        .eq("publish_status", "published")
-        .in("id", metricVideoIds)
-      videos = result.data
-      // 視聴数順でソート
-      if (videos && videos.length > 0) {
-        videos = [...videos].sort((a, b) =>
-          (viewCountMap.get(b.id as string) ?? 0) - (viewCountMap.get(a.id as string) ?? 0)
-        ).slice(0, 5)
-      }
-    }
-
-    // 視聴数データがない or 公開動画が0件なら公開日順
-    if (!videos || videos.length === 0) {
-      const result = await supabase
-        .from("videos")
-        .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
-        .eq("publish_status", "published")
-        .order("published_at", { ascending: false })
-        .limit(5)
-      videos = result.data
-    }
+    const { data: videos } = await supabase
+      .from("videos")
+      .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
+      .eq("publish_status", "published")
+      .order("published_at", { ascending: false })
+      .limit(5)
 
     if (!videos || videos.length === 0) return getStaticFeaturedItems()
 
@@ -222,12 +190,49 @@ export async function getCategoryEpisodes() {
 
 /** カテゴリ別フィーチャード — 将来: Supabase featured テーブルからカテゴリ別に取得 */
 export async function getCategoryFeatured() {
-  return staticCategoryFeatured
+  try {
+    const episodes = await getPublishedEpisodes()
+    if (episodes.length === 0) return staticCategoryFeatured
+
+    const { data: dbCategories } = await supabase
+      .from("categories")
+      .select("code")
+      .order("sort_order", { ascending: true })
+
+    const codes = (dbCategories ?? []).map(c => c.code as string)
+    if (codes.length === 0) return staticCategoryFeatured
+
+    const result: Record<string, { episodes: readonly Episode[]; programLogos: readonly string[] }> = {}
+    for (const code of codes) {
+      const matched = episodes.filter(e => e.categoryCode === code).slice(0, 3)
+      if (matched.length === 0) {
+        // カテゴリに該当なければ全体から埋める
+        result[code] = { episodes: episodes.slice(0, 3), programLogos: [] }
+      } else {
+        result[code] = { episodes: matched, programLogos: [] }
+      }
+    }
+    return result
+  } catch {
+    return staticCategoryFeatured
+  }
 }
 
-/** プレイリスト — 将来: Supabase playlists テーブルから取得 */
+/** プレイリスト — DB公開動画から動的に生成 */
 export async function getPlaylists() {
-  return staticPlaylists
+  try {
+    const episodes = await getPublishedEpisodes()
+    if (episodes.length < 2) return staticPlaylists
+
+    return [
+      { id: "p1", title: "今週の重賞プレビュー", episodes: episodes.slice(0, 4) },
+      { id: "p2", title: "馬券術マスター講座", episodes: [...episodes].reverse().slice(0, 4) },
+      { id: "p3", title: "血統から読む次の大物", episodes: episodes.slice(1, 5) },
+      { id: "p4", title: "調教・パドック攻略", episodes: [...episodes.slice(2), ...episodes.slice(0, 2)].slice(0, 4) },
+    ]
+  } catch {
+    return staticPlaylists
+  }
 }
 
 /**

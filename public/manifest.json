@@ -1,0 +1,16 @@
+{
+  "name": "PADDOCK - 競馬情報メディア",
+  "short_name": "PADDOCK",
+  "description": "AIで競馬情報を見極める映像メディア",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1a0f",
+  "theme_color": "#16a34a",
+  "icons": [
+    {
+      "src": "/assets/logo/paddock_mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

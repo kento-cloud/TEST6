@@ -1,8 +1,14 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { AuthPrompt } from "@/components/AuthPrompt"
 import { getAllEpisodes } from "@/lib/data-source"
+
+export const metadata: Metadata = {
+  title: "新着動画 | PADDOCK",
+  description: "PADDOCKの最新動画一覧。競馬の最新分析・予想をチェック。",
+}
 
 export default async function NewArrivalPage() {
   const newEpisodes = await getAllEpisodes()

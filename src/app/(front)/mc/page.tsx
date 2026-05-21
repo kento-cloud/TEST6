@@ -1,5 +1,11 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+
+export const metadata: Metadata = {
+  title: "解説者一覧 | PADDOCK",
+  description: "PADDOCKの解説者・出演者一覧。",
+}
 
 const allMCs = [
   { id: 1, name: "武豊", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },

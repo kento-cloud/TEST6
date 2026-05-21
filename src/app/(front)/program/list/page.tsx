@@ -1,7 +1,13 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { HeaderTabs } from "@/components/HeaderTabs"
 import { getPrograms } from "@/lib/data-source"
+
+export const metadata: Metadata = {
+  title: "番組一覧 | PADDOCK",
+  description: "PADDOCKの全番組一覧。レース分析、血統解説、馬券術など多彩な番組をお届け。",
+}
 
 export default async function ProgramListPage() {
   const programs = await getPrograms()

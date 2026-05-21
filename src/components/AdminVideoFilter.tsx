@@ -8,6 +8,7 @@ interface Video {
   readonly thumbnail_path: string | null
   readonly publish_status: string
   readonly processing_step: string
+  readonly category_code: string | null
   readonly duration: number | null
   readonly created_at: string
 }
@@ -29,13 +30,25 @@ const STATUS_STYLES: Record<string, string> = {
   unpublished: "bg-red-100 text-red-600",
 }
 
+const CATEGORY_OPTIONS = [
+  { value: "all", label: "全カテゴリ" },
+  { value: "race", label: "レース" },
+  { value: "betting", label: "馬券" },
+  { value: "breeding", label: "血統" },
+  { value: "training", label: "調教" },
+  { value: "science", label: "データ分析" },
+  { value: "global", label: "海外競馬" },
+] as const
+
 export function AdminVideoFilter({ videos }: Props) {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
+  const [category, setCategory] = useState("all")
 
   const filtered = videos.filter(v => {
     if (search && !v.title.toLowerCase().includes(search.toLowerCase())) return false
     if (status !== "all" && v.publish_status !== status) return false
+    if (category !== "all" && v.category_code !== category) return false
     return true
   })
 
@@ -59,6 +72,15 @@ export function AdminVideoFilter({ videos }: Props) {
           <option value="review">レビュー</option>
           <option value="published">公開中</option>
           <option value="unpublished">非公開</option>
+        </select>
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
+        >
+          {CATEGORY_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
         </select>
       </div>
 

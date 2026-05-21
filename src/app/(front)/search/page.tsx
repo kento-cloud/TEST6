@@ -13,13 +13,15 @@ const genres = [
   "AI予想", "回収率UP", "海外競馬",
 ] as const
 
+const MC_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c"] as const
+
 const mcList = [
-  { name: "武豊", id: 1, thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
-  { name: "藤田菜七子", id: 2, thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  { name: "亀谷敬正", id: 3, thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
-  { name: "井崎脩五郎", id: 4, thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  { name: "細江純子", id: 5, thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
-  { name: "須田鷹雄", id: 6, thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  { name: "武豊", id: 1 },
+  { name: "藤田菜七子", id: 2 },
+  { name: "亀谷敬正", id: 3 },
+  { name: "井崎脩五郎", id: 4 },
+  { name: "細江純子", id: 5 },
+  { name: "須田鷹雄", id: 6 },
 ] as const
 
 export default function SearchPage() {
@@ -98,10 +100,13 @@ export default function SearchPage() {
                 <Link href="/mc" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">
-                {mcList.map((mc) => (
+                {mcList.map((mc, i) => (
                   <Link key={mc.name} href={`/mc/${mc.id}`} className="flex items-center justify-center gap-3 h-[48px] px-4 bg-[rgba(48,50,64,0.8)] rounded-lg cursor-pointer hover:bg-[#484a5e] transition-colors">
-                    <div className="w-[24px] h-[24px] rounded-full overflow-hidden shrink-0 bg-[#555]">
-                      <Image src={mc.thumb} alt={mc.name} width={24} height={24} className="object-cover w-full h-full" />
+                    <div
+                      className="w-[24px] h-[24px] rounded-full shrink-0 flex items-center justify-center text-[11px] font-bold text-white"
+                      style={{ backgroundColor: MC_COLORS[i % MC_COLORS.length] }}
+                    >
+                      {mc.name.charAt(0)}
                     </div>
                     <span className="text-[14px] font-bold">{mc.name}</span>
                   </Link>
