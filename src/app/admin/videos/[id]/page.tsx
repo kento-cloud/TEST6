@@ -253,7 +253,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
           <ShortVideoGenerator
             videoId={id}
             hasArticle={!!aiContent?.article}
-            shortVideoPath={(video.short_video_path as string) ?? null}
+            shortVideoPath={(video as Record<string, unknown>).short_video_path as string ?? null}
           />
         </div>
       </div>
