@@ -30,13 +30,21 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
     >
       {/* Thumbnail */}
       <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#1d2030]">
-        <Image
-          src={episode.thumbnailUrl}
-          alt={episode.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 768px) 50vw, 25vw"
-        />
+        {episode.thumbnailUrl && !episode.thumbnailUrl.includes("undefined") ? (
+          <Image
+            src={episode.thumbnailUrl}
+            alt={episode.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#1e3527] to-[#0a1a0f]">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#16a34a" opacity="0.4">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2z" />
+            </svg>
+          </div>
+        )}
         {/* Rank number */}
         {rank !== undefined && (
           <div className="absolute left-1 bottom-1 md:left-2 md:bottom-2">
@@ -52,12 +60,16 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
             </span>
           </div>
         )}
-        {/* Duration badge */}
-        {episode.duration && (
+        {/* Duration badge or Article badge */}
+        {episode.duration ? (
           <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/80 text-white text-[11px] font-mono rounded">
             {episode.duration}
           </span>
-        )}
+        ) : episode.thumbnailUrl && episode.thumbnailUrl.includes("undefined") ? null : !episode.thumbnailUrl ? (
+          <span className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-[#16a34a]/90 text-white text-[10px] font-bold rounded">
+            記事
+          </span>
+        ) : null}
         {/* Category badge */}
         {episode.categoryCode && (
           <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-[#16a34a]/90 text-white text-[10px] font-bold rounded">

@@ -88,8 +88,10 @@ export default async function MoviePage({ params }: Props) {
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
 
-      {/* サムネイルプレビュー（未ログイン時のみ表示） */}
-      <MovieThumbnailPreview thumbnailUrl={thumbnailUrl} title={title} />
+      {/* サムネイルプレビュー（未ログイン時のみ表示、記事コンテンツでは非表示） */}
+      {sourceType !== "article" && (
+        <MovieThumbnailPreview thumbnailUrl={thumbnailUrl} title={title} />
+      )}
 
       {/* タイトル・番組名は全員に表示 */}
       <div className="px-4 md:px-8 pt-6">

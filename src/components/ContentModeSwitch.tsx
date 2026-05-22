@@ -27,11 +27,22 @@ export function ContentModeSwitch({
   programName,
   article,
 }: ContentModeSwitchProps) {
-  const [activeMode, setActiveMode] = useState<ContentMode>("video")
+  const isArticleOnly = sourceType === "article"
+  const [activeMode, setActiveMode] = useState<ContentMode>(isArticleOnly ? "article" : "video")
 
   // ローカル動画ファイルがある場合のみ音声モード有効（YouTube APIは音声のみ不可）
-  const hasAudio = sourceType !== "youtube" && !!videoSrc
+  const hasVideo = sourceType !== "article" && ((sourceType === "youtube" && !!youtubeVideoId) || !!videoSrc)
+  const hasAudio = sourceType !== "youtube" && sourceType !== "article" && !!videoSrc
   const hasArticle = !!article
+
+  // 記事のみコンテンツの場合はタブを非表示
+  if (isArticleOnly) {
+    return (
+      <div>
+        <ArticleView article={article} title={title} />
+      </div>
+    )
+  }
 
   return (
     <div>
