@@ -28,19 +28,29 @@ export function PlaylistSection({ playlists }: PlaylistSectionProps) {
             <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-[#1d2030]">
               <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-[1px]">
                 {pl.episodes.slice(0, 4).map((ep, i) => (
-                  <div key={i} className="relative overflow-hidden">
-                    <Image
-                      src={ep.thumbnailUrl}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="120px"
-                    />
+                  <div key={i} className="relative overflow-hidden bg-[#303240]">
+                    {ep.thumbnailUrl && ep.thumbnailUrl.startsWith("/api/") ? (
+                      <Image
+                        src={ep.thumbnailUrl}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
+                    ) : ep.thumbnailUrl && ep.thumbnailUrl.startsWith("/uploads/") ? (
+                      <Image
+                        src={`/api${ep.thumbnailUrl}`}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
+                    ) : null}
                   </div>
                 ))}
-                {pl.episodes.length < 4 && (
-                  <div className="bg-[#303240]" />
-                )}
+                {Array.from({ length: Math.max(0, 4 - pl.episodes.length) }).map((_, i) => (
+                  <div key={`empty-${i}`} className="bg-[#303240]" />
+                ))}
               </div>
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
             </div>

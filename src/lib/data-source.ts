@@ -218,10 +218,11 @@ export async function getCategoryFeatured() {
   }
 }
 
-/** プレイリスト — DB公開動画から動的に生成 */
+/** プレイリスト — DB公開動画（記事除く）から動的に生成 */
 export async function getPlaylists() {
   try {
-    const episodes = await getPublishedEpisodes()
+    const allEpisodes = await getPublishedEpisodes()
+    const episodes = allEpisodes.filter(e => e.sourceType !== "article")
     if (episodes.length < 2) return staticPlaylists
 
     return [
