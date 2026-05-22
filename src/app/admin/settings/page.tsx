@@ -21,7 +21,7 @@ interface KeyStatus {
 interface SettingsData {
   OPENAI_API_KEY?: KeyStatus
   ADMIN_PASSWORD?: KeyStatus
-  GOOGLE_CLOUD_PROJECT_ID?: KeyStatus
+  GOOGLE_API_KEY?: KeyStatus
   AI_TEXT_MODEL?: string
   AI_IMAGE_MODEL?: string
   AI_TRANSCRIBE_MODEL?: string
@@ -258,14 +258,14 @@ export default function AdminSettingsPage() {
           <StatusRow label="ADMIN_PASSWORD" desc="管理画面ログインパスワード" status={settings.ADMIN_PASSWORD} />
           <div className="px-5 py-4 flex items-center justify-between">
             <div>
-              <p className="text-[14px] font-semibold text-gray-900">Google Cloud (Veo)</p>
-              <p className="text-[12px] text-gray-400 mt-0.5">AI動画生成（ショート動画の映像モード）に使用。未設定でも画像スライドモードで動作します。</p>
+              <p className="text-[14px] font-semibold text-gray-900">GOOGLE_API_KEY</p>
+              <p className="text-[12px] text-gray-400 mt-0.5">Veo動画生成（任意）。未設定でも画像スライドモードで動作します。</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-[13px] text-gray-500 font-mono">
-                {settings.GOOGLE_CLOUD_PROJECT_ID?.set ? "設定済み" : "未設定（任意）"}
+                {settings.GOOGLE_API_KEY?.set ? "設定済み" : "未設定（任意）"}
               </span>
-              <span className={`w-2.5 h-2.5 rounded-full ${settings.GOOGLE_CLOUD_PROJECT_ID?.set ? "bg-green-500" : "bg-gray-300"}`} />
+              <span className={`w-2.5 h-2.5 rounded-full ${settings.GOOGLE_API_KEY?.set ? "bg-green-500" : "bg-gray-300"}`} />
             </div>
           </div>
           <div className="px-5 py-4 flex items-center justify-between">
@@ -583,27 +583,15 @@ export default function AdminSettingsPage() {
           </div>
 
           <div className="border-t border-gray-100 pt-4 mt-4">
-            <p className="text-[13px] font-semibold text-gray-700 mb-3">Google Cloud（Veo動画生成 — 任意）</p>
+            <p className="text-[13px] font-semibold text-gray-700 mb-3">Google AI（Veo動画生成 — 任意）</p>
             <div className="space-y-3">
               <input
-                type="text"
-                placeholder="GOOGLE_CLOUD_PROJECT_ID"
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
-                disabled
-              />
-              <input
                 type="password"
-                placeholder="GOOGLE_CLOUD_ACCESS_TOKEN"
+                placeholder="GOOGLE_API_KEY"
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
                 disabled
               />
-              <input
-                type="text"
-                placeholder="GOOGLE_CLOUD_STORAGE_BUCKET"
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
-                disabled
-              />
-              <p className="text-[11px] text-gray-400">※ Google Cloud設定は .env.local を直接編集してください。Veo未設定でも画像スライドモードでショート動画は生成できます。</p>
+              <p className="text-[11px] text-gray-400">※ Gemini API経由でVeo 3を利用。Google AI Studioでキーを取得し .env.local に設定してください。未設定でも画像スライドモードでショート動画は生成できます。</p>
             </div>
           </div>
 

@@ -30,8 +30,21 @@ interface VeoGenerateResult {
 
 /**
  * Veo設定を環境変数から取得
+ * Gemini API経由: GOOGLE_API_KEY のみで動作
+ * Vertex AI経由: PROJECT_ID + ACCESS_TOKEN + BUCKET が必要
  */
 export function getVeoConfig(): VeoConfig | null {
+  // Gemini API経由（シンプル）
+  const googleApiKey = process.env.GOOGLE_API_KEY
+  if (googleApiKey) {
+    return {
+      projectId: "gemini-api",
+      accessToken: googleApiKey,
+      storageBucket: "",
+    }
+  }
+
+  // Vertex AI経由（フル機能）
   const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID
   const accessToken = process.env.GOOGLE_CLOUD_ACCESS_TOKEN
   const storageBucket = process.env.GOOGLE_CLOUD_STORAGE_BUCKET
