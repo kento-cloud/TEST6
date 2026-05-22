@@ -110,13 +110,14 @@ export async function getRankings() {
   }
 }
 
-/** フィーチャードアイテム — 公開済み動画の最新5件をフィーチャード（新しい順） */
+/** フィーチャードアイテム — 公開済み動画（記事除く）の最新5件をフィーチャード */
 export async function getFeaturedItems() {
   try {
     const { data: videos } = await supabase
       .from("videos")
       .select("id, title, description, thumbnail_path, program_id, youtube_video_id")
       .eq("publish_status", "published")
+      .neq("source_type", "article")
       .order("published_at", { ascending: false })
       .limit(5)
 
