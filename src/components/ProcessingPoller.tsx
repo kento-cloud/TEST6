@@ -11,6 +11,7 @@ const STEP_LABELS: Record<string, string> = {
   generating_article: "記事を生成中...",
   generating_tags: "タグを生成中...",
   generating_thumbnail: "サムネイルを生成中...",
+  generating_short: "ショート動画を生成中...",
 }
 
 interface Props {

@@ -10,6 +10,7 @@ import { TranscriptPipelineRow } from "@/components/TranscriptPipelineRow"
 import { AIPromptEditor } from "@/components/AIPromptEditor"
 import { ProcessingPoller } from "@/components/ProcessingPoller"
 import { RetryButton } from "@/components/RetryButton"
+import { ShortVideoGenerator } from "@/components/ShortVideoGenerator"
 import { getStatusDisplay } from "@/components/StatusBadge"
 import { notFound } from "next/navigation"
 
@@ -245,6 +246,15 @@ export default async function AdminVideoDetailPage({ params }: Props) {
         <div className="border-t border-gray-100 pt-4">
           <p className="text-[12px] text-gray-400 mb-2">AIサムネイル生成（GPT Images）</p>
           <ThumbnailGenerator videoId={id} videoTitle={video.title} />
+        </div>
+
+        <div className="border-t border-gray-100 pt-4">
+          <p className="text-[12px] text-gray-400 mb-2">ショート動画生成（記事→60秒スライド動画）</p>
+          <ShortVideoGenerator
+            videoId={id}
+            hasArticle={!!aiContent?.article}
+            shortVideoPath={(video.short_video_path as string) ?? null}
+          />
         </div>
       </div>
     </div>
