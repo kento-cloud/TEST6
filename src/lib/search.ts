@@ -92,42 +92,26 @@ export async function search(query: string): Promise<readonly SearchResult[]> {
         matchField: "program",
       })
     }
+    // DB検索が成功した場合はフォールバック不要
+    return results
   } catch {
-    // DB not available, fall through to static
+    // DB not available, use static fallback
   }
 
-  // 4. data-source fallback
+  // Fallback: data-source (DB接続失敗時のみ)
   const fallbackEpisodes = await getAllEpisodes()
   for (const ep of fallbackEpisodes) {
-    const eid = `static_${ep.id}`
-    if (seenIds.has(eid)) continue
+    if (seenIds.has(ep.id)) continue
     if (ep.title.includes(q) || ep.programName.includes(q) || ep.description.includes(q)) {
-      seenIds.add(eid)
+      seenIds.add(ep.id)
       results.push({
         type: "video",
-        id: String(ep.id),
+        id: ep.id,
         title: ep.title,
         description: ep.description,
         thumbnailUrl: ep.thumbnailUrl,
         categoryCode: ep.categoryCode,
-        matchField: "static",
-      })
-    }
-  }
-
-  const fallbackPrograms = await getPrograms()
-  for (const p of fallbackPrograms) {
-    const pid = `sprogram_${p.id}`
-    if (seenIds.has(pid)) continue
-    if (p.name.includes(q) || p.description.includes(q)) {
-      seenIds.add(pid)
-      results.push({
-        type: "program",
-        id: String(p.id),
-        title: p.name,
-        description: p.description,
-        thumbnailUrl: p.thumbnailUrl,
-        matchField: "static",
+        matchField: "title",
       })
     }
   }
