@@ -22,37 +22,50 @@ interface EpisodeCardProps {
 }
 
 export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
-  const isArticle = !episode.duration && (!episode.thumbnailUrl || episode.thumbnailUrl.includes("undefined"))
+  const isArticle = episode.sourceType === "article"
 
-  // 記事コンテンツ: 横長テキストカード
+  // 記事コンテンツ: サムネ付きカード + 記事バッジ（動画カードと同サイズ）
   if (isArticle) {
     return (
       <AuthPrompt>
         <Link
           href={`/movie/${episode.id}`}
-          className="group block shrink-0 w-full md:w-[calc(50%-5px)]"
+          className="group block shrink-0 w-[calc(50%-5px)] md:w-[calc(16.666%-8.33px)]"
         >
-          <div className="bg-[#1e3527]/30 border border-white/5 rounded-xl p-4 hover:bg-[#1e3527]/50 transition-colors">
-            <div className="flex items-start gap-3">
-              <div className="shrink-0 w-10 h-10 rounded-lg bg-[#16a34a]/15 flex items-center justify-center mt-0.5">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#16a34a">
+          <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#1d2030]">
+            {episode.thumbnailUrl && !episode.thumbnailUrl.includes("/images/static/") ? (
+              <Image
+                src={episode.thumbnailUrl}
+                alt={episode.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#1e3527] to-[#0a1a0f]">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#16a34a" opacity="0.3">
                   <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6zm2-6h8v2H8v-2zm0-3h8v2H8v-2z" />
                 </svg>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-1.5 py-0.5 bg-[#16a34a]/20 text-[#16a34a] text-[10px] font-bold rounded">記事</span>
-                  {episode.categoryCode && (
-                    <span className="text-[10px] text-[#606370]">{CATEGORY_LABELS[episode.categoryCode] ?? episode.categoryCode}</span>
-                  )}
-                </div>
-                <h3 className="text-[13px] md:text-[14px] font-bold leading-[1.4] line-clamp-2 text-white group-hover:text-[#16a34a] transition-colors">
-                  {episode.title}
-                </h3>
-                <p className="text-[11px] text-[#606370] mt-1 line-clamp-1">
-                  {episode.description || episode.publishedAt}
-                </p>
-              </div>
+            )}
+            {/* 記事バッジ（左上、大きめ） */}
+            <div className="absolute top-0 left-0 bg-[#d4a017] px-2.5 py-1 rounded-br-lg">
+              <span className="text-[10px] font-black text-white tracking-wider">ARTICLE</span>
+            </div>
+            {/* カテゴリ（右上） */}
+            {episode.categoryCode && (
+              <span className="absolute top-1 right-1 px-1.5 py-0.5 bg-black/60 text-white text-[10px] font-bold rounded">
+                {CATEGORY_LABELS[episode.categoryCode] ?? episode.categoryCode}
+              </span>
+            )}
+            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <div className="mt-1">
+            <h3 className="text-[12px] md:text-[13px] font-bold leading-[1.3] line-clamp-2 text-white group-hover:text-[#16a34a] transition-colors">
+              {episode.title}
+            </h3>
+            <div className="flex items-center gap-1 mt-[2px] text-[11px] text-[#999]">
+              <span>{episode.publishedAt}</span>
             </div>
           </div>
         </Link>

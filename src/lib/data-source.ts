@@ -49,7 +49,7 @@ async function fetchPublishedEpisodes(): Promise<readonly Episode[]> {
   try {
     const { data: videos, error } = await supabase
       .from("videos")
-      .select("id, title, description, duration, thumbnail_path, category_code, program_id, published_at")
+      .select("id, title, description, duration, thumbnail_path, category_code, program_id, published_at, source_type")
       .eq("publish_status", "published")
       .order("published_at", { ascending: false })
 
@@ -76,6 +76,7 @@ async function fetchPublishedEpisodes(): Promise<readonly Episode[]> {
         rating: (m?.rating as number) ?? 0,
         description: (v.description as string) ?? "",
         categoryCode: (v.category_code as string) ?? undefined,
+        sourceType: (v.source_type as string) ?? "local",
       }
     })
     _cacheTime = Date.now()

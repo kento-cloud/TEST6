@@ -10,6 +10,7 @@ export interface Episode {
   readonly rating: number
   readonly description: string
   readonly categoryCode?: string
+  readonly sourceType?: string
 }
 
 export interface Program {
