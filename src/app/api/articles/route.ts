@@ -11,7 +11,7 @@ import path from "path"
 async function generateArticleThumbnail(title: string, apiKey: string, videoId: string): Promise<string | null> {
   try {
     const openai = new OpenAI({ apiKey })
-    const prompt = `A cinematic, atmospheric thumbnail image for a horse racing article titled "${title}". Style: dramatic horse racing photography, deep green and gold tones, moody lighting, no text, no faces, no Japanese characters. 16:9 aspect ratio, editorial magazine quality.`
+    const prompt = `A cinematic, atmospheric thumbnail image for an article titled "${title}". Style: visually striking editorial photography that matches the article topic. Moody lighting, rich colors, no text, no faces, no Japanese characters. 16:9 aspect ratio, premium magazine quality.`
 
     const response = await openai.images.generate({
       model: "gpt-image-1",
