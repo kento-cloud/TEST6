@@ -239,7 +239,84 @@ async function compositeVideo(
 }
 
 /**
+ * Veo APIで映像クリップを生成し、テロップ+音声で合成（方式A）
+ */
+async function generateWithVeo(
+  slides: Slide[],
+  outputDir: string,
+  narrationPath: string,
+  outputPath: string,
+): Promise<number> {
+  const { getVeoConfig, generateMultipleClips } = await import("./veo")
+  const config = getVeoConfig()
+  if (!config) throw new Error("Veo config not available")
+
+  // 各スライドの映像プロンプトでVeo動画生成
+  const videoPrompts = slides.map(s =>
+    `${s.imagePrompt}. Cinematic 8-second clip, smooth camera movement, high quality, no text overlay.`
+  )
+
+  console.log("[short-video] Generating Veo clips...")
+  const clipPaths = await generateMultipleClips(videoPrompts, outputDir, config, { aspectRatio: "9:16" })
+
+  if (clipPaths.length === 0) {
+    throw new Error("Veo clips generation failed — no clips produced")
+  }
+
+  // テロップを各クリップに重ねる
+  const fontPath = getFontPath()
+  const telopClipPaths: string[] = []
+
+  for (let i = 0; i < clipPaths.length; i++) {
+    const telopPath = path.join(outputDir, `telop_clip_${i}.mp4`)
+    const keypoint = (slides[i]?.keypoint ?? "").replace(/'/g, "'\\''").replace(/:/g, "\\:")
+
+    await execFileAsync("ffmpeg", [
+      "-y", "-i", clipPaths[i],
+      "-vf", [
+        `drawbox=y=ih-300:w=iw:h=200:color=black@0.6:t=fill`,
+        `drawtext=fontfile='${fontPath}':text='${keypoint}':fontsize=44:fontcolor=white:x=(w-text_w)/2:y=h-240:borderw=2:bordercolor=black`,
+      ].join(","),
+      "-c:v", "libx264", "-c:a", "copy", "-pix_fmt", "yuv420p",
+      telopPath,
+    ], { timeout: 60000 })
+
+    telopClipPaths.push(telopPath)
+  }
+
+  // クリップ結合
+  const concatListPath = path.join(outputDir, "concat_list.txt")
+  await writeFile(concatListPath, telopClipPaths.map(p => `file '${p}'`).join("\n"))
+
+  const silentVideoPath = path.join(outputDir, "silent_video.mp4")
+  await execFileAsync("ffmpeg", [
+    "-y", "-f", "concat", "-safe", "0", "-i", concatListPath,
+    "-c", "copy", silentVideoPath,
+  ], { timeout: 60000 })
+
+  // 音声合成
+  await execFileAsync("ffmpeg", [
+    "-y", "-i", silentVideoPath, "-i", narrationPath,
+    "-c:v", "copy", "-c:a", "aac", "-b:a", "128k", "-shortest",
+    outputPath,
+  ], { timeout: 60000 })
+
+  // クリーンアップ
+  for (const p of [...clipPaths, ...telopClipPaths]) await unlink(p).catch(() => {})
+  await unlink(concatListPath).catch(() => {})
+  await unlink(silentVideoPath).catch(() => {})
+
+  // 動画の長さを取得
+  const { stdout } = await execFileAsync("ffprobe", [
+    "-v", "quiet", "-show_entries", "format=duration", "-of", "csv=p=0", outputPath,
+  ])
+  return parseFloat(stdout.trim()) || 48
+}
+
+/**
  * メイン: 記事からショート動画を生成
+ * - Veo API利用可能 → 方式A（AI映像クリップ）
+ * - Veo API未設定 → 方式B（AI画像スライド）
  */
 export async function generateShortVideo(
   videoId: string,
@@ -262,19 +339,31 @@ export async function generateShortVideo(
   }
   console.log(`[short-video] ${slides.length} slides extracted`)
 
-  // Phase 2a: 画像生成
-  console.log("[short-video] Phase 2a: Generating images...")
-  const imagePaths = await generateSlideImages(slides, outputDir, apiKey)
-
-  // Phase 2b: TTS音声生成
-  console.log("[short-video] Phase 2b: Generating narration...")
+  // Phase 2b: TTS音声生成（どちらの方式でも使う）
+  console.log("[short-video] Phase 2: Generating narration...")
   const narrationPath = path.join(outputDir, "narration.mp3")
   await generateNarration(slides, narrationPath, apiKey)
 
-  // Phase 3: FFmpeg合成
-  console.log("[short-video] Phase 3: Compositing video...")
   const outputPath = path.join(outputDir, "short.mp4")
-  const durationSeconds = await compositeVideo(imagePaths, narrationPath, slides, outputPath)
+  let durationSeconds: number
+
+  // Veo APIが利用可能なら方式A（AI映像）、なければ方式B（画像スライド）
+  const { isVeoAvailable } = await import("./veo")
+  if (isVeoAvailable()) {
+    console.log("[short-video] Using Veo API (Mode A: AI video clips)")
+    try {
+      durationSeconds = await generateWithVeo(slides, outputDir, narrationPath, outputPath)
+    } catch (error) {
+      console.error("[short-video] Veo failed, falling back to image slides:", error)
+      // フォールバック: 方式B
+      const imagePaths = await generateSlideImages(slides, outputDir, apiKey)
+      durationSeconds = await compositeVideo(imagePaths, narrationPath, slides, outputPath)
+    }
+  } else {
+    console.log("[short-video] Using image slides (Mode B: no Veo API configured)")
+    const imagePaths = await generateSlideImages(slides, outputDir, apiKey)
+    durationSeconds = await compositeVideo(imagePaths, narrationPath, slides, outputPath)
+  }
 
   return {
     videoPath: `/uploads/shorts/${videoId}/short.mp4`,
