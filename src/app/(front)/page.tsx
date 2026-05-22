@@ -22,6 +22,10 @@ export default async function HomePage() {
   const playlists = await getPlaylists()
   const programs = await getPrograms()
 
+  // 動画と記事を分離
+  const videoEpisodes = episodes.filter(e => e.sourceType !== "article")
+  const articleEpisodes = episodes.filter(e => e.sourceType === "article")
+
   return (
     <div className="flex flex-col min-h-screen">
       <HeaderTabs />
@@ -32,11 +36,18 @@ export default async function HomePage() {
 
       {/* Content Sections */}
       <div className="flex flex-col gap-6 md:gap-10 px-4 md:px-6 lg:px-8 py-5 md:py-8">
-        {/* 共通: 新着（フィーチャードと異なる順序で表示） */}
-        <EpisodeSection title="最新レポート" spTitle="最新レポート" episodes={episodes} href="/new_arrival/episode" />
+        {/* 最新動画 */}
+        {videoEpisodes.length > 0 && (
+          <EpisodeSection title="最新動画" spTitle="最新動画" episodes={videoEpisodes} href="/new_arrival/episode" />
+        )}
 
-        {/* SP専用セクション（本家SPのセクション構成を再現） */}
-        <SPSections episodes={episodes} episodeCount={episodes.length} />
+        {/* 最新記事 */}
+        {articleEpisodes.length > 0 && (
+          <EpisodeSection title="最新記事" spTitle="最新記事" episodes={articleEpisodes} />
+        )}
+
+        {/* SP専用セクション（動画のみ） */}
+        <SPSections episodes={videoEpisodes} episodeCount={videoEpisodes.length} />
 
         {/* SP: 番組一覧（動画が十分にある場合のみ） */}
         {episodes.length >= 10 && (
