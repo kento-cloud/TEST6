@@ -10,6 +10,8 @@
     "lint": "eslint",
     "db:migrate": "npx tsx src/db/migrate.ts",
     "db:migrate:extras": "npx tsx --env-file=.env.local src/db/migrate-supabase-extras.ts",
+    "db:harden": "npx tsx --env-file=.env.local src/db/migrate-supabase-hardening.ts",
+    "db:enrich": "npx tsx --env-file=.env.local src/db/update-supabase-ai-contents.ts",
     "db:seed": "npx tsx src/db/seed.ts",
     "db:studio": "npx drizzle-kit studio"
   },

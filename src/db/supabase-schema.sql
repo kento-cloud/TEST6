@@ -277,3 +277,67 @@ CREATE TABLE IF NOT EXISTS search_tags (
   is_active  BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- ============================================================
+-- 本番ハードニング（migrate-supabase-hardening.ts / npm run db:harden）
+-- 長期運用向け: 参照整合性・索引・制約・updated_at自動更新・拡張カラム
+-- ============================================================
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS $func$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$func$ LANGUAGE plpgsql;
+
+-- mc_members 拡張
+ALTER TABLE mc_members ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE mc_members ADD COLUMN IF NOT EXISTS x_url TEXT;
+ALTER TABLE mc_members ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+CREATE UNIQUE INDEX IF NOT EXISTS uq_mc_members_slug ON mc_members(slug);
+CREATE INDEX IF NOT EXISTS idx_mc_members_active ON mc_members(is_active, sort_order);
+
+-- video_casts: videos へのFK / 役割
+ALTER TABLE video_casts ADD COLUMN IF NOT EXISTS role_in_video TEXT DEFAULT 'MC';
+ALTER TABLE video_casts ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE video_casts ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+-- FK fk_video_casts_video (video_id -> videos.id ON DELETE CASCADE)
+-- CHECK chk_video_casts_role (MC/ゲスト/解説/ナレーター)
+CREATE INDEX IF NOT EXISTS idx_video_casts_video ON video_casts(video_id);
+
+-- playlists 拡張
+ALTER TABLE playlists ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE playlists ADD COLUMN IF NOT EXISTS cover_image_path TEXT;
+ALTER TABLE playlists ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+CREATE UNIQUE INDEX IF NOT EXISTS uq_playlists_slug ON playlists(slug);
+CREATE INDEX IF NOT EXISTS idx_playlists_public ON playlists(is_public, sort_order);
+-- CHECK chk_playlists_kind (curated/auto/user)
+
+-- playlist_items: videos へのFK
+ALTER TABLE playlist_items ADD COLUMN IF NOT EXISTS added_at TIMESTAMPTZ DEFAULT now();
+-- FK fk_playlist_items_video (video_id -> videos.id ON DELETE CASCADE)
+CREATE INDEX IF NOT EXISTS idx_playlist_items_video ON playlist_items(video_id);
+
+-- search_tags 拡張
+ALTER TABLE search_tags ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'genre';
+ALTER TABLE search_tags ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+
+-- 正規化タグ体系
+CREATE TABLE IF NOT EXISTS tags (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  slug TEXT NOT NULL UNIQUE,
+  usage_count INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS video_tags (
+  video_id TEXT NOT NULL REFERENCES videos(id) ON DELETE CASCADE,
+  tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (video_id, tag_id)
+);
+CREATE INDEX IF NOT EXISTS idx_video_tags_tag ON video_tags(tag_id);
+CREATE INDEX IF NOT EXISTS idx_video_tags_video ON video_tags(video_id);
+
+-- コアテーブルのスケール向け索引
+CREATE INDEX IF NOT EXISTS idx_videos_publish_published ON videos(publish_status, published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_videos_category ON videos(category_code);
+CREATE INDEX IF NOT EXISTS idx_videos_program ON videos(program_id);
+CREATE INDEX IF NOT EXISTS idx_videos_source_type ON videos(source_type);
