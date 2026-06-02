@@ -20,3 +20,19 @@ export interface Program {
   readonly thumbnailUrl: string
   readonly isSponsored: boolean
 }
+
+export interface MCMember {
+  readonly id: number
+  readonly name: string
+  readonly role: string
+  readonly bio: string
+  readonly thumbnailUrl: string
+}
+
+export interface Playlist {
+  readonly id: string
+  readonly title: string
+  readonly description: string
+  readonly ownerLabel: string
+  readonly episodes: readonly Episode[]
+}

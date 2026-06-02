@@ -8,22 +8,15 @@ import { LargeRankingCard } from "@/components/LargeRankingCard"
 import { AuthPrompt } from "@/components/AuthPrompt"
 import type { Episode, Program } from "@/types"
 
-const genres = [
+const MC_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c"] as const
+
+const DEFAULT_GENRES = [
   "ChatGPT活用", "プロンプト術", "画像生成AI",
   "LLM入門", "AI倫理", "業務効率化",
   "生成AI", "最新モデル", "海外動向",
-] as const
+]
 
-const MC_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c"] as const
-
-const mcList = [
-  { name: "高橋 渉", id: 1 },
-  { name: "藤本 さき", id: 2 },
-  { name: "亀井 啓介", id: 3 },
-  { name: "石井 修一", id: 4 },
-  { name: "星野 純", id: 5 },
-  { name: "須藤 拓也", id: 6 },
-] as const
+interface MCItem { id: number; name: string; role?: string }
 
 export default function SearchPage() {
   return (
@@ -40,11 +33,15 @@ function SearchPageInner() {
   const [allEpisodes, setAllEpisodes] = useState<Episode[]>([])
   const [rankings, setRankings] = useState<{ label: string; key: string; episodes: Episode[] }[]>([])
   const [programs, setPrograms] = useState<Program[]>([])
+  const [genres, setGenres] = useState<string[]>(DEFAULT_GENRES)
+  const [mcList, setMcList] = useState<MCItem[]>([])
 
   useEffect(() => {
     fetch("/api/front/episodes?type=all").then(r => r.json()).then(setAllEpisodes).catch(() => {})
     fetch("/api/front/episodes?type=rankings").then(r => r.json()).then(setRankings).catch(() => {})
     fetch("/api/front/programs").then(r => r.json()).then(setPrograms).catch(() => {})
+    fetch("/api/search-tags").then(r => r.json()).then((d) => { if (Array.isArray(d) && d.length) setGenres(d) }).catch(() => {})
+    fetch("/api/mc").then(r => r.json()).then((d) => { if (Array.isArray(d)) setMcList(d) }).catch(() => {})
   }, [])
 
   useEffect(() => {

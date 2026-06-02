@@ -18,7 +18,7 @@ import {
   playlists as staticPlaylists,
 } from "@/data/episodes"
 import { programs as staticPrograms } from "@/data/programs"
-import type { Episode, Program } from "@/types"
+import type { Episode, Program, MCMember, Playlist } from "@/types"
 import type { Chapter } from "@/types/ai"
 import { FALLBACK_THUMBNAIL } from "./constants"
 import { supabase } from "./supabase"
@@ -219,21 +219,138 @@ export async function getCategoryFeatured() {
   }
 }
 
-/** プレイリスト — DB公開動画（記事除く）から動的に生成 */
-export async function getPlaylists() {
+/** プレイリスト — DB playlists / playlist_items テーブルから取得（公開動画を紐付け） */
+export async function getPlaylists(): Promise<readonly Playlist[]> {
   try {
-    const allEpisodes = await getPublishedEpisodes()
-    const episodes = allEpisodes.filter(e => e.sourceType !== "article")
-    if (episodes.length < 2) return staticPlaylists
+    const { data: rows, error } = await supabase
+      .from("playlists")
+      .select("id, title, description, owner_label, sort_order, playlist_items(video_id, position)")
+      .eq("is_public", true)
+      .order("sort_order", { ascending: true })
 
+    if (error || !rows || rows.length === 0) return dynamicPlaylistFallback()
+
+    const episodes = await getPublishedEpisodes()
+    const episodeMap = new Map(episodes.map((e) => [e.id, e]))
+
+    const result: Playlist[] = rows.map((pl) => {
+      const items = ((pl.playlist_items as { video_id: string; position: number }[]) ?? [])
+        .sort((a, b) => a.position - b.position)
+      const eps = items.map((it) => episodeMap.get(it.video_id)).filter((e): e is Episode => !!e)
+      return {
+        id: pl.id as string,
+        title: pl.title as string,
+        description: (pl.description as string) ?? "",
+        ownerLabel: (pl.owner_label as string) ?? "AI MEDIA運営",
+        episodes: eps,
+      }
+    }).filter((pl) => pl.episodes.length > 0)
+
+    return result.length > 0 ? result : dynamicPlaylistFallback(episodes)
+  } catch {
+    return dynamicPlaylistFallback()
+  }
+}
+
+/** DB未投入時のフォールバック: 公開動画から動的にプレイリストを組み立てる */
+async function dynamicPlaylistFallback(preloaded?: readonly Episode[]): Promise<readonly Playlist[]> {
+  try {
+    const all = preloaded ?? (await getPublishedEpisodes())
+    const episodes = all.filter((e) => e.sourceType !== "article")
+    if (episodes.length < 2) return staticPlaylists as unknown as Playlist[]
     return [
-      { id: "p1", title: "今週の最新AIニュース", episodes: episodes.slice(0, 4) },
-      { id: "p2", title: "AI活用マスター講座", episodes: [...episodes].reverse().slice(0, 4) },
-      { id: "p3", title: "次に来る注目AIスタートアップ", episodes: episodes.slice(1, 5) },
-      { id: "p4", title: "プロンプト&業務自動化", episodes: [...episodes.slice(2), ...episodes.slice(0, 2)].slice(0, 4) },
+      { id: "p1", title: "今週の最新AIニュース", description: "", ownerLabel: "AI MEDIA運営", episodes: episodes.slice(0, 4) },
+      { id: "p2", title: "AI活用マスター講座", description: "", ownerLabel: "AI MEDIA運営", episodes: [...episodes].reverse().slice(0, 4) },
+      { id: "p3", title: "次に来る注目AIスタートアップ", description: "", ownerLabel: "AI MEDIA運営", episodes: episodes.slice(1, 5) },
+      { id: "p4", title: "プロンプト&業務自動化", description: "", ownerLabel: "AI MEDIA運営", episodes: [...episodes.slice(2), ...episodes.slice(0, 2)].slice(0, 4) },
     ]
   } catch {
-    return staticPlaylists
+    return staticPlaylists as unknown as Playlist[]
+  }
+}
+
+// ============================================================
+// 解説者（MC / 出演者）
+// ============================================================
+
+/** 解説者一覧 — mc_members テーブルから取得 */
+export async function getMCMembers(): Promise<readonly MCMember[]> {
+  try {
+    const { data, error } = await supabase
+      .from("mc_members")
+      .select("id, name, role, bio, thumbnail_path")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+
+    if (error || !data) return []
+    return data.map((m) => ({
+      id: m.id as number,
+      name: m.name as string,
+      role: (m.role as string) ?? "",
+      bio: (m.bio as string) ?? "",
+      thumbnailUrl: (m.thumbnail_path as string) ?? FALLBACK_THUMBNAIL,
+    }))
+  } catch {
+    return []
+  }
+}
+
+/** 解説者詳細 + 出演エピソード — mc_members / video_casts から取得 */
+export async function getMCDetail(mcId: string): Promise<{ member: MCMember; episodes: readonly Episode[] } | null> {
+  try {
+    const idNum = Number(mcId)
+    if (!Number.isFinite(idNum)) return null
+
+    const { data: rows, error } = await supabase
+      .from("mc_members")
+      .select("id, name, role, bio, thumbnail_path")
+      .eq("id", idNum)
+      .limit(1)
+
+    if (error || !rows || rows.length === 0) return null
+    const m = rows[0]
+    const member: MCMember = {
+      id: m.id as number,
+      name: m.name as string,
+      role: (m.role as string) ?? "",
+      bio: (m.bio as string) ?? "",
+      thumbnailUrl: (m.thumbnail_path as string) ?? FALLBACK_THUMBNAIL,
+    }
+
+    const { data: casts } = await supabase
+      .from("video_casts")
+      .select("video_id")
+      .eq("mc_id", idNum)
+    const castIds = new Set((casts ?? []).map((c) => c.video_id as string))
+
+    const allEpisodes = await getPublishedEpisodes()
+    const episodes = allEpisodes.filter((e) => castIds.has(e.id))
+
+    return { member, episodes }
+  } catch {
+    return null
+  }
+}
+
+// ============================================================
+// 検索ジャンルタグ
+// ============================================================
+
+/** 検索ジャンルタグ — search_tags テーブルから取得 */
+export async function getSearchTags(): Promise<readonly string[]> {
+  try {
+    const { data, error } = await supabase
+      .from("search_tags")
+      .select("label, sort_order")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+
+    if (error || !data || data.length === 0) {
+      return ["ChatGPT活用", "プロンプト術", "画像生成AI", "LLM入門", "AI倫理", "業務効率化", "生成AI", "最新モデル", "海外動向"]
+    }
+    return data.map((t) => t.label as string)
+  } catch {
+    return ["ChatGPT活用", "プロンプト術", "画像生成AI", "LLM入門", "AI倫理", "業務効率化", "生成AI", "最新モデル", "海外動向"]
   }
 }
 

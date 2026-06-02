@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "npx tsx src/db/migrate.ts",
+    "db:migrate:extras": "npx tsx --env-file=.env.local src/db/migrate-supabase-extras.ts",
     "db:seed": "npx tsx src/db/seed.ts",
     "db:studio": "npx drizzle-kit studio"
   },
@@ -28,6 +29,8 @@
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
+    "pg": "^8.21.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",

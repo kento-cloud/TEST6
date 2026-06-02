@@ -227,3 +227,53 @@ DROP POLICY IF EXISTS "wh_update_own" ON user_watch_history;
 CREATE POLICY "wh_select_own" ON user_watch_history FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "wh_insert_own" ON user_watch_history FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "wh_update_own" ON user_watch_history FOR UPDATE USING (auth.uid() = user_id);
+
+-- ============================================================
+-- 解説者（MC/出演者） / プレイリスト / 検索タグ
+-- 配線: src/lib/data-source.ts (getMCMembers / getMCDetail / getPlaylists / getSearchTags)
+-- 投入: npx tsx --env-file=.env.local src/db/migrate-supabase-extras.ts
+-- ============================================================
+CREATE TABLE IF NOT EXISTS mc_members (
+  id             SERIAL PRIMARY KEY,
+  name           TEXT NOT NULL,
+  role           TEXT DEFAULT '',
+  bio            TEXT DEFAULT '',
+  thumbnail_path TEXT,
+  sort_order     INTEGER DEFAULT 0,
+  is_active      BOOLEAN DEFAULT true,
+  created_at     TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS video_casts (
+  video_id TEXT NOT NULL,
+  mc_id    INTEGER NOT NULL REFERENCES mc_members(id) ON DELETE CASCADE,
+  PRIMARY KEY (video_id, mc_id)
+);
+CREATE INDEX IF NOT EXISTS idx_video_casts_mc ON video_casts(mc_id);
+
+CREATE TABLE IF NOT EXISTS playlists (
+  id          TEXT PRIMARY KEY,
+  title       TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  owner_label TEXT DEFAULT 'AI MEDIA運営',
+  kind        TEXT DEFAULT 'curated',
+  sort_order  INTEGER DEFAULT 0,
+  is_public   BOOLEAN DEFAULT true,
+  created_at  TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS playlist_items (
+  playlist_id TEXT NOT NULL REFERENCES playlists(id) ON DELETE CASCADE,
+  video_id    TEXT NOT NULL,
+  position    INTEGER DEFAULT 0,
+  PRIMARY KEY (playlist_id, video_id)
+);
+CREATE INDEX IF NOT EXISTS idx_playlist_items_pl ON playlist_items(playlist_id);
+
+CREATE TABLE IF NOT EXISTS search_tags (
+  id         SERIAL PRIMARY KEY,
+  label      TEXT NOT NULL UNIQUE,
+  sort_order INTEGER DEFAULT 0,
+  is_active  BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
