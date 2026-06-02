@@ -22,27 +22,34 @@
     <line x1="0" y1="400" x2="400" y2="630"/>
   </g>
 
-  <!-- Horse silhouette (right side, decorative) -->
-  <g transform="translate(820, 180) scale(2.2)" opacity="0.08" fill="#16a34a">
-    <path d="M140 10c-5 0-10 3-13 7l-3 5c-2 0-4 1-6 3l-8 10c-3 4-5 8-5 13v8l-5 8c-2 3-3 7-3 11v15c0 3 1 6 3 8l-8 12c-2 3-3 7-3 10v10c0 4 2 7 5 9l5 3v8c0 5 4 9 9 9h4c5 0 9-4 9-9v-12l10-8 15 2v18c0 5 4 9 9 9h4c5 0 9-4 9-9v-25l8-15c3-5 4-11 4-17v-20c0-8-3-15-8-21l-5-6c0-4-1-8-4-11l-7-9c-4-5-10-8-16-8h-5z"/>
+  <!-- Neural network nodes (right side, decorative) -->
+  <g transform="translate(880, 120)" opacity="0.10" fill="#16a34a" stroke="#16a34a">
+    <path d="M40 60 L140 30 L240 90 M140 30 L120 160 M240 90 L120 160 M40 60 L120 160" stroke-width="2" fill="none" opacity="0.5"/>
+    <circle cx="40" cy="60" r="14"/>
+    <circle cx="140" cy="30" r="18"/>
+    <circle cx="240" cy="90" r="14"/>
+    <circle cx="120" cy="160" r="16"/>
   </g>
 
-  <!-- Second horse silhouette (left side) -->
-  <g transform="translate(50, 350) scale(1.5) scaleX(-1)" opacity="0.05" fill="#16a34a">
-    <path d="M140 10c-5 0-10 3-13 7l-3 5c-2 0-4 1-6 3l-8 10c-3 4-5 8-5 13v8l-5 8c-2 3-3 7-3 11v15c0 3 1 6 3 8l-8 12c-2 3-3 7-3 10v10c0 4 2 7 5 9l5 3v8c0 5 4 9 9 9h4c5 0 9-4 9-9v-12l10-8 15 2v18c0 5 4 9 9 9h4c5 0 9-4 9-9v-25l8-15c3-5 4-11 4-17v-20c0-8-3-15-8-21l-5-6c0-4-1-8-4-11l-7-9c-4-5-10-8-16-8h-5z"/>
+  <!-- Neural network nodes (left side, decorative) -->
+  <g transform="translate(40, 380)" opacity="0.06" fill="#16a34a" stroke="#16a34a">
+    <path d="M30 30 L120 10 L80 120 M120 10 L80 120 M30 30 L80 120" stroke-width="2" fill="none" opacity="0.5"/>
+    <circle cx="30" cy="30" r="12"/>
+    <circle cx="120" cy="10" r="15"/>
+    <circle cx="80" cy="120" r="13"/>
   </g>
 
   <!-- Green accent line -->
   <rect x="480" y="220" width="240" height="3" rx="1.5" fill="url(#accent)" opacity="0.6"/>
 
-  <!-- PADDOCK logo text -->
-  <text x="600" y="310" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="96" font-weight="800" fill="#ffffff" letter-spacing="12">PADDOCK</text>
+  <!-- AI MEDIA logo text -->
+  <text x="600" y="310" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="92" font-weight="800" fill="#ffffff" letter-spacing="10">AI MEDIA</text>
 
   <!-- Green accent line below -->
   <rect x="480" y="340" width="240" height="3" rx="1.5" fill="url(#accent)" opacity="0.6"/>
 
   <!-- Tagline -->
-  <text x="600" y="400" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="28" font-weight="400" fill="#a7f3d0" letter-spacing="4">競馬を、もっと深く。</text>
+  <text x="600" y="400" text-anchor="middle" font-family="'Noto Sans JP', sans-serif" font-size="28" font-weight="400" fill="#a7f3d0" letter-spacing="4">AIを、もっと深く。</text>
 
   <!-- Bottom border accent -->
   <rect x="0" y="624" width="1200" height="6" fill="url(#accent)" opacity="0.4"/>

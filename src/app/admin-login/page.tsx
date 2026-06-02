@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
       <main className="w-full max-w-[380px] bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <header className="text-center mb-8">
           <h1 className="inline-flex items-baseline gap-2">
-            <span className="text-[24px] font-black bg-gradient-to-r from-[#16a34a] to-[#059669] bg-clip-text text-transparent">PADDOCK</span>
+            <span className="text-[24px] font-black bg-gradient-to-r from-[#16a34a] to-[#059669] bg-clip-text text-transparent">AI MEDIA</span>
             <span className="text-[14px] font-semibold text-gray-400">Admin</span>
           </h1>
           <p className="text-[14px] text-gray-500 mt-2">管理画面にログイン</p>

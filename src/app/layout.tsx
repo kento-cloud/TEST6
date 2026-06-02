@@ -3,9 +3,9 @@ import { AuthProvider } from "@/contexts/AuthContext"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "競馬情報メディア「PADDOCK」",
+  title: "AI教養メディア「AI MEDIA」",
   description:
-    "PADDOCKは、競馬をもっと深く楽しむための映像メディアです。",
+    "AI MEDIAは、AIをもっと深く理解するための映像メディアです。",
   icons: {
     icon: [
       { url: "/favicon/favicon.ico", sizes: "any" },
@@ -14,21 +14,21 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   openGraph: {
-    title: "競馬情報メディア「PADDOCK」",
-    description: "PADDOCKは、競馬をもっと深く楽しむための映像メディアです。",
+    title: "AI教養メディア「AI MEDIA」",
+    description: "AI MEDIAは、AIをもっと深く理解するための映像メディアです。",
     images: [
       {
         url: "/images/ogp-default.svg",
         width: 1200,
         height: 630,
-        alt: "PADDOCK - 競馬を、もっと深く。",
+        alt: "AI MEDIA - AIを、もっと深く。",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "競馬情報メディア「PADDOCK」",
-    description: "PADDOCKは、競馬をもっと深く楽しむための映像メディアです。",
+    title: "AI教養メディア「AI MEDIA」",
+    description: "AI MEDIAは、AIをもっと深く理解するための映像メディアです。",
     images: ["/images/ogp-default.svg"],
   },
 }

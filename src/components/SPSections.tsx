@@ -23,11 +23,11 @@ function buildSPSections(eps: readonly Episode[]): readonly { readonly title: st
   return [
     { title: "今週の注目レポート", episodes: pick(eps, [0, 1, 2, 3]) },
     { title: "★4.5超え 高評価コンテンツ", episodes: pick(eps, [1, 2, 3, 0]) },
-    { title: "レース分析", episodes: pick(eps, [0, 2, 4, 1]) },
-    { title: "馬券・予想", episodes: pick(eps, [2, 0, 3, 4]) },
-    { title: "血統・生産", episodes: pick(eps, [1, 3, 0, 2]) },
-    { title: "調教・馬体", episodes: pick(eps, [3, 4, 1, 0]) },
-    { title: "海外競馬", episodes: pick(eps, [4, 0, 2, 3]) },
+    { title: "最新ニュース", episodes: pick(eps, [0, 2, 4, 1]) },
+    { title: "実践・活用", episodes: pick(eps, [2, 0, 3, 4]) },
+    { title: "AIの基礎", episodes: pick(eps, [1, 3, 0, 2]) },
+    { title: "モデル開発", episodes: pick(eps, [3, 4, 1, 0]) },
+    { title: "海外動向", episodes: pick(eps, [4, 0, 2, 3]) },
   ]
 }
 

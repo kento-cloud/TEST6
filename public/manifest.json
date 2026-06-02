@@ -1,7 +1,7 @@
 {
-  "name": "PADDOCK - 競馬情報メディア",
-  "short_name": "PADDOCK",
-  "description": "競馬をもっと深く楽しむための映像メディア",
+  "name": "AI MEDIA - AI教養メディア",
+  "short_name": "AI MEDIA",
+  "description": "AIをもっと深く理解するための映像メディア",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a1a0f",

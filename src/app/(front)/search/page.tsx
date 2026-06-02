@@ -9,20 +9,20 @@ import { AuthPrompt } from "@/components/AuthPrompt"
 import type { Episode, Program } from "@/types"
 
 const genres = [
-  "重賞予想", "血統分析", "調教評価",
-  "馬場読み", "騎手データ", "パドック診断",
-  "AI予想", "回収率UP", "海外競馬",
+  "ChatGPT活用", "プロンプト術", "画像生成AI",
+  "LLM入門", "AI倫理", "業務効率化",
+  "生成AI", "最新モデル", "海外動向",
 ] as const
 
 const MC_COLORS = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6", "#1abc9c"] as const
 
 const mcList = [
-  { name: "武豊", id: 1 },
-  { name: "藤田菜七子", id: 2 },
-  { name: "亀谷敬正", id: 3 },
-  { name: "井崎脩五郎", id: 4 },
-  { name: "細江純子", id: 5 },
-  { name: "須田鷹雄", id: 6 },
+  { name: "高橋 渉", id: 1 },
+  { name: "藤本 さき", id: 2 },
+  { name: "亀井 啓介", id: 3 },
+  { name: "石井 修一", id: 4 },
+  { name: "星野 純", id: 5 },
+  { name: "須藤 拓也", id: 6 },
 ] as const
 
 export default function SearchPage() {
@@ -67,7 +67,7 @@ function SearchPageInner() {
           </svg>
           <input
             type="text"
-            placeholder="レース名、騎手、種牡馬などからさがす"
+            placeholder="キーワード、解説者、番組などからさがす"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-white text-[15px] outline-none placeholder:text-[#606370]"

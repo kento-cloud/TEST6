@@ -513,7 +513,7 @@ export default function AdminSettingsPage() {
             <textarea
               value={summaryBasePrompt}
               onChange={(e) => setSummaryBasePrompt(e.target.value)}
-              placeholder="例: 競馬ファンが読んでワクワクする表現で、馬名・レース名を正確に"
+              placeholder="例: AIに関心のある読者がワクワクする表現で、製品名・技術用語を正確に"
               className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />
@@ -533,7 +533,7 @@ export default function AdminSettingsPage() {
             <textarea
               value={articleBasePrompt}
               onChange={(e) => setArticleBasePrompt(e.target.value)}
-              placeholder="例: 競馬ファン向けにわかりやすく、タイムや着差などデータを含めて"
+              placeholder="例: 初心者にもわかりやすく、ベンチマークや精度などデータを含めて"
               className="w-full px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-900 outline-none focus:border-[#16a34a] resize-none"
               rows={2}
             />

@@ -13,16 +13,16 @@ import { EpisodeCard } from "@/components/EpisodeCard"
 const tabs = ["お気に入り", "プレイリスト", "フォロー", "視聴履歴"] as const
 
 const playlistTitles = [
-  { id: "r1", title: "G1レース完全予想ガイド", count: 30, indices: [0, 4, 5, 1] },
-  { id: "r2", title: "血統で読む有力馬の適性", count: 19, indices: [1, 7, 8, 2] },
-  { id: "r3", title: "馬券回収率UP講座", count: 19, indices: [2, 3, 6, 9] },
-  { id: "r4", title: "パドック診断マスター", count: 26, indices: [4, 0, 3, 5] },
-  { id: "r5", title: "海外競馬の魅力", count: 22, indices: [9, 5, 6, 0] },
-  { id: "r6", title: "調教タイムの読み方", count: 22, indices: [3, 6, 9, 4] },
-  { id: "r7", title: "穴馬発見テクニック集", count: 17, indices: [2, 8, 1, 7] },
-  { id: "r8", title: "データ予想の基礎", count: 27, indices: [7, 1, 8, 4] },
-  { id: "r9", title: "騎手・厩舎の傾向分析", count: 23, indices: [5, 0, 2, 6] },
-  { id: "r10", title: "新馬戦から見抜くクラシック候補", count: 18, indices: [8, 3, 7, 9] },
+  { id: "r1", title: "生成AI完全活用ガイド", count: 30, indices: [0, 4, 5, 1] },
+  { id: "r2", title: "事例で学ぶプロンプト設計", count: 19, indices: [1, 7, 8, 2] },
+  { id: "r3", title: "AI業務効率化講座", count: 19, indices: [2, 3, 6, 9] },
+  { id: "r4", title: "AIツール選定マスター", count: 26, indices: [4, 0, 3, 5] },
+  { id: "r5", title: "海外AI動向の最前線", count: 22, indices: [9, 5, 6, 0] },
+  { id: "r6", title: "ベンチマークの読み方", count: 22, indices: [3, 6, 9, 4] },
+  { id: "r7", title: "業務自動化テクニック集", count: 17, indices: [2, 8, 1, 7] },
+  { id: "r8", title: "LLMの基礎", count: 27, indices: [7, 1, 8, 4] },
+  { id: "r9", title: "主要モデルの傾向分析", count: 23, indices: [5, 0, 2, 6] },
+  { id: "r10", title: "スタートアップから見抜く次の主役", count: 18, indices: [8, 3, 7, 9] },
 ] as const
 
 function buildPlaylists(eps: Episode[]) {
@@ -262,7 +262,7 @@ export default function MylistPage() {
                       <p className="text-[15px] font-bold line-clamp-2 mb-2 group-hover:text-[#16a34a] transition-colors">{pl.title}</p>
                       <div className="flex items-center gap-2 text-[12px] text-[#606370]">
                         <span className="w-[16px] h-[16px] rounded-full bg-[#16a34a]/20 flex items-center justify-center text-[8px] font-black text-[#16a34a]">P</span>
-                        <span>PADDOCK運営</span>
+                        <span>AI MEDIA運営</span>
                       </div>
                       <p className="text-[12px] text-[#606370] mt-[2px]">{pl.count}エピソード</p>
                     </div>

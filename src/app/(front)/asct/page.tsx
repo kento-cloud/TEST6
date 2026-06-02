@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const rows = [
-  { label: "事業者名", value: "株式会社PADDOCK" },
+  { label: "事業者名", value: "株式会社AI MEDIA" },
   { label: "代表者", value: "非公開" },
   { label: "所在地", value: "東京都" },
   { label: "電話番号", value: "お問い合わせはメールにて受付" },
-  { label: "メールアドレス", value: "support@paddock.jp" },
-  { label: "サービスURL", value: "https://paddock.jp/" },
+  { label: "メールアドレス", value: "support@aimedia.jp" },
+  { label: "サービスURL", value: "https://aimedia.jp/" },
   {
     label: "販売価格",
     value:

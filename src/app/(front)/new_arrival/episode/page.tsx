@@ -6,8 +6,8 @@ import { AuthPrompt } from "@/components/AuthPrompt"
 import { getAllEpisodes } from "@/lib/data-source"
 
 export const metadata: Metadata = {
-  title: "新着動画 | PADDOCK",
-  description: "PADDOCKの最新動画一覧。競馬の最新分析・予想をチェック。",
+  title: "新着動画 | AI MEDIA",
+  description: "AI MEDIAの最新動画一覧。AIの最新動向・技術解説をチェック。",
 }
 
 export default async function NewArrivalPage() {

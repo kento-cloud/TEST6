@@ -26,11 +26,11 @@ export default function ContactPage() {
           ご質問はメールにてお問い合わせください。
         </p>
         <a
-          href="mailto:support@paddock.jp"
+          href="mailto:support@aimedia.jp"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-medium text-white hover:opacity-90 transition-opacity"
           style={{ background: "linear-gradient(90deg, #16a34a, #d4a017)" }}
         >
-          support@paddock.jp
+          support@aimedia.jp
         </a>
       </div>
     </div>

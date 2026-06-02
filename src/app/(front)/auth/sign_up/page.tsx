@@ -70,7 +70,7 @@ export default function SignUpPage() {
     <div className="flex flex-col min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
-          <img src="/assets/logo/paddock_mark.svg" alt="PADDOCK" width={40} height={40} className="mx-auto mb-4" />
+          <img src="/assets/logo/paddock_mark.svg" alt="AI MEDIA" width={40} height={40} className="mx-auto mb-4" />
           <h1 className="text-[24px] font-bold">新規登録</h1>
         </div>
 
@@ -79,7 +79,7 @@ export default function SignUpPage() {
             <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="#22c55e"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
             </div>
-            <p className="text-green-400 text-[18px] font-bold mb-2">ようこそ、PADDOCKへ！</p>
+            <p className="text-green-400 text-[18px] font-bold mb-2">ようこそ、AI MEDIAへ！</p>
             <p className="text-[14px] text-[#a9abb8] mb-1">会員登録が完了しました。</p>
             <p className="text-[13px] text-[#606370]">すべてのコンテンツをお楽しみいただけます。</p>
           </div>

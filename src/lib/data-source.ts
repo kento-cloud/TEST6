@@ -146,11 +146,11 @@ export async function getFeaturedItems() {
 
 function getStaticFeaturedItems() {
   return [
-    { id: "14365", title: "有馬記念の展望 \"最強ステイヤー\"はどの馬か？", subtitle: "PADDOCK TALK", description: "今年の有馬記念、出走予定馬の適性と展開を徹底分析。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg", youtubeVideoId: null },
-    { id: "14305", title: "凱旋門賞に挑む日本馬。海外遠征の壁とは", subtitle: "PADDOCK GLOBAL", description: "日本馬の海外挑戦。馬場適性と輸送の影響を検証。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg", youtubeVideoId: null },
-    { id: "14317", title: "AIで予想する日本ダービー／過去データ分析／穴馬の見つけ方", subtitle: "レース超分析", description: "注目レースをデータとAIで徹底分析。穴馬候補も。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg", youtubeVideoId: null },
-    { id: "14325", title: "馬券で月収100万円を達成した男の回収率管理術【馬券師タケシ】", subtitle: "馬券ラボ", description: "データ派馬券師が明かす資金管理と期待値計算の全貌。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg", youtubeVideoId: null },
-    { id: "14328", title: "ノーザンファーム一強時代は終わるのか？【吉田勝己代表】", subtitle: "オーナーズEYE", description: "社台グループの戦略と競馬界の勢力図の変化を追う。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg", youtubeVideoId: null },
+    { id: "14365", title: "GPT-5は本当に人間を超えたのか？徹底検証", subtitle: "AI MEDIA TALK", description: "最新フラッグシップモデルの実力を、実タスクで多角的に検証する。", thumbnailUrl: "/images/static/converted/chapter/14365/ogp/14365.webp", programLogoUrl: "/images/programs/logo_banner/68f892ba65fed.svg", youtubeVideoId: null },
+    { id: "14305", title: "米中AI開発競争。日本が遅れる本当の理由", subtitle: "AI MEDIA GLOBAL", description: "世界のAI覇権争いの構図と、日本企業が直面する壁を読み解く。", thumbnailUrl: "/images/static/converted/chapter/14305/ogp/14305.webp", programLogoUrl: "/images/programs/logo_banner/6789c5483cb7d.svg", youtubeVideoId: null },
+    { id: "14317", title: "プロンプト1つで成果が10倍。実務で効く指示の書き方", subtitle: "実践プロンプト", description: "現場で使えるプロンプト設計の型を、具体例とともに解説。", thumbnailUrl: "/images/static/converted/chapter/14317/ogp/14317.webp", programLogoUrl: "/images/programs/logo_banner/68baf2526844c.svg", youtubeVideoId: null },
+    { id: "14325", title: "ChatGPTだけで月収100万円。AI副業の全手順【実践者タケシ】", subtitle: "AI活用ラボ", description: "生成AIを使った収益化の仕組みと、再現性のある手順を公開。", thumbnailUrl: "/images/static/converted/chapter/14325/ogp/14325.webp", programLogoUrl: "/images/programs/logo_banner/688dc66289db3.svg", youtubeVideoId: null },
+    { id: "14328", title: "OpenAI一強時代は終わるのか？【業界キーパーソン】", subtitle: "インサイダーEYE", description: "主要AI企業の戦略と、勢力図の変化を追う。", thumbnailUrl: "/images/static/converted/chapter/14328/ogp/14328.webp", programLogoUrl: "/images/programs/logo_banner/68b86024e30ae.svg", youtubeVideoId: null },
   ] as const
 }
 
@@ -168,12 +168,12 @@ export async function getCategoryEpisodes() {
     const categoryList = (dbCategories && dbCategories.length > 0)
       ? dbCategories.map(c => ({ code: c.code as string, label: c.label as string }))
       : [
-          { code: "race", label: "レース分析" },
-          { code: "betting", label: "馬券・予想" },
-          { code: "breeding", label: "血統・生産" },
-          { code: "training", label: "調教・馬体" },
-          { code: "science", label: "競馬サイエンス" },
-          { code: "global", label: "海外競馬" },
+          { code: "race", label: "最新ニュース" },
+          { code: "betting", label: "実践・活用" },
+          { code: "breeding", label: "AIの基礎" },
+          { code: "training", label: "モデル開発" },
+          { code: "science", label: "AIサイエンス" },
+          { code: "global", label: "海外動向" },
         ]
 
     return categoryList.map(({ code, label }) => {
@@ -227,10 +227,10 @@ export async function getPlaylists() {
     if (episodes.length < 2) return staticPlaylists
 
     return [
-      { id: "p1", title: "今週の重賞プレビュー", episodes: episodes.slice(0, 4) },
-      { id: "p2", title: "馬券術マスター講座", episodes: [...episodes].reverse().slice(0, 4) },
-      { id: "p3", title: "血統から読む次の大物", episodes: episodes.slice(1, 5) },
-      { id: "p4", title: "調教・パドック攻略", episodes: [...episodes.slice(2), ...episodes.slice(0, 2)].slice(0, 4) },
+      { id: "p1", title: "今週の最新AIニュース", episodes: episodes.slice(0, 4) },
+      { id: "p2", title: "AI活用マスター講座", episodes: [...episodes].reverse().slice(0, 4) },
+      { id: "p3", title: "次に来る注目AIスタートアップ", episodes: episodes.slice(1, 5) },
+      { id: "p4", title: "プロンプト&業務自動化", episodes: [...episodes.slice(2), ...episodes.slice(0, 2)].slice(0, 4) },
     ]
   } catch {
     return staticPlaylists

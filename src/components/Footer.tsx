@@ -13,7 +13,7 @@ export function Footer() {
     <footer className="border-t border-[#303240]/50 mt-auto">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8">
         <div className="flex justify-center mb-6">
-          <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" className="h-[28px]" />
+          <img src="/assets/logo/paddock_logo.svg" alt="AI MEDIA" className="h-[28px]" />
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-4">
           {footerLinks.map((link) => (
@@ -27,7 +27,7 @@ export function Footer() {
           ))}
         </div>
         <p className="text-center text-[11px] text-[#606370]">
-          &copy; {new Date().getFullYear()} PADDOCK Inc. All rights reserved.
+          &copy; {new Date().getFullYear()} AI MEDIA Inc. All rights reserved.
         </p>
       </div>
     </footer>

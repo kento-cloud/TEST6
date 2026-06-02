@@ -45,10 +45,10 @@ function HeaderTabsInner() {
 
   return (
     <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
-      {/* SP Header: PADDOCKロゴ + ログイン/アカウント (48px) */}
+      {/* SP Header: AI MEDIAロゴ + ログイン/アカウント (48px) */}
       <div className="md:hidden flex items-center justify-between h-[48px] px-4">
         <Link href="/" className="flex items-center gap-1">
-          <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" width={100} height={24} />
+          <img src="/assets/logo/paddock_logo.svg" alt="AI MEDIA" width={100} height={24} />
         </Link>
         {user ? (
           <Link href="/account" className="text-[14px] font-bold text-white">

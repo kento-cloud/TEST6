@@ -14,12 +14,12 @@ function CategoryContent() {
   const code = searchParams.get("category_code") ?? "race"
 
   const [categoryLabels, setCategoryLabels] = useState<Record<string, string>>({
-    race: "レース分析",
-    betting: "馬券・予想",
-    breeding: "血統・生産",
-    training: "調教・馬体",
-    science: "競馬サイエンス",
-    global: "海外競馬",
+    race: "最新ニュース",
+    betting: "実践・活用",
+    breeding: "AIの基礎",
+    training: "モデル開発",
+    science: "AIサイエンス",
+    global: "海外動向",
   })
 
   const [episodes, setEpisodes] = useState<Episode[]>([])

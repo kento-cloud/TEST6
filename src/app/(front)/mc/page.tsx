@@ -3,17 +3,17 @@ import Image from "next/image"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "解説者一覧 | PADDOCK",
-  description: "PADDOCKの解説者・出演者一覧。",
+  title: "解説者一覧 | AI MEDIA",
+  description: "AI MEDIAの解説者・出演者一覧。",
 }
 
 const allMCs = [
-  { id: 1, name: "武豊", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
-  { id: 2, name: "藤田菜七子", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  { id: 3, name: "亀谷敬正", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
-  { id: 4, name: "井崎脩五郎", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  { id: 5, name: "細江純子", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
-  { id: 6, name: "須田鷹雄", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  { id: 1, name: "高橋 渉", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
+  { id: 2, name: "藤本 さき", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
+  { id: 3, name: "亀井 啓介", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
+  { id: 4, name: "石井 修一", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
+  { id: 5, name: "星野 純", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
+  { id: 6, name: "須藤 拓也", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
 ] as const
 
 export default function MCListPage() {

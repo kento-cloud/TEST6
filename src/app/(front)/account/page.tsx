@@ -20,7 +20,7 @@ const infoItems = [
 function PaddockLogoFull() {
   return (
     <Link href="/" className="inline-block">
-      <img src="/assets/logo/paddock_logo.svg" alt="PADDOCK" width={120} height={28} />
+      <img src="/assets/logo/paddock_logo.svg" alt="AI MEDIA" width={120} height={28} />
     </Link>
   )
 }

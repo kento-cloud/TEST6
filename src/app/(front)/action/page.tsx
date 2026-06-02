@@ -80,7 +80,7 @@ export default function ActionPage() {
               <div className="flex flex-col gap-[2px]">
                 <div className="bg-[#252738] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[15px]">レース分析を2本視聴する</p>
+                    <p className="font-bold text-[15px]">最新ニュースを2本視聴する</p>
                     <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex justify-end text-[13px] text-[#a9abb8] mb-2">0/2</div>
@@ -91,7 +91,7 @@ export default function ActionPage() {
                 </div>
                 <div className="bg-[#252738] rounded-b-xl p-5">
                   <div className="flex items-center justify-between">
-                    <p className="font-bold text-[15px]">予想動画を評価する</p>
+                    <p className="font-bold text-[15px]">解説動画を評価する</p>
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] text-[#a9abb8]">+10</span>
                       <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
@@ -110,7 +110,7 @@ export default function ActionPage() {
               <div className="flex flex-col gap-[2px]">
                 <div className="bg-[#252738] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[15px]">パドック映像を視聴する</p>
+                    <p className="font-bold text-[15px]">技術解説映像を視聴する</p>
                     <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex items-center justify-between text-[13px] text-[#a9abb8] mb-2">

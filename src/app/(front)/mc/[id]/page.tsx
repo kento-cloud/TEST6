@@ -3,12 +3,12 @@ import { EpisodeCard } from "@/components/EpisodeCard"
 import { getAllEpisodes } from "@/lib/data-source"
 
 const mcData: Record<string, { name: string; thumb: string }> = {
-  "1": { name: "武豊", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
-  "2": { name: "藤田菜七子", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
-  "3": { name: "亀谷敬正", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
-  "4": { name: "井崎脩五郎", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
-  "5": { name: "細江純子", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
-  "6": { name: "須田鷹雄", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
+  "1": { name: "高橋 渉", thumb: "/images/static/converted/chapter/14328/ogp/14328.webp" },
+  "2": { name: "藤本 さき", thumb: "/images/static/converted/chapter/14305/ogp/14305.webp" },
+  "3": { name: "亀井 啓介", thumb: "/images/static/converted/chapter/14316/ogp/14316.webp" },
+  "4": { name: "石井 修一", thumb: "/images/static/converted/chapter/14325/ogp/14325.webp" },
+  "5": { name: "星野 純", thumb: "/images/static/converted/chapter/14317/ogp/14317.webp" },
+  "6": { name: "須藤 拓也", thumb: "/images/static/converted/chapter/14287/ogp/14287.webp" },
 }
 
 interface Props {

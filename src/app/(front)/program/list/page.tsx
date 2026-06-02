@@ -5,8 +5,8 @@ import { HeaderTabs } from "@/components/HeaderTabs"
 import { getPrograms, getPublishedEpisodes } from "@/lib/data-source"
 
 export const metadata: Metadata = {
-  title: "番組一覧 | PADDOCK",
-  description: "PADDOCKの全番組一覧。レース分析、血統解説、馬券術など多彩な番組をお届け。",
+  title: "番組一覧 | AI MEDIA",
+  description: "AI MEDIAの全番組一覧。技術解説、活用事例、AIニュースなど多彩な番組をお届け。",
 }
 
 export default async function ProgramListPage() {

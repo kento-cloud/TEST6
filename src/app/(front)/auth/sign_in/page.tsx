@@ -50,7 +50,7 @@ export default function SignInPage() {
     <div className="flex flex-col min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
-          <img src="/assets/logo/paddock_mark.svg" alt="PADDOCK" width={40} height={40} className="mx-auto mb-4" />
+          <img src="/assets/logo/paddock_mark.svg" alt="AI MEDIA" width={40} height={40} className="mx-auto mb-4" />
           <h1 className="text-[24px] font-bold">ログイン</h1>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

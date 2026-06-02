@@ -1,20 +1,20 @@
 import Link from "next/link";
 
 const companyInfo = [
-  { label: "会社名", value: "株式会社PADDOCK" },
-  { label: "英文社名", value: "PADDOCK Inc." },
+  { label: "会社名", value: "株式会社AI MEDIA" },
+  { label: "英文社名", value: "AI MEDIA Inc." },
   { label: "設立", value: "2024年" },
   { label: "代表取締役", value: "非公開" },
   {
     label: "事業内容",
     value:
-      "競馬情報メディア「PADDOCK」の企画・開発・運営",
+      "AI教養メディア「AI MEDIA」の企画・開発・運営",
   },
   { label: "所在地", value: "東京都" },
   { label: "資本金", value: "非公開" },
   { label: "従業員数", value: "非公開" },
-  { label: "URL", value: "https://paddock.jp/" },
-  { label: "お問い合わせ", value: "support@paddock.jp" },
+  { label: "URL", value: "https://aimedia.jp/" },
+  { label: "お問い合わせ", value: "support@aimedia.jp" },
 ] as const;
 
 export default function CompanyPage() {
@@ -48,12 +48,12 @@ export default function CompanyPage() {
       </div>
 
       <div className="mt-8 text-sm text-[#a9abb8] leading-relaxed">
-        <h2 className="text-base font-bold text-white mb-3">PADDOCKについて</h2>
+        <h2 className="text-base font-bold text-white mb-3">AI MEDIAについて</h2>
         <p>
-          PADDOCKは、競馬をもっと深く楽しむための映像メディアです。レース分析、血統解説、調教師・騎手インタビューなど、競馬の深い世界を高品質な映像コンテンツとしてお届けしています。
+          AI MEDIAは、AIをもっと深く理解するための映像メディアです。生成AIの最新動向、技術のしくみ解説、ビジネス活用事例、AIが社会にもたらす変化まで、AIの世界を高品質な映像コンテンツとしてお届けしています。
         </p>
         <p className="mt-3">
-          「データと映像で、競馬をもっと楽しく。」をミッションに掲げ、動画・音声・記事の3つのモードでコンテンツを多角的に楽しめるプラットフォームを提供しています。
+          「AIを、すべての人の教養に。」をミッションに掲げ、動画・音声・記事の3つのモードでコンテンツを多角的に学べるプラットフォームを提供しています。
         </p>
       </div>
     </div>

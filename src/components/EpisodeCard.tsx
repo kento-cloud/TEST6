@@ -8,10 +8,10 @@ import { AuthPrompt } from "@/components/AuthPrompt"
 import { FavoriteButton } from "@/components/FavoriteButton"
 
 const CATEGORY_LABELS: Record<string, string> = {
-  race: "レース",
-  betting: "予想",
-  breeding: "血統",
-  training: "調教",
+  race: "ニュース",
+  betting: "活用",
+  breeding: "基礎",
+  training: "開発",
   science: "サイエンス",
   global: "海外",
 }

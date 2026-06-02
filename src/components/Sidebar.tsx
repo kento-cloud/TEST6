@@ -81,7 +81,7 @@ export function Sidebar() {
           <Link href="/" className="flex h-[66px] w-full items-center justify-center">
             <img
               src="/assets/logo/paddock_mark.svg"
-              alt="PADDOCK"
+              alt="AI MEDIA"
               width={24}
               height={24}
               className="object-contain"
