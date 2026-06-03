@@ -32,7 +32,7 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
           href={`/movie/${episode.id}`}
           className="group block shrink-0 w-[calc(50%-5px)] md:w-[calc(16.666%-8.33px)]"
         >
-          <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#1d2030]">
+          <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#15271c] ring-1 ring-white/[0.06] transition-all duration-300 group-hover:ring-[#16a34a]/50 group-hover:shadow-[0_10px_34px_-8px_rgba(22,163,74,0.5)]">
             {episode.thumbnailUrl && !episode.thumbnailUrl.includes("/images/static/") ? (
               <Image
                 src={episode.thumbnailUrl}
@@ -49,7 +49,7 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
               </div>
             )}
             {/* 記事バッジ（左上、大きめ） */}
-            <div className="absolute top-0 left-0 bg-[#d4a017] px-2.5 py-1 rounded-br-lg">
+            <div className="absolute top-0 left-0 bg-[#15803d] px-2.5 py-1 rounded-br-lg">
               <span className="text-[10px] font-black text-white tracking-wider">ARTICLE</span>
             </div>
             {/* カテゴリ（右上） */}
@@ -81,7 +81,7 @@ export function EpisodeCard({ episode, rank }: EpisodeCardProps) {
       className="group block shrink-0 w-[calc(50%-5px)] md:w-[calc(16.666%-8.33px)]"
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#1d2030]">
+      <div className="relative w-full aspect-[1029/540] rounded-[1vw] md:rounded-[0.5vw] overflow-hidden bg-[#15271c]">
         <Image
           src={episode.thumbnailUrl}
           alt={episode.title}

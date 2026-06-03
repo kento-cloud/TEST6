@@ -18,7 +18,7 @@ export function LargeRankingCard({ episode, rank }: LargeRankingCardProps) {
       href={`/movie/${episode.id}`}
       className="group block shrink-0 w-[calc(50%-8px)] md:w-[438px]"
     >
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#1d2030]">
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#15271c]">
         <Image
           src={episode.thumbnailUrl}
           alt={episode.title}

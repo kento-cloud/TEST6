@@ -115,7 +115,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <p className="pt-4 text-xs text-[#606370]">
+        <p className="pt-4 text-xs text-[#5e6e63]">
           制定日: 2023年1月1日 / 最終改定日: 2024年4月1日
         </p>
       </div>

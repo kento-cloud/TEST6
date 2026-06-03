@@ -18,7 +18,7 @@ export default async function ProgramPage({ params }: Props) {
       <HeaderTabs />
       <div className="px-4 md:px-8 py-8">
         <div className="flex items-start gap-6 mb-8">
-          <div className="w-[120px] shrink-0 aspect-[3/4] relative rounded-lg overflow-hidden bg-[#1d2030]">
+          <div className="w-[120px] shrink-0 aspect-[3/4] relative rounded-lg overflow-hidden bg-[#15271c]">
             <Image src={program.thumbnailUrl} alt={program.name} fill className="object-cover" sizes="120px" />
           </div>
           <div>

@@ -16,7 +16,7 @@ export default async function MCDetailPage({ params }: Props) {
   if (!detail) {
     return (
       <div className="flex flex-col min-h-screen max-w-5xl mx-auto w-full px-6 md:px-10 py-8">
-        <p className="text-[#606370] text-center mt-12">解説者が見つかりませんでした</p>
+        <p className="text-[#5e6e63] text-center mt-12">解説者が見つかりませんでした</p>
         <Link href="/mc" className="text-[#16a34a] text-center mt-4">← 解説者一覧へ</Link>
       </div>
     )
@@ -45,7 +45,7 @@ export default async function MCDetailPage({ params }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-[#606370]">出演エピソードはまだありません</p>
+        <p className="text-[#5e6e63]">出演エピソードはまだありません</p>
       )}
     </div>
   )

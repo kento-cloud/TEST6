@@ -29,15 +29,15 @@ export default function CompanyPage() {
 
       <h1 className="text-2xl font-bold text-white mb-8">運営会社</h1>
 
-      <div className="border border-[#606370] rounded-lg overflow-hidden">
+      <div className="border border-[#5e6e63] rounded-lg overflow-hidden">
         <table className="w-full text-sm">
           <tbody>
             {companyInfo.map((row) => (
               <tr
                 key={row.label}
-                className="border-b border-[#606370] last:border-b-0"
+                className="border-b border-[#5e6e63] last:border-b-0"
               >
-                <th className="text-left text-[#a9abb8] font-medium bg-[#1d2030] px-5 py-4 w-[140px] md:w-[180px] align-top whitespace-nowrap">
+                <th className="text-left text-[#a9abb8] font-medium bg-[#15271c] px-5 py-4 w-[140px] md:w-[180px] align-top whitespace-nowrap">
                   {row.label}
                 </th>
                 <td className="text-white px-5 py-4">{row.value}</td>

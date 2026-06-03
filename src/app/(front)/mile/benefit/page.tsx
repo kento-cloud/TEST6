@@ -12,7 +12,7 @@ export default function MileBenefitPage() {
 
       <h1 className="text-2xl font-bold text-white mb-8">パドP特典</h1>
 
-      <div className="border border-[#606370] rounded-lg p-6 mb-8">
+      <div className="border border-[#5e6e63] rounded-lg p-6 mb-8">
         <p className="text-sm text-[#a9abb8] mb-1">保有パドP</p>
         <p className="text-3xl font-bold text-white">
           0

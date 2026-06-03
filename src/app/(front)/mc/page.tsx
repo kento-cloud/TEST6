@@ -18,7 +18,7 @@ export default async function MCListPage() {
       <h1 className="text-[22px] font-bold mb-6">解説者一覧</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {allMCs.map((mc) => (
-          <Link key={mc.id} href={`/mc/${mc.id}`} className="flex items-center gap-4 p-4 bg-[#1d2030] rounded-xl hover:bg-[#303240] transition-colors">
+          <Link key={mc.id} href={`/mc/${mc.id}`} className="flex items-center gap-4 p-4 bg-[#15271c] rounded-xl hover:bg-[#2b4034] transition-colors">
             <div className="w-[48px] h-[48px] rounded-full overflow-hidden shrink-0 bg-[#555]">
               <Image src={mc.thumbnailUrl} alt={mc.name} width={48} height={48} className="object-cover w-full h-full" />
             </div>
@@ -30,7 +30,7 @@ export default async function MCListPage() {
         ))}
       </div>
       {allMCs.length === 0 && (
-        <p className="text-[#606370] text-center mt-12">解説者が登録されていません</p>
+        <p className="text-[#5e6e63] text-center mt-12">解説者が登録されていません</p>
       )}
     </div>
   )

@@ -25,7 +25,7 @@ export default async function ProgramListPage() {
         <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-3 md:gap-4">
           {programs.map((p) => (
             <Link key={p.id} href={`/program/${p.id}`} className="group">
-              <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#1d2030]">
+              <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#15271c]">
                 <Image
                   src={p.thumbnailUrl}
                   alt={p.name}
@@ -37,7 +37,7 @@ export default async function ProgramListPage() {
               <p className="mt-2 text-[12px] md:text-[13px] font-bold text-center line-clamp-2 leading-[1.3]">
                 {p.name}
               </p>
-              <p className="text-[11px] text-[#606370] text-center line-clamp-1">{p.description}</p>
+              <p className="text-[11px] text-[#5e6e63] text-center line-clamp-1">{p.description}</p>
             </Link>
           ))}
         </div>

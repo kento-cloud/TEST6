@@ -110,7 +110,7 @@ export function Sidebar() {
             key={item.label}
             href={getHref(item)}
             className={`flex-1 flex flex-col items-center justify-center gap-[3px] h-[60px] transition-colors ${
-              isActive(item.href) ? "text-[#16a34a]" : "text-[#606370]"
+              isActive(item.href) ? "text-[#16a34a]" : "text-[#5e6e63]"
             }`}
           >
             {item.icon}

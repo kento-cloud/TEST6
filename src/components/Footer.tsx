@@ -10,7 +10,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#303240]/50 mt-auto">
+    <footer className="border-t border-[#2b4034]/50 mt-auto">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8">
         <div className="flex justify-center mb-6">
           <img src="/assets/logo/paddock_logo.svg" alt="AI MEDIA" className="h-[28px]" />
@@ -20,13 +20,13 @@ export function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-[12px] text-[#606370] hover:text-[#a9abb8] transition-colors"
+              className="text-[12px] text-[#5e6e63] hover:text-[#a9abb8] transition-colors"
             >
               {link.label}
             </Link>
           ))}
         </div>
-        <p className="text-center text-[11px] text-[#606370]">
+        <p className="text-center text-[11px] text-[#5e6e63]">
           &copy; {new Date().getFullYear()} AI MEDIA Inc. All rights reserved.
         </p>
       </div>

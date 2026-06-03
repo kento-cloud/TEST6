@@ -19,7 +19,7 @@ export function ProgramMiniLogos({ logos = defaultLogos }: ProgramMiniLogosProps
         <Link
           key={logo.id}
           href={`/program/${logo.id}`}
-          className="shrink-0 w-[80px] h-[45px] rounded-md overflow-hidden bg-[#1d2030] flex items-center justify-center border border-[#303240]/50"
+          className="shrink-0 w-[80px] h-[45px] rounded-md overflow-hidden bg-[#15271c] flex items-center justify-center border border-[#2b4034]/50"
         >
           <Image
             src={logo.src}

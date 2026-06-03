@@ -15,7 +15,7 @@ export function BackToTop() {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-20 md:bottom-8 right-4 w-10 h-10 bg-[#1d2030] border border-[#303240] rounded-full flex items-center justify-center text-white hover:bg-[#303240] transition-colors cursor-pointer z-40 shadow-lg"
+      className="fixed bottom-20 md:bottom-8 right-4 w-10 h-10 bg-[#15271c] border border-[#2b4034] rounded-full flex items-center justify-center text-white hover:bg-[#2b4034] transition-colors cursor-pointer z-40 shadow-lg"
       aria-label="トップに戻る"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

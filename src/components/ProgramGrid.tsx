@@ -56,7 +56,7 @@ export function ProgramGrid({ programs }: ProgramGridProps) {
               href={`/program/${program.id}`}
               className="group shrink-0 w-[100px] md:w-[120px]"
             >
-              <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#1d2030]">
+              <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#15271c]">
                 <Image
                   src={program.thumbnailUrl}
                   alt={program.name}

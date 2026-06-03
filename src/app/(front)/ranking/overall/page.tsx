@@ -33,7 +33,7 @@ export default function RankingPage() {
       <div className="px-4 md:px-8 py-6">
         <div className="flex items-center gap-4 mb-6">
           <h1 className="text-[22px] font-bold">ランキング</h1>
-          <div className="flex items-center gap-0 bg-[#1d2030] rounded-md p-[3px]">
+          <div className="flex items-center gap-0 bg-[#15271c] rounded-md p-[3px]">
             {tabs.map((t, i) => (
               <button
                 key={t.label}
@@ -41,7 +41,7 @@ export default function RankingPage() {
                 className={`px-6 py-[6px] text-[14px] font-bold rounded-md transition-all cursor-pointer ${
                   i === activeTab ? "bg-white" : "text-[#a9abb8] hover:text-white"
                 }`}
-                style={i === activeTab ? { color: "#0e1226" } : undefined}
+                style={i === activeTab ? { color: "#0a1812" } : undefined}
               >
                 {t.label}
               </button>

@@ -139,7 +139,7 @@ export default async function MoviePage({ params }: Props) {
             {tags && tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {tags.map((tag) => (
-                  <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="px-3 py-1 bg-[#1d2030] text-[#a9abb8] text-[12px] rounded-full hover:bg-[#16a34a]/20 hover:text-[#16a34a] transition-colors">{tag}</Link>
+                  <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`} className="px-3 py-1 bg-[#15271c] text-[#a9abb8] text-[12px] rounded-full hover:bg-[#16a34a]/20 hover:text-[#16a34a] transition-colors">{tag}</Link>
                 ))}
               </div>
             )}
@@ -151,14 +151,14 @@ export default async function MoviePage({ params }: Props) {
             {chapters && chapters.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-[18px] font-bold mb-3">チャプター</h2>
-                <div className="bg-[#1d2030] rounded-xl p-4 space-y-1">
+                <div className="bg-[#15271c] rounded-xl p-4 space-y-1">
                   {chapters.map((ch: Chapter, i: number) => (
-                    <div key={i} className="flex items-start gap-3 py-3 border-b border-[#303240] last:border-0 cursor-pointer hover:bg-[#303240]/50 rounded px-2 transition-colors">
+                    <div key={i} className="flex items-start gap-3 py-3 border-b border-[#2b4034] last:border-0 cursor-pointer hover:bg-[#2b4034]/50 rounded px-2 transition-colors">
                       <span className="text-[13px] text-[#16a34a] font-mono shrink-0 pt-0.5">{formatTime(ch.startTime)}</span>
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] text-white leading-snug">{ch.title}</p>
                         {ch.summary && (
-                          <p className="text-[12px] text-[#606370] mt-1 leading-relaxed line-clamp-2">{ch.summary}</p>
+                          <p className="text-[12px] text-[#5e6e63] mt-1 leading-relaxed line-clamp-2">{ch.summary}</p>
                         )}
                       </div>
                     </div>

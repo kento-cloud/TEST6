@@ -44,7 +44,7 @@ function HeaderTabsInner() {
   }
 
   return (
-    <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
+    <header className="sticky top-0 z-[400] w-full bg-[#0a1812]/65 backdrop-blur-md border-b border-white/[0.05]">
       {/* SP Header: AI MEDIAロゴ + ログイン/アカウント (48px) */}
       <div className="md:hidden flex items-center justify-between h-[48px] px-4">
         <Link href="/" className="flex items-center gap-1">
@@ -94,8 +94,8 @@ function HeaderTabsInner() {
                   isActive(tab)
                     ? "bg-white"
                     : "text-[#a9abb8] hover:text-white"
-                } ${i > 0 && !isActive(tab) && !isActive(tabs[i - 1]) ? "border-l border-[#303240]" : ""}`}
-                style={isActive(tab) ? { color: "#0e1226" } : undefined}
+                } ${i > 0 && !isActive(tab) && !isActive(tabs[i - 1]) ? "border-l border-[#2b4034]" : ""}`}
+                style={isActive(tab) ? { color: "#0a1812" } : undefined}
               >
                 {tab.label}
               </Link>
@@ -142,7 +142,7 @@ export function HeaderTabs() {
   return (
     <Suspense
       fallback={
-        <header className="sticky top-0 z-[400] w-full bg-[#0e1226]/50">
+        <header className="sticky top-0 z-[400] w-full bg-[#0a1812]/65 backdrop-blur-md border-b border-white/[0.05]">
           <div className="h-[48px] md:h-[88px]" />
         </header>
       }

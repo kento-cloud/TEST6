@@ -29,14 +29,14 @@ export function RankingSection({ rankings }: RankingSectionProps) {
       <div className="flex items-center gap-4 mb-3 md:mb-4">
         <h2 id="section-ranking" className="text-[18px] md:text-[28px] font-bold text-white">総合ランキング</h2>
         {showTabs && (
-          <div className="flex items-center gap-0 bg-[#1d2030] rounded-md p-[3px]">
+          <div className="flex items-center gap-0 bg-[#15271c] rounded-md p-[3px]">
             {visibleRankings.map((r, i) => (
               <button
                 key={r.key}
                 onClick={() => setActiveTab(i)}
                 className={`px-4 py-[5px] text-[13px] font-bold rounded-md transition-all cursor-pointer ${
                   i === activeTab
-                    ? "bg-white text-[#0e1226]"
+                    ? "bg-white text-[#0a1812]"
                     : "text-[#a9abb8] hover:text-white"
                 }`}
               >

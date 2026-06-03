@@ -39,7 +39,7 @@ export function AuthPrompt({ children }: { readonly children: React.ReactNode })
           onClick={() => setShow(false)}
         >
           <div
-            className="w-full max-w-[420px] mx-4 bg-[#181a2e] rounded-2xl p-8 border border-[#303240]/50"
+            className="w-full max-w-[420px] mx-4 bg-[#0f1d16] rounded-2xl p-8 border border-[#2b4034]/50"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center">
@@ -70,7 +70,7 @@ export function AuthPrompt({ children }: { readonly children: React.ReactNode })
               </div>
               <button
                 onClick={() => setShow(false)}
-                className="mt-4 text-[13px] text-[#606370] hover:text-white transition-colors cursor-pointer"
+                className="mt-4 text-[13px] text-[#5e6e63] hover:text-white transition-colors cursor-pointer"
               >
                 閉じる
               </button>

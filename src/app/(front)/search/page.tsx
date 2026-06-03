@@ -58,7 +58,7 @@ function SearchPageInner() {
       <h1 className="sr-only">検索</h1>
       {/* Search Bar */}
       <div className="pt-8 pb-4">
-        <div className="w-full flex items-center bg-[#1d2030] rounded-full px-5 py-3 gap-3">
+        <div className="w-full flex items-center bg-[#15271c] rounded-full px-5 py-3 gap-3">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a9abb8" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -67,7 +67,7 @@ function SearchPageInner() {
             placeholder="キーワード、解説者、番組などからさがす"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-transparent text-white text-[15px] outline-none placeholder:text-[#606370]"
+            className="flex-1 bg-transparent text-white text-[15px] outline-none placeholder:text-[#5e6e63]"
           />
         </div>
       </div>
@@ -80,7 +80,7 @@ function SearchPageInner() {
               {filtered.map((ep) => (
                 <AuthPrompt key={ep.id}>
                 <Link href={`/movie/${ep.id}`} className="group block w-[calc(33.333%-10px)]">
-                  <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#1d2030]">
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#15271c]">
                     <Image src={ep.thumbnailUrl} alt={ep.title} fill className="object-cover" sizes="33vw" />
                   </div>
                   <p className="mt-2 text-[14px] font-bold line-clamp-2 group-hover:text-[#16a34a]">{ep.title}</p>
@@ -89,17 +89,17 @@ function SearchPageInner() {
               ))}
             </div>
             {filtered.length === 0 && (
-              <p className="text-[#606370] text-center mt-12">該当するコンテンツが見つかりませんでした</p>
+              <p className="text-[#5e6e63] text-center mt-12">該当するコンテンツが見つかりませんでした</p>
             )}
           </div>
         ) : (
           <>
             {/* ジャンルからさがす */}
-            <section aria-labelledby="search-genre" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-genre" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <h2 id="search-genre" className="text-[15px] font-bold mb-4">ジャンルからさがす</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">
                 {genres.map((g) => (
-                  <button key={g} onClick={() => setQuery(g)} className="py-[10px] px-4 h-[40px] bg-[rgba(48,50,64,0.8)] rounded-lg text-[14px] font-bold text-white hover:bg-[#484a5e] transition-colors text-center cursor-pointer">
+                  <button key={g} onClick={() => setQuery(g)} className="py-[10px] px-4 h-[40px] bg-[rgba(43,64,52,0.8)] rounded-lg text-[14px] font-bold text-white hover:bg-[#34543f] transition-colors text-center cursor-pointer">
                     {g}
                   </button>
                 ))}
@@ -107,14 +107,14 @@ function SearchPageInner() {
             </section>
 
             {/* 解説者からさがす */}
-            <section aria-labelledby="search-mc" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-mc" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="search-mc" className="text-[15px] font-bold">解説者からさがす</h2>
                 <Link href="/mc" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-[6px]">
                 {mcList.map((mc, i) => (
-                  <Link key={mc.name} href={`/mc/${mc.id}`} className="flex items-center justify-center gap-3 h-[48px] px-4 bg-[rgba(48,50,64,0.8)] rounded-lg cursor-pointer hover:bg-[#484a5e] transition-colors">
+                  <Link key={mc.name} href={`/mc/${mc.id}`} className="flex items-center justify-center gap-3 h-[48px] px-4 bg-[rgba(43,64,52,0.8)] rounded-lg cursor-pointer hover:bg-[#34543f] transition-colors">
                     <div
                       className="w-[24px] h-[24px] rounded-full shrink-0 flex items-center justify-center text-[11px] font-bold text-white"
                       style={{ backgroundColor: MC_COLORS[i % MC_COLORS.length] }}
@@ -128,7 +128,7 @@ function SearchPageInner() {
             </section>
 
             {/* 番組からさがす */}
-            <section aria-labelledby="search-program" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-program" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="search-program" className="text-[15px] font-bold">番組からさがす</h2>
                 <Link href="/program/list" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
@@ -136,19 +136,19 @@ function SearchPageInner() {
               <div className="flex gap-3 overflow-x-auto scrollbar-hide">
                 {programs.map((p) => (
                   <Link key={p.id} href={`/program/${p.id}`} className="shrink-0 w-[150px] group">
-                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#1d2030]">
+                    <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-[#15271c]">
                       <Image src={p.thumbnailUrl} alt={p.name} fill className="object-cover group-hover:scale-105 transition-transform" sizes="150px" />
                     </div>
                   </Link>
                 ))}
                 <div className="shrink-0 w-[40px] flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#606370"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#5e6e63"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
                 </div>
               </div>
             </section>
 
             {/* 月間ランキング - 大型カード */}
-            <section aria-labelledby="search-monthly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-monthly-ranking" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="search-monthly-ranking" className="text-[15px] font-bold">月間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=MONTHLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
@@ -161,7 +161,7 @@ function SearchPageInner() {
             </section>
 
             {/* 週間ランキング - 大型カード */}
-            <section aria-labelledby="search-weekly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-weekly-ranking" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="search-weekly-ranking" className="text-[15px] font-bold">週間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=WEEKLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>
@@ -174,7 +174,7 @@ function SearchPageInner() {
             </section>
 
             {/* 年間ランキング - 大型カード */}
-            <section aria-labelledby="search-yearly-ranking" className="bg-gradient-to-br from-[#1a1c30] to-[#1a1c30]/80 rounded-3xl border border-[#303240]/40 p-5 md:p-6">
+            <section aria-labelledby="search-yearly-ranking" className="bg-gradient-to-br from-[#112019] to-[#112019]/80 rounded-3xl border border-[#2b4034]/40 p-5 md:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="search-yearly-ranking" className="text-[15px] font-bold">年間ランキング</h2>
                 <Link href="/ranking/overall?ranking_type=YEARLY" className="text-[13px] text-[#999] hover:text-white">すべて表示</Link>

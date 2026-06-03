@@ -70,8 +70,8 @@ export function AudioPlayer({ src, thumbnailUrl, title, programName }: AudioPlay
 
   if (error) {
     return (
-      <div className="bg-[#1d2030] rounded-xl p-8 flex items-center justify-center">
-        <p className="text-[#606370] text-[14px]">音声を再生できません</p>
+      <div className="bg-[#15271c] rounded-xl p-8 flex items-center justify-center">
+        <p className="text-[#5e6e63] text-[14px]">音声を再生できません</p>
       </div>
     )
   }
@@ -79,7 +79,7 @@ export function AudioPlayer({ src, thumbnailUrl, title, programName }: AudioPlay
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0
 
   return (
-    <div className="bg-[#1d2030] rounded-xl p-6 mb-6">
+    <div className="bg-[#15271c] rounded-xl p-6 mb-6">
       <audio ref={audioRef} src={src} preload="metadata" onError={() => setError(true)} />
 
       {/* Artwork */}
@@ -101,7 +101,7 @@ export function AudioPlayer({ src, thumbnailUrl, title, programName }: AudioPlay
 
       {/* Progress bar */}
       <div className="mb-3">
-        <div className="relative h-1 bg-[#303240] rounded-full overflow-hidden mb-2">
+        <div className="relative h-1 bg-[#2b4034] rounded-full overflow-hidden mb-2">
           <div
             className="absolute left-0 top-0 h-full bg-[#16a34a] rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -116,7 +116,7 @@ export function AudioPlayer({ src, thumbnailUrl, title, programName }: AudioPlay
           className="absolute opacity-0 w-full cursor-pointer"
           style={{ marginTop: "-12px", height: "20px" }}
         />
-        <div className="flex justify-between text-[11px] text-[#606370]">
+        <div className="flex justify-between text-[11px] text-[#5e6e63]">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>

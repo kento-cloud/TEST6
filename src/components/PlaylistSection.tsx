@@ -25,10 +25,10 @@ export function PlaylistSection({ playlists }: PlaylistSectionProps) {
             className="group shrink-0 w-[200px] md:w-[240px]"
           >
             {/* Playlist thumbnail: 2x2 grid of episode thumbnails */}
-            <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-[#1d2030]">
+            <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-[#15271c]">
               <div className="grid grid-cols-2 grid-rows-2 w-full h-full gap-[1px]">
                 {pl.episodes.slice(0, 4).map((ep, i) => (
-                  <div key={i} className="relative overflow-hidden bg-[#303240]">
+                  <div key={i} className="relative overflow-hidden bg-[#2b4034]">
                     {ep.thumbnailUrl && ep.thumbnailUrl.startsWith("/api/") ? (
                       <Image
                         src={ep.thumbnailUrl}
@@ -49,7 +49,7 @@ export function PlaylistSection({ playlists }: PlaylistSectionProps) {
                   </div>
                 ))}
                 {Array.from({ length: Math.max(0, 4 - pl.episodes.length) }).map((_, i) => (
-                  <div key={`empty-${i}`} className="bg-[#303240]" />
+                  <div key={`empty-${i}`} className="bg-[#2b4034]" />
                 ))}
               </div>
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
@@ -57,7 +57,7 @@ export function PlaylistSection({ playlists }: PlaylistSectionProps) {
             <p className="mt-2 text-[13px] md:text-[14px] font-bold line-clamp-2 leading-[1.4] group-hover:text-[#16a34a] transition-colors">
               {pl.title}
             </p>
-            <p className="text-[11px] text-[#606370] mt-[2px]">{pl.episodes.length}本のエピソード</p>
+            <p className="text-[11px] text-[#5e6e63] mt-[2px]">{pl.episodes.length}本のエピソード</p>
           </Link>
         ))}
       </div>

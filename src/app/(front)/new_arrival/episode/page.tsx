@@ -29,7 +29,7 @@ export default async function NewArrivalPage() {
               href={`/movie/${ep.id}`}
               className="flex gap-4 group"
             >
-              <div className="relative shrink-0 w-[280px] md:w-[320px] aspect-video rounded-lg overflow-hidden bg-[#1d2030]">
+              <div className="relative shrink-0 w-[280px] md:w-[320px] aspect-video rounded-lg overflow-hidden bg-[#15271c]">
                 <Image
                   src={ep.thumbnailUrl}
                   alt={ep.title}
@@ -49,7 +49,7 @@ export default async function NewArrivalPage() {
                 </h3>
                 <p className="text-[13px] text-[#16a34a] mb-1">{ep.programName}</p>
                 <p className="text-[13px] text-[#999] line-clamp-2 mb-2">{ep.description}</p>
-                <div className="flex items-center gap-2 text-[12px] text-[#606370]">
+                <div className="flex items-center gap-2 text-[12px] text-[#5e6e63]">
                   <span>{ep.viewCount}</span>
                   <span>·</span>
                   <span>{ep.publishedAt}</span>

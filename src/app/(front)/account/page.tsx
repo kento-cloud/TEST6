@@ -41,19 +41,19 @@ export default function AccountPage() {
       </div>
 
       <div className="flex-1 flex items-start justify-center px-4 pt-8 pb-16">
-        <div className="w-full max-w-[480px] bg-[#181a2e] rounded-2xl p-6 md:p-8 border border-[#303240]/50">
+        <div className="w-full max-w-[480px] bg-[#0f1d16] rounded-2xl p-6 md:p-8 border border-[#2b4034]/50">
           <h1 className="text-[22px] font-bold text-center mb-8">アカウント</h1>
 
           {/* ユーザー情報 */}
           {loading ? (
             <div className="text-center mb-6">
-              <p className="text-[14px] text-[#606370]">読み込み中...</p>
+              <p className="text-[14px] text-[#5e6e63]">読み込み中...</p>
             </div>
           ) : user ? (
-            <div className="mb-6 px-5 py-4 bg-[#303240]/40 rounded-lg">
+            <div className="mb-6 px-5 py-4 bg-[#2b4034]/40 rounded-lg">
               <p className="text-[14px] text-[#a9abb8] mb-1">ログイン中</p>
               <p className="text-[16px] font-bold">{user.user_metadata?.display_name || "ユーザー"}</p>
-              <p className="text-[13px] text-[#606370]">{user.email}</p>
+              <p className="text-[13px] text-[#5e6e63]">{user.email}</p>
             </div>
           ) : (
             <div className="mb-6 flex gap-3">
@@ -77,10 +77,10 @@ export default function AccountPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center justify-between px-5 h-[48px] bg-[#303240]/60 rounded-lg hover:bg-[#303240] transition-colors"
+                className="flex items-center justify-between px-5 h-[48px] bg-[#2b4034]/60 rounded-lg hover:bg-[#2b4034] transition-colors"
               >
                 <span className="text-[15px]">{item.label}</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#606370"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6e63"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
               </Link>
             ))}
           </div>
@@ -90,12 +90,12 @@ export default function AccountPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-5 h-[48px] hover:bg-[#303240]/20 transition-colors ${
-                  i < infoItems.length - 1 ? "border-b border-[#303240]/50" : ""
+                className={`flex items-center justify-between px-5 h-[48px] hover:bg-[#2b4034]/20 transition-colors ${
+                  i < infoItems.length - 1 ? "border-b border-[#2b4034]/50" : ""
                 }`}
               >
                 <span className="text-[15px]">{item.label}</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="#606370"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6e63"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
               </Link>
             ))}
           </div>
@@ -104,7 +104,7 @@ export default function AccountPage() {
           {user && (
             <button
               onClick={handleSignOut}
-              className="w-full mt-6 py-3 text-center bg-[#303240]/60 rounded-lg text-[14px] text-red-400 hover:bg-[#303240] transition-colors cursor-pointer"
+              className="w-full mt-6 py-3 text-center bg-[#2b4034]/60 rounded-lg text-[14px] text-red-400 hover:bg-[#2b4034] transition-colors cursor-pointer"
             >
               ログアウト
             </button>

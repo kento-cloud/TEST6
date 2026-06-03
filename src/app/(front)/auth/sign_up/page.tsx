@@ -81,7 +81,7 @@ export default function SignUpPage() {
             </div>
             <p className="text-green-400 text-[18px] font-bold mb-2">ようこそ、AI MEDIAへ！</p>
             <p className="text-[14px] text-[#a9abb8] mb-1">会員登録が完了しました。</p>
-            <p className="text-[13px] text-[#606370]">すべてのコンテンツをお楽しみいただけます。</p>
+            <p className="text-[13px] text-[#5e6e63]">すべてのコンテンツをお楽しみいただけます。</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -90,21 +90,21 @@ export default function SignUpPage() {
               placeholder="ユーザー名"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-[#1d2030] rounded-lg text-white text-[15px] outline-none border border-[#303240] focus:border-[#16a34a]"
+              className="w-full px-4 py-3 bg-[#15271c] rounded-lg text-white text-[15px] outline-none border border-[#2b4034] focus:border-[#16a34a]"
             />
             <input
               type="email"
               placeholder="メールアドレス"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-[#1d2030] rounded-lg text-white text-[15px] outline-none border border-[#303240] focus:border-[#16a34a]"
+              className="w-full px-4 py-3 bg-[#15271c] rounded-lg text-white text-[15px] outline-none border border-[#2b4034] focus:border-[#16a34a]"
             />
             <input
               type="password"
               placeholder="パスワード（8文字以上）"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-[#1d2030] rounded-lg text-white text-[15px] outline-none border border-[#303240] focus:border-[#16a34a]"
+              className="w-full px-4 py-3 bg-[#15271c] rounded-lg text-white text-[15px] outline-none border border-[#2b4034] focus:border-[#16a34a]"
             />
             {error && <p className="text-red-400 text-[13px]">{error}</p>}
             <button
@@ -121,7 +121,7 @@ export default function SignUpPage() {
           既にアカウントをお持ちの方は <Link href="/auth/sign_in" className="text-[#16a34a]">ログイン</Link>
         </p>
         <div className="text-center mt-4">
-          <Link href="/" className="text-[14px] text-[#606370] hover:text-white">← トップに戻る</Link>
+          <Link href="/" className="text-[14px] text-[#5e6e63] hover:text-white">← トップに戻る</Link>
         </div>
       </div>
     </div>

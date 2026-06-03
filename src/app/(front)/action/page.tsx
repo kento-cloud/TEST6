@@ -21,13 +21,13 @@ export default function ActionPage() {
         <h1 className="text-[24px] font-bold mb-6 tracking-[0.1em]">アクション</h1>
 
         {/* Tabs */}
-        <div className="flex border-b border-[#303240] mb-6">
+        <div className="flex border-b border-[#2b4034] mb-6">
           {tabs.map((tab, i) => (
             <button
               key={tab}
               onClick={() => setActiveTab(i)}
               className={`flex-1 py-3 text-[15px] font-bold text-center transition-colors cursor-pointer ${
-                i === activeTab ? "text-white border-b-2 border-white -mb-[1px]" : "text-[#606370]"
+                i === activeTab ? "text-white border-b-2 border-white -mb-[1px]" : "text-[#5e6e63]"
               }`}
             >
               {tab}
@@ -55,16 +55,16 @@ export default function ActionPage() {
             {/* 連続ミッション */}
             <section>
               <h2 className="text-[16px] font-bold mb-3">連続ミッション</h2>
-              <div className="bg-[#252738] rounded-xl p-5">
+              <div className="bg-[#1c3324] rounded-xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <p className="font-bold text-[15px]">0週連続視聴</p>
-                  <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                  <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                 </div>
                 <div className="flex items-center justify-between">
                   {streakMilestones.map((m) => (
                     <div key={m.label} className="text-center">
                       <p className="text-[13px] text-[#a9abb8]">{m.label}</p>
-                      <p className="text-[12px] text-[#606370] mt-1">{m.points}</p>
+                      <p className="text-[12px] text-[#5e6e63] mt-1">{m.points}</p>
                     </div>
                   ))}
                 </div>
@@ -78,23 +78,23 @@ export default function ActionPage() {
                 <span className="text-[13px] text-[#a9abb8]">24:00まで</span>
               </div>
               <div className="flex flex-col gap-[2px]">
-                <div className="bg-[#252738] rounded-t-xl p-5">
+                <div className="bg-[#1c3324] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
                     <p className="font-bold text-[15px]">最新ニュースを2本視聴する</p>
-                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex justify-end text-[13px] text-[#a9abb8] mb-2">0/2</div>
-                  <div className="h-[4px] bg-[#383a4e] rounded-full">
+                  <div className="h-[4px] bg-[#1c3324] rounded-full">
                     <div className="h-full w-0 gradient-button rounded-full" />
                   </div>
                   <div className="flex justify-end text-[13px] text-[#a9abb8] mt-1">+40</div>
                 </div>
-                <div className="bg-[#252738] rounded-b-xl p-5">
+                <div className="bg-[#1c3324] rounded-b-xl p-5">
                   <div className="flex items-center justify-between">
                     <p className="font-bold text-[15px]">解説動画を評価する</p>
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] text-[#a9abb8]">+10</span>
-                      <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                      <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                     </div>
                   </div>
                 </div>
@@ -108,33 +108,33 @@ export default function ActionPage() {
                 <span className="text-[13px] text-[#a9abb8]">日曜24:00まで</span>
               </div>
               <div className="flex flex-col gap-[2px]">
-                <div className="bg-[#252738] rounded-t-xl p-5">
+                <div className="bg-[#1c3324] rounded-t-xl p-5">
                   <div className="flex items-center justify-between mb-3">
                     <p className="font-bold text-[15px]">技術解説映像を視聴する</p>
-                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex items-center justify-between text-[13px] text-[#a9abb8] mb-2">
                     <span>3</span><span>7</span><span>10</span>
                   </div>
-                  <div className="h-[4px] bg-[#383a4e] rounded-full mb-1">
+                  <div className="h-[4px] bg-[#1c3324] rounded-full mb-1">
                     <div className="h-full w-0 gradient-button rounded-full" />
                   </div>
-                  <div className="flex items-center justify-between text-[12px] text-[#606370]">
+                  <div className="flex items-center justify-between text-[12px] text-[#5e6e63]">
                     <span>+30</span><span>+70</span><span>+150</span>
                   </div>
                 </div>
-                <div className="bg-[#252738] rounded-b-xl p-5">
+                <div className="bg-[#1c3324] rounded-b-xl p-5">
                   <div className="flex items-center justify-between mb-3">
                     <p className="font-bold text-[15px]">予想クイズで全問正解する</p>
-                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                    <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                   </div>
                   <div className="flex items-center justify-between text-[13px] text-[#a9abb8] mb-2">
                     <span>1</span><span>3</span><span>5</span>
                   </div>
-                  <div className="h-[4px] bg-[#383a4e] rounded-full mb-1">
+                  <div className="h-[4px] bg-[#1c3324] rounded-full mb-1">
                     <div className="h-full w-0 gradient-button rounded-full" />
                   </div>
-                  <div className="flex items-center justify-between text-[12px] text-[#606370]">
+                  <div className="flex items-center justify-between text-[12px] text-[#5e6e63]">
                     <span>+30</span><span>+90</span><span>+180</span>
                   </div>
                 </div>
@@ -146,13 +146,13 @@ export default function ActionPage() {
               <h2 className="text-[16px] font-bold mb-3">初回限定ミッション</h2>
               <div className="flex flex-col gap-[2px]">
                 {["予想プレイリストを作成する", "番組をフォローする", "あとで見るを利用する"].map((title, i, arr) => (
-                  <div key={title} className={`bg-[#252738] p-5 flex items-center justify-between ${
+                  <div key={title} className={`bg-[#1c3324] p-5 flex items-center justify-between ${
                     i === 0 ? "rounded-t-xl" : i === arr.length - 1 ? "rounded-b-xl" : ""
                   }`}>
                     <p className="text-[15px]">{title}</p>
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] text-[#a9abb8]">+100</span>
-                      <button disabled className="text-[12px] font-bold text-white/50 bg-[#505a67] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
+                      <button disabled className="text-[12px] font-bold text-white/50 bg-[#2b4034] px-4 py-[6px] rounded-full cursor-not-allowed">受け取る</button>
                     </div>
                   </div>
                 ))}
@@ -163,7 +163,7 @@ export default function ActionPage() {
               すべて受け取る
             </button>
 
-            <p className="text-center text-[12px] text-[#606370] mt-3">
+            <p className="text-center text-[12px] text-[#5e6e63] mt-3">
               レース動画の視聴・予想クイズへの参加でパドPが貯まります。パドPは特典と交換できます。
             </p>
           </div>
@@ -171,21 +171,21 @@ export default function ActionPage() {
 
         {activeTab === 1 && (
           <div className="flex flex-col items-center py-16">
-            <div className="w-16 h-16 rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="#606370"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" /></svg>
+            <div className="w-16 h-16 rounded-full bg-[#2b4034]/50 flex items-center justify-center mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="#5e6e63"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" /></svg>
             </div>
-            <p className="text-[15px] text-[#606370] mb-2">パドPを貯めて特典と交換しよう</p>
-            <p className="text-[12px] text-[#606370]">特典は今後追加予定です</p>
+            <p className="text-[15px] text-[#5e6e63] mb-2">パドPを貯めて特典と交換しよう</p>
+            <p className="text-[12px] text-[#5e6e63]">特典は今後追加予定です</p>
           </div>
         )}
 
         {activeTab === 2 && (
           <div className="flex flex-col items-center py-16">
-            <div className="w-16 h-16 rounded-full bg-[#303240]/50 flex items-center justify-center mb-4">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="#606370"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" /></svg>
+            <div className="w-16 h-16 rounded-full bg-[#2b4034]/50 flex items-center justify-center mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="#5e6e63"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" /></svg>
             </div>
-            <p className="text-[15px] text-[#606370] mb-2">予想クイズに挑戦してパドPを獲得しよう</p>
-            <p className="text-[12px] text-[#606370]">予想クイズ機能は今後追加予定です</p>
+            <p className="text-[15px] text-[#5e6e63] mb-2">予想クイズに挑戦してパドPを獲得しよう</p>
+            <p className="text-[12px] text-[#5e6e63]">予想クイズ機能は今後追加予定です</p>
           </div>
         )}
       </div>

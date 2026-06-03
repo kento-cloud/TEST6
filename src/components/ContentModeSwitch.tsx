@@ -67,8 +67,8 @@ export function ContentModeSwitch({
               </div>
             </div>
           ) : (
-            <div className="bg-[#1d2030] rounded-xl p-8 mb-6 flex items-center justify-center">
-              <p className="text-[#606370] text-[14px]">動画ファイルが登録されていません</p>
+            <div className="bg-[#15271c] rounded-xl p-8 mb-6 flex items-center justify-center">
+              <p className="text-[#5e6e63] text-[14px]">動画ファイルが登録されていません</p>
             </div>
           )}
         </>

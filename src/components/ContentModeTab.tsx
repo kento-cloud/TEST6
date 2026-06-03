@@ -47,7 +47,7 @@ export function ContentModeTab({ activeMode, onModeChange, hasAudio, hasArticle 
   }
 
   return (
-    <div className="flex bg-[#1d2030] rounded-xl p-1 mb-6">
+    <div className="flex bg-[#15271c] rounded-xl p-1 mb-6">
       {TABS.map(({ mode, label, icon }) => {
         const disabled = isDisabled(mode)
         const active = activeMode === mode
@@ -61,8 +61,8 @@ export function ContentModeTab({ activeMode, onModeChange, hasAudio, hasArticle 
               ${active
                 ? "bg-[#16a34a] text-white shadow-lg"
                 : disabled
-                  ? "text-[#606370] cursor-not-allowed opacity-50"
-                  : "text-[#a9abb8] hover:text-white hover:bg-[#303240]"
+                  ? "text-[#5e6e63] cursor-not-allowed opacity-50"
+                  : "text-[#a9abb8] hover:text-white hover:bg-[#2b4034]"
               }`}
           >
             {icon}

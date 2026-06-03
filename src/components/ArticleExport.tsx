@@ -32,11 +32,11 @@ export function ArticleExport({ article, title }: Props) {
 
   return (
     <div className="flex gap-2">
-      <button onClick={handleCopy} className="text-[12px] text-[#606370] hover:text-white transition-colors cursor-pointer">
+      <button onClick={handleCopy} className="text-[12px] text-[#5e6e63] hover:text-white transition-colors cursor-pointer">
         {copied ? "コピー済み" : "テキストをコピー"}
       </button>
-      <span className="text-[#303240]">|</span>
-      <button onClick={handleCopyMarkdown} className="text-[12px] text-[#606370] hover:text-white transition-colors cursor-pointer">
+      <span className="text-[#2b4034]">|</span>
+      <button onClick={handleCopyMarkdown} className="text-[12px] text-[#5e6e63] hover:text-white transition-colors cursor-pointer">
         Markdownでコピー
       </button>
     </div>

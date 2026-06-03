@@ -59,14 +59,14 @@ export default function SignInPage() {
             placeholder="メールアドレス"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 bg-[#1d2030] rounded-lg text-white text-[15px] outline-none border border-[#303240] focus:border-[#16a34a]"
+            className="w-full px-4 py-3 bg-[#15271c] rounded-lg text-white text-[15px] outline-none border border-[#2b4034] focus:border-[#16a34a]"
           />
           <input
             type="password"
             placeholder="パスワード"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 bg-[#1d2030] rounded-lg text-white text-[15px] outline-none border border-[#303240] focus:border-[#16a34a]"
+            className="w-full px-4 py-3 bg-[#15271c] rounded-lg text-white text-[15px] outline-none border border-[#2b4034] focus:border-[#16a34a]"
           />
           {error && <p className="text-red-400 text-[13px]">{error}</p>}
           <button
@@ -81,7 +81,7 @@ export default function SignInPage() {
           アカウントをお持ちでない方は <Link href="/auth/sign_up" className="text-[#16a34a]">新規登録</Link>
         </p>
         <div className="text-center mt-4">
-          <Link href="/" className="text-[14px] text-[#606370] hover:text-white">← トップに戻る</Link>
+          <Link href="/" className="text-[14px] text-[#5e6e63] hover:text-white">← トップに戻る</Link>
         </div>
       </div>
     </div>

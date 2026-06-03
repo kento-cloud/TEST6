@@ -91,7 +91,7 @@ export default function AccountSettingPage() {
 
         <div className="space-y-6">
           {/* ニックネーム */}
-          <div className="border border-[#303240] rounded-lg p-5">
+          <div className="border border-[#2b4034] rounded-lg p-5">
             <label htmlFor="nickname" className="block text-sm text-[#a9abb8] mb-2">ニックネーム</label>
             <div className="flex gap-3">
               <input
@@ -99,7 +99,7 @@ export default function AccountSettingPage() {
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
+                className="flex-1 bg-[#15271c] rounded px-4 py-3 text-sm text-white outline-none border border-[#2b4034] focus:border-[#16a34a]"
               />
               <button
                 onClick={handleNickname}
@@ -113,7 +113,7 @@ export default function AccountSettingPage() {
           </div>
 
           {/* メールアドレス */}
-          <div className="border border-[#303240] rounded-lg p-5">
+          <div className="border border-[#2b4034] rounded-lg p-5">
             <label htmlFor="email" className="block text-sm text-[#a9abb8] mb-2">メールアドレス</label>
             <div className="flex gap-3">
               <input
@@ -121,7 +121,7 @@ export default function AccountSettingPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
+                className="flex-1 bg-[#15271c] rounded px-4 py-3 text-sm text-white outline-none border border-[#2b4034] focus:border-[#16a34a]"
               />
               <button
                 onClick={handleEmail}
@@ -135,7 +135,7 @@ export default function AccountSettingPage() {
           </div>
 
           {/* パスワード変更 */}
-          <div className="border border-[#303240] rounded-lg p-5">
+          <div className="border border-[#2b4034] rounded-lg p-5">
             <label htmlFor="new-password" className="block text-sm text-[#a9abb8] mb-2">パスワード変更</label>
             <div className="space-y-3">
               <input
@@ -144,14 +144,14 @@ export default function AccountSettingPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="新しいパスワード（8文字以上）"
-                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
+                className="w-full bg-[#15271c] rounded px-4 py-3 text-sm text-white outline-none border border-[#2b4034] focus:border-[#16a34a]"
               />
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="新しいパスワード（確認）"
-                className="w-full bg-[#1d2030] rounded px-4 py-3 text-sm text-white outline-none border border-[#303240] focus:border-[#16a34a]"
+                className="w-full bg-[#15271c] rounded px-4 py-3 text-sm text-white outline-none border border-[#2b4034] focus:border-[#16a34a]"
               />
               <button
                 onClick={handlePassword}
