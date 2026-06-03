@@ -43,7 +43,7 @@ export function ShortVideoGenerator({ videoId, hasArticle, shortVideoPath }: Pro
 
   return (
     <div className="border border-gray-100 rounded-lg overflow-hidden">
-      <div className="px-4 py-3 bg-gray-50 flex items-center justify-between">
+      <div className="px-4 py-3 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="flex items-center gap-2">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#16a34a">
             <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
@@ -53,7 +53,7 @@ export function ShortVideoGenerator({ videoId, hasArticle, shortVideoPath }: Pro
             <span className="text-[11px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full">生成済み</span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {error && <span className="text-[11px] text-red-500">{error}</span>}
           {!hasArticle ? (
             <span className="text-[11px] text-gray-400">記事を先に生成してください</span>
@@ -77,9 +77,9 @@ export function ShortVideoGenerator({ videoId, hasArticle, shortVideoPath }: Pro
       {/* プレビュー + ダウンロード */}
       {currentPath && (
         <div className="p-4 border-t border-gray-100">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             {/* 動画プレビュー（縦型） */}
-            <div className="w-[180px] shrink-0">
+            <div className="w-full max-w-[180px] sm:w-[180px] shrink-0">
               <video
                 src={`/api${currentPath}`}
                 controls

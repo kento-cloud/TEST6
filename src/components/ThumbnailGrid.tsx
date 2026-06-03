@@ -51,7 +51,7 @@ export function ThumbnailGrid({ videoId, thumbnails }: Props) {
             key={t.id}
             onClick={() => !t.is_primary && handleSetPrimary(t.id)}
             disabled={!!t.is_primary || settingId === t.id}
-            className={`relative group w-[160px] aspect-video rounded-lg overflow-hidden bg-gray-100 border-2 transition-all shrink-0 ${
+            className={`relative group w-[140px] sm:w-[160px] max-w-full aspect-video rounded-lg overflow-hidden bg-gray-100 border-2 transition-all shrink-0 ${
               t.is_primary
                 ? "border-[#16a34a] ring-2 ring-[#16a34a]/30 cursor-default"
                 : "border-gray-200 hover:border-[#16a34a] cursor-pointer"

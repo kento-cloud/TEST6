@@ -61,17 +61,17 @@ export function AIPromptEditor({ videoId, initialPrompt }: Props) {
         rows={3}
       />
       <p className="text-[11px] text-gray-400 mt-1 mb-2">全AI生成項目（要約・チャプター・記事・タグ）に適用されます</p>
-      <div className="flex gap-2 justify-end">
+      <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
         <button
           onClick={() => { setEditing(false); setPrompt(initialPrompt) }}
-          className="px-3 py-1.5 text-[12px] text-gray-500 hover:bg-white rounded-lg cursor-pointer"
+          className="w-full sm:w-auto px-3 py-1.5 text-[12px] text-gray-500 hover:bg-white rounded-lg cursor-pointer"
         >
           キャンセル
         </button>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
+          className="w-full sm:w-auto px-4 py-1.5 bg-[#16a34a] text-white rounded-lg text-[12px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
         >
           {saving ? "保存中..." : "保存"}
         </button>

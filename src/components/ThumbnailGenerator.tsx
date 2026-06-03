@@ -142,7 +142,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
   return (
     <div>
       {/* モード切替タブ */}
-      <div className="flex gap-1 mb-3 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex flex-wrap gap-1 mb-3 bg-gray-100 rounded-lg p-1 w-fit max-w-full">
         <button
           onClick={() => setMode("compose")}
           className={`px-3 py-1.5 rounded-md text-[12px] font-semibold transition-colors cursor-pointer ${mode === "compose" ? "bg-white text-[#16a34a] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
@@ -174,7 +174,7 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           {templates.length === 0 ? (
             <p className="text-[12px] text-gray-400 mb-3">テンプレートを読み込み中...</p>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 mb-3">
               {templates.map((t) => {
                 const active = selectedTemplateId === t.id
                 return (
@@ -222,8 +222,8 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
           {/* 選択テンプレのスロット入力 */}
           {selectedTemplate && (
             <div className="border border-gray-100 rounded-lg p-3 mb-3 bg-gray-50/50">
-              <div className="flex gap-3 mb-2.5">
-                <div className="relative w-[120px] aspect-video rounded-md overflow-hidden shrink-0 border border-gray-200">
+              <div className="flex flex-col sm:flex-row gap-3 mb-2.5">
+                <div className="relative w-full max-w-[120px] aspect-video rounded-md overflow-hidden shrink-0 border border-gray-200">
                   <img src={selectedTemplate.sample} alt={`${selectedTemplate.name} のデザイン例`} className="absolute inset-0 w-full h-full object-cover" />
                   <span className="absolute bottom-0 left-0 right-0 bg-black/55 text-white text-[8px] text-center py-0.5">このデザインで生成</span>
                 </div>
@@ -365,14 +365,14 @@ export function ThumbnailGenerator({ videoId, videoTitle, count = 5 }: Props) {
               </button>
             ))}
           </div>
-          <div className="flex items-center justify-between mt-3">
-            <button onClick={handleGenerate} className="px-3 py-1.5 text-[12px] text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3">
+            <button onClick={handleGenerate} className="w-full sm:w-auto px-3 py-1.5 text-[12px] text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
               再生成する
             </button>
             <button
               onClick={handleSelect}
               disabled={!selectedId || setting}
-              className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
             >
               {setting ? "設定中..." : "この画像をメインに設定"}
             </button>

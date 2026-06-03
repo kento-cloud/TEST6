@@ -61,9 +61,9 @@ export function TranscriptEditor({ videoId, initialText }: Props) {
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-5">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
         <h2 className="text-[16px] font-bold text-gray-900">全文テキスト</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleCleanup}
             className="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-[12px] font-semibold hover:bg-gray-50 cursor-pointer"

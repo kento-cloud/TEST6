@@ -281,7 +281,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
   return (
     <div className="border border-gray-100 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-gray-50">
+      <div className="flex flex-wrap items-center justify-between gap-y-1.5 px-3 py-2 bg-gray-50">
         <button
           onClick={() => hasDone ? setExpanded(!expanded) : null}
           className={`flex items-center gap-2 ${hasDone ? "cursor-pointer" : "cursor-default"}`}
@@ -292,7 +292,7 @@ function PipelineStepRow({ videoId, stepKey, label, placeholder, currentValue, i
             <span className="text-[10px] text-gray-400">{expanded ? "▲" : "▼"}</span>
           )}
         </button>
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
           {message && (
             <span className={`text-[11px] ${message.includes("失敗") ? "text-red-500" : "text-green-600"}`}>{message}</span>
           )}

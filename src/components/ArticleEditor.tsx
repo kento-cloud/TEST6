@@ -86,8 +86,8 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
   return (
     <div>
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleSave}
             disabled={saving || saved}
@@ -167,7 +167,7 @@ export function ArticleEditor({ videoId, initialArticle }: Props) {
       )}
 
       {/* Editor + Preview */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-gray-100 p-5">
           <h2 className="text-[14px] font-bold text-gray-500 mb-3">Markdown編集</h2>
           <textarea

@@ -91,10 +91,10 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
   return (
     <div className="border border-gray-100 rounded-lg overflow-hidden mb-2">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 bg-gray-50">
+      <div className="flex items-center justify-between gap-2 px-3 py-2 bg-gray-50">
         <button
           onClick={() => hasDone || hasError ? setExpanded(!expanded) : null}
-          className={`flex items-center gap-2 ${hasDone || hasError ? "cursor-pointer" : "cursor-default"}`}
+          className={`flex flex-wrap items-center gap-2 min-w-0 ${hasDone || hasError ? "cursor-pointer" : "cursor-default"}`}
         >
           <span className="text-[14px]">{icon}</span>
           <span className={`text-[13px] font-medium ${textColor}`}>{hasDone ? "文字起こし済み" : isProcessing ? "処理中" : "全自動生成"}</span>
@@ -105,7 +105,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
             </>
           )}
         </button>
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-end gap-1.5 min-w-0">
           {message && (
             <span className={`text-[11px] ${message.includes("失敗") || message.includes("エラー") ? "text-red-500" : "text-green-600"}`}>{message}</span>
           )}
@@ -189,9 +189,9 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
       {/* Error display with retry */}
       {hasError && !isProcessing && (
         <div className="px-3 py-2 border-t border-red-100 bg-red-50">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[12px] text-red-600 mb-1">エラー: {transcript.errorMessage}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[12px] text-red-600 mb-1 break-words">エラー: {transcript.errorMessage}</p>
               <Link href={`/admin/videos/${videoId}/transcript`} className="text-[11px] text-red-500 hover:underline">
                 文字起こしページで対応 →
               </Link>
@@ -199,7 +199,7 @@ export function TranscriptPipelineRow({ videoId, transcript, isProcessing }: Pro
             <button
               onClick={handleRetry}
               disabled={retrying}
-              className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-[11px] font-semibold hover:bg-red-600 disabled:opacity-50 shrink-0 ml-3 cursor-pointer"
+              className="w-full sm:w-auto px-3 py-1.5 bg-red-500 text-white rounded-lg text-[11px] font-semibold hover:bg-red-600 disabled:opacity-50 shrink-0 sm:ml-3 cursor-pointer"
             >
               {retrying ? "再試行中..." : "再試行"}
             </button>

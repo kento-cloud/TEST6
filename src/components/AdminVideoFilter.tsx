@@ -70,7 +70,7 @@ export function AdminVideoFilter({ videos }: Props) {
         <select
           value={status}
           onChange={e => setStatus(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
+          className="w-full sm:w-auto px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
         >
           <option value="all">全ステータス</option>
           <option value="draft">下書き</option>
@@ -81,7 +81,7 @@ export function AdminVideoFilter({ videos }: Props) {
         <select
           value={category}
           onChange={e => setCategory(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
+          className="w-full sm:w-auto px-4 py-2 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a]"
         >
           {categoryOptions.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>

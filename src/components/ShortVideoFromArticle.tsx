@@ -79,7 +79,7 @@ export function ShortVideoFromArticle({ videosWithArticles }: Props) {
   return (
     <div>
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex flex-wrap border-b border-gray-200 mb-6">
         <button
           onClick={() => setActiveTab("existing")}
           className={`px-4 py-2 text-[14px] font-medium border-b-2 transition-colors ${
@@ -117,7 +117,7 @@ export function ShortVideoFromArticle({ videosWithArticles }: Props) {
                 const hasShort = video.shortVideoPath || (result && "videoPath" in result)
 
                 return (
-                  <div key={video.id} className="flex items-center gap-4 px-5 py-4">
+                  <div key={video.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
                     {/* Thumbnail */}
                     <div className="w-[60px] h-[40px] bg-gray-100 rounded overflow-hidden flex-shrink-0">
                       {video.thumbnailPath ? (

@@ -153,7 +153,7 @@ export const ThumbnailDesignField = forwardRef<ThumbnailDesignHandle, Props>(fun
               </div>
 
               {/* ライブプレビュー */}
-              <div className="shrink-0">
+              <div className="shrink-0 max-w-full overflow-x-auto">
                 <div className="rounded-lg overflow-hidden border border-gray-200" style={{ width: PREVIEW_W, height: PREVIEW_W * THUMB_H / THUMB_W }}>
                   <div style={{ width: THUMB_W, height: THUMB_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
                     <div ref={captureRef}>

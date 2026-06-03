@@ -56,14 +56,14 @@ export function ManualTranscriptForm({ videoId }: Props) {
         disabled={state === "submitting"}
         className="w-full px-4 py-3 border border-gray-200 rounded-lg text-[14px] text-gray-900 outline-none focus:border-[#16a34a] resize-none disabled:bg-gray-50 disabled:text-gray-400 mb-3"
       />
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <span className="text-[12px] text-gray-400">{text.length.toLocaleString()} 文字</span>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           {error && <span className="text-[12px] text-red-500">{error}</span>}
           <button
             type="submit"
             disabled={state === "submitting" || !text.trim()}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg text-[14px] font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors cursor-pointer"
+            className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg text-[14px] font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors cursor-pointer"
           >
             {state === "submitting" ? (
               <span className="inline-flex items-center gap-1">

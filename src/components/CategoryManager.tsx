@@ -119,23 +119,23 @@ export function CategoryManager() {
       )}
 
       {showNew ? (
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:flex-wrap">
           <input
             type="text"
             value={newCode}
             onChange={(e) => setNewCode(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
             placeholder="code (英数字)"
-            className="w-[120px] px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
+            className="w-full sm:w-[120px] px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a] font-mono"
           />
           <input
             type="text"
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             placeholder="表示名"
-            className="w-[120px] px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a]"
+            className="w-full sm:w-[120px] px-2 py-1.5 border border-gray-200 rounded-lg text-[12px] text-gray-900 outline-none focus:border-[#16a34a]"
           />
-          <button onClick={handleAdd} className="px-3 py-1.5 bg-[#16a34a] text-white rounded-lg text-[11px] font-semibold hover:bg-[#15803d] cursor-pointer">追加</button>
-          <button onClick={() => { setShowNew(false); setNewCode(""); setNewLabel("") }} className="px-2 py-1.5 text-[11px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">キャンセル</button>
+          <button onClick={handleAdd} className="w-full sm:w-auto px-3 py-1.5 bg-[#16a34a] text-white rounded-lg text-[11px] font-semibold hover:bg-[#15803d] cursor-pointer">追加</button>
+          <button onClick={() => { setShowNew(false); setNewCode(""); setNewLabel("") }} className="w-full sm:w-auto px-2 py-1.5 text-[11px] text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">キャンセル</button>
         </div>
       ) : (
         <button onClick={() => setShowNew(true)} className="text-[12px] text-[#16a34a] hover:underline cursor-pointer">+ カテゴリを追加</button>
