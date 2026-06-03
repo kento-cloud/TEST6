@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react"
 import { LAYOUT_RENDERERS, hasLayout, THUMB_W, THUMB_H } from "@/components/thumbnail-layouts"
 import { nodeToThumbnailBlob, uploadComposedThumbnail } from "@/lib/compose-thumbnail"
+import { useElementWidth } from "@/hooks/useElementWidth"
 
 interface TemplateSlot {
   readonly key: string
@@ -32,7 +33,7 @@ interface Props {
   readonly title: string
 }
 
-const PREVIEW_W = 440
+const PREVIEW_MAX = 440
 
 export const ThumbnailDesignField = forwardRef<ThumbnailDesignHandle, Props>(function ThumbnailDesignField(
   { title },
@@ -44,6 +45,7 @@ export const ThumbnailDesignField = forwardRef<ThumbnailDesignHandle, Props>(fun
   const [slots, setSlots] = useState<Record<string, string>>({})
   const headlineTouched = useRef(false)
   const captureRef = useRef<HTMLDivElement>(null)
+  const [previewBoxRef, previewW] = useElementWidth<HTMLDivElement>(PREVIEW_MAX)
 
   useEffect(() => {
     fetch("/api/thumbnail-templates")
@@ -87,7 +89,7 @@ export const ThumbnailDesignField = forwardRef<ThumbnailDesignHandle, Props>(fun
 
   const selected = templates.find((t) => t.id === selectedId)
   const Renderer = selectedId ? LAYOUT_RENDERERS[selectedId] : null
-  const scale = PREVIEW_W / THUMB_W
+  const scale = previewW / THUMB_W
 
   // 編集可能なスロット（見出し＋配色＋テンプレ固有の文字スロット少数）
   const editableSlots = (selected?.slots ?? []).filter(
@@ -153,15 +155,15 @@ export const ThumbnailDesignField = forwardRef<ThumbnailDesignHandle, Props>(fun
               </div>
 
               {/* ライブプレビュー */}
-              <div className="shrink-0 max-w-full overflow-x-auto">
-                <div className="rounded-lg overflow-hidden border border-gray-200" style={{ width: PREVIEW_W, height: PREVIEW_W * THUMB_H / THUMB_W }}>
+              <div ref={previewBoxRef} className="w-full lg:w-[440px] shrink-0">
+                <div className="rounded-lg overflow-hidden border border-gray-200" style={{ width: previewW, height: previewW * THUMB_H / THUMB_W }}>
                   <div style={{ width: THUMB_W, height: THUMB_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
                     <div ref={captureRef}>
                       <Renderer slots={slots} />
                     </div>
                   </div>
                 </div>
-                <p className="text-[10px] text-gray-400 mt-1 text-center" style={{ width: PREVIEW_W }}>この見た目で保存されます</p>
+                <p className="text-[10px] text-gray-400 mt-1 text-center">この見た目で保存されます</p>
               </div>
             </div>
           )}

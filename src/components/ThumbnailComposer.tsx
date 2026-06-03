@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { toPng } from "html-to-image"
 import { LAYOUT_RENDERERS, hasLayout, THUMB_W, THUMB_H } from "@/components/thumbnail-layouts"
 import { setPrimaryThumbnail } from "@/lib/admin-api"
+import { useElementWidth } from "@/hooks/useElementWidth"
 
 interface TemplateSlot {
   readonly key: string
@@ -30,7 +31,7 @@ interface Props {
   readonly videoTitle: string
 }
 
-const PREVIEW_W = 460 // プレビュー表示幅(px)
+const PREVIEW_MAX = 460 // プレビュー最大表示幅(px)。実際の表示幅はコンテナに追従
 const EXPORT_SCALE = 1.5 // 書き出し倍率 → 1920x1080
 
 export function ThumbnailComposer({ videoId, videoTitle }: Props) {
@@ -41,6 +42,7 @@ export function ThumbnailComposer({ videoId, videoTitle }: Props) {
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle")
   const [error, setError] = useState("")
   const captureRef = useRef<HTMLDivElement>(null)
+  const [previewBoxRef, previewW] = useElementWidth<HTMLDivElement>(PREVIEW_MAX)
 
   useEffect(() => {
     fetch("/api/thumbnail-templates")
@@ -100,7 +102,7 @@ export function ThumbnailComposer({ videoId, videoTitle }: Props) {
   }, [selectedId, videoId, router])
 
   const Renderer = selectedId ? LAYOUT_RENDERERS[selectedId] : null
-  const scale = PREVIEW_W / THUMB_W
+  const scale = previewW / THUMB_W
 
   return (
     <div>
@@ -172,11 +174,11 @@ export function ThumbnailComposer({ videoId, videoTitle }: Props) {
           </div>
 
           {/* ライブプレビュー */}
-          <div className="shrink-0">
+          <div ref={previewBoxRef} className="w-full lg:w-[460px] shrink-0">
             <p className="text-[11px] text-gray-500 mb-1.5">プレビュー（この通りに書き出されます）</p>
             <div
               className="rounded-lg overflow-hidden shadow-sm border border-gray-200"
-              style={{ width: PREVIEW_W, height: PREVIEW_W * THUMB_H / THUMB_W }}
+              style={{ width: previewW, height: previewW * THUMB_H / THUMB_W }}
             >
               {/* 実寸ノード（キャプチャ対象）を縮小表示 */}
               <div style={{ width: THUMB_W, height: THUMB_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
@@ -189,7 +191,6 @@ export function ThumbnailComposer({ videoId, videoTitle }: Props) {
               onClick={handleSave}
               disabled={state === "saving"}
               className="w-full mt-2.5 px-4 py-2.5 bg-[#16a34a] text-white rounded-lg text-[13px] font-semibold hover:bg-[#15803d] disabled:opacity-50 transition-colors cursor-pointer"
-              style={{ width: PREVIEW_W }}
             >
               {state === "saving" ? (
                 <span className="inline-flex items-center gap-1">
