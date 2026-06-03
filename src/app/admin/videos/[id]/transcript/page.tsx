@@ -40,7 +40,7 @@ export default async function TranscriptPage({ params }: Props) {
         <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">文字起こし・AI生成</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">文字起こし・AI生成</h1>
 
       {isProcessing ? (
         <div>
@@ -65,8 +65,8 @@ export default async function TranscriptPage({ params }: Props) {
         <div className="bg-white rounded-xl border border-red-200 p-8">
           <p className="text-red-600 text-[15px] font-semibold mb-2">文字起こしでエラーが発生しました</p>
           <p className="text-red-400 text-[14px] mb-4">{transcript.error_message}</p>
-          <div className="flex gap-3">
-            <Link href={`/admin/videos/${id}`} className="px-4 py-2 bg-orange-600 text-white rounded-lg text-[13px] font-semibold hover:bg-orange-700">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link href={`/admin/videos/${id}`} className="w-full sm:w-auto text-center px-4 py-2 bg-orange-600 text-white rounded-lg text-[13px] font-semibold hover:bg-orange-700">
               動画詳細に戻ってリセット
             </Link>
           </div>
@@ -82,7 +82,7 @@ export default async function TranscriptPage({ params }: Props) {
       ) : (
         <div className="space-y-6">
           {/* Stats */}
-          <div className="flex gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white rounded-xl border border-gray-100 px-5 py-3">
               <p className="text-[12px] text-gray-400">文字数</p>
               <p className="text-[20px] font-bold text-gray-900">{transcript.full_text.length.toLocaleString()}</p>

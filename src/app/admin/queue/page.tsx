@@ -59,11 +59,11 @@ export default async function AdminQueuePage() {
 
   return (
     <div>
-      <h1 className="text-[24px] font-bold text-gray-900 mb-2">処理キュー</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-2">処理キュー</h1>
       <p className="text-[13px] text-gray-400 mb-6">現在はAPI直実行モード。将来的に非同期ワーカーへ切り替え予定。</p>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-white rounded-xl p-5 border border-gray-100">
             <p className="text-[13px] text-gray-500 mb-1">{stat.label}</p>

@@ -110,7 +110,7 @@ export default function EditArticlePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[24px] font-bold text-gray-900">記事を編集</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">記事を編集</h1>
         <div className="flex items-center gap-3">
           <span className={`px-2 py-1 rounded-full text-[11px] font-semibold ${
             publishStatus === "published" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
@@ -158,26 +158,26 @@ export default function EditArticlePage() {
           </div>
           {error && <p className="text-red-500 text-[13px]">{error}</p>}
           {success && <p className="text-green-600 text-[13px]">{success}</p>}
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
             <button
               onClick={() => handleSave(true)}
               disabled={saving}
-              className="px-6 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
             >
               {saving ? "保存中..." : "公開する"}
             </button>
             <button
               onClick={() => handleSave(false)}
               disabled={saving}
-              className="px-6 py-2 border border-gray-200 text-gray-700 rounded-lg text-[14px] font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-200 text-gray-700 rounded-lg text-[14px] font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
             >
               下書き保存
             </button>
-            <div className="flex-1" />
+            <div className="hidden sm:block sm:flex-1" />
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="px-4 py-2 text-red-500 text-[13px] font-semibold hover:text-red-700 hover:bg-red-50 rounded-lg disabled:opacity-50 cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2 text-red-500 text-[13px] font-semibold hover:text-red-700 hover:bg-red-50 rounded-lg disabled:opacity-50 cursor-pointer"
             >
               {deleting ? "削除中..." : "削除"}
             </button>

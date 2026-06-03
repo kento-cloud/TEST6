@@ -22,9 +22,9 @@ export default async function ArticlePage({ params }: Props) {
         <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[24px] font-bold text-gray-900">記事編集</h1>
-        <Link href={`/admin/videos/${id}/ai`} className="px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-600 hover:bg-gray-50">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">記事編集</h1>
+        <Link href={`/admin/videos/${id}/ai`} className="w-full sm:w-auto text-center px-4 py-2 border border-gray-200 rounded-lg text-[13px] text-gray-600 hover:bg-gray-50">
           AI結果に戻る
         </Link>
       </div>

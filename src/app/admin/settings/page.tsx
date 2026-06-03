@@ -210,7 +210,7 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">設定</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">設定</h1>
 
       {/* Environment Status */}
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden max-w-[700px] mb-6">
@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
           <h2 className="text-[16px] font-bold text-gray-900">環境ステータス</h2>
         </div>
         <div className="divide-y divide-gray-50">
-          <div className="px-5 py-4 flex items-center justify-between">
+          <div className="px-5 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-[14px] font-semibold text-gray-900">OPENAI_API_KEY</p>
               <p className="text-[12px] text-gray-400 mt-0.5">文字起こし・AI生成・画像生成に使用</p>
@@ -226,7 +226,7 @@ export default function AdminSettingsPage() {
                 <p className="text-[11px] text-red-500 mt-1">{openaiTestError}</p>
               )}
             </div>
-            <div className="flex items-center gap-3 ml-4 shrink-0">
+            <div className="flex items-center gap-3 sm:ml-4 shrink-0 flex-wrap">
               <button
                 onClick={async () => {
                   setOpenaiTestResult("testing")
@@ -257,24 +257,24 @@ export default function AdminSettingsPage() {
             </div>
           </div>
           <StatusRow label="ADMIN_PASSWORD" desc="管理画面ログインパスワード" status={settings.ADMIN_PASSWORD} />
-          <div className="px-5 py-4 flex items-center justify-between">
+          <div className="px-5 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-[14px] font-semibold text-gray-900">GOOGLE_API_KEY</p>
               <p className="text-[12px] text-gray-400 mt-0.5">Veo動画生成（任意）。未設定でも画像スライドモードで動作します。</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 shrink-0">
               <span className="text-[13px] text-gray-500 font-mono">
                 {settings.GOOGLE_API_KEY?.set ? "設定済み" : "未設定（任意）"}
               </span>
               <span className={`w-2.5 h-2.5 rounded-full ${settings.GOOGLE_API_KEY?.set ? "bg-green-500" : "bg-gray-300"}`} />
             </div>
           </div>
-          <div className="px-5 py-4 flex items-center justify-between">
+          <div className="px-5 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-[14px] font-semibold text-gray-900">ffmpeg</p>
               <p className="text-[12px] text-gray-400 mt-0.5">動画処理・音声抽出に使用</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 shrink-0">
               <span className="text-[13px] text-gray-500 font-mono">{ffmpegOk === null ? "確認中..." : ffmpegOk ? "インストール済み" : "未インストール"}</span>
               <span className={`w-2.5 h-2.5 rounded-full ${ffmpegOk ? "bg-green-500" : ffmpegOk === false ? "bg-red-400" : "bg-gray-300"}`} />
             </div>
@@ -616,12 +616,12 @@ export default function AdminSettingsPage() {
 
 function StatusRow({ label, desc, status }: { label: string; desc: string; status?: KeyStatus }) {
   return (
-    <div className="px-5 py-4 flex items-center justify-between">
+    <div className="px-5 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="text-[14px] font-semibold text-gray-900">{label}</p>
         <p className="text-[12px] text-gray-400 mt-0.5">{desc}</p>
       </div>
-      <div className="flex items-center gap-3 ml-4 shrink-0">
+      <div className="flex items-center gap-3 sm:ml-4 shrink-0">
         <span className="text-[13px] text-gray-500 font-mono">{status?.set ? status.masked : "未設定"}</span>
         <span className={`w-2.5 h-2.5 rounded-full ${status?.set ? "bg-green-500" : "bg-red-400"}`} />
       </div>

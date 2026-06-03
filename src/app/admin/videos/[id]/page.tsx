@@ -139,7 +139,7 @@ export default async function AdminVideoDetailPage({ params }: Props) {
           )}
           {step === "error" && (
             <div className="mb-4 px-3 py-2 bg-red-50 rounded-lg">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <span className="text-[13px] text-red-600">❌ エラーが発生しました。リセットして再試行できます。</span>
                 <RetryButton videoId={id} />
               </div>

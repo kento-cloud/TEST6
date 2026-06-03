@@ -140,7 +140,7 @@ export default async function AdminDashboard() {
             )}
           </div>
         </div>
-        <div className="flex gap-6 text-[12px]">
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-[12px]">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" />
             公開中 {published}件 ({publishedPct}%)

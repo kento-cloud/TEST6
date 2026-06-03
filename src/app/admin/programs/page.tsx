@@ -12,7 +12,7 @@ export default async function AdminProgramsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[24px] font-bold text-gray-900">番組管理</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">番組管理</h1>
         <Link href="/admin/programs/new" className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors">
           + 新規番組
         </Link>
@@ -28,7 +28,7 @@ export default async function AdminProgramsPage() {
             <Link href="/admin/programs/new" className="text-[14px] text-[#16a34a] font-semibold">最初の番組を作成 →</Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-[12px] text-gray-400 uppercase border-b border-gray-100">

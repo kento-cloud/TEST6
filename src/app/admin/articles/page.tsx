@@ -13,7 +13,7 @@ export default async function AdminArticlesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-[24px] font-bold text-gray-900">記事管理</h1>
+        <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900">記事管理</h1>
         <Link href="/admin/articles/new" className="px-4 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors">
           + 新規記事
         </Link>

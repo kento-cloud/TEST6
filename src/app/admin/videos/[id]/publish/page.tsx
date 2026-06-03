@@ -122,7 +122,7 @@ export default function PublishPage() {
         <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">公開設定</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">公開設定</h1>
 
       {state.error && (
         <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-6" role="alert">
@@ -176,17 +176,17 @@ export default function PublishPage() {
       {/* Actions */}
       <div className="bg-white rounded-xl border border-gray-100 p-5">
         {isReview && (
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <button
               onClick={handlePublish}
               disabled={state.publishing || !allChecksDone}
-              className="px-6 py-2.5 bg-green-600 text-white rounded-lg text-[14px] font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-2.5 bg-green-600 text-white rounded-lg text-[14px] font-semibold hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {state.publishing ? "処理中..." : "公開する"}
             </button>
             <Link
               href={`/admin/videos/${id}`}
-              className="px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors"
             >
               非公開のまま
             </Link>
@@ -196,19 +196,19 @@ export default function PublishPage() {
           </div>
         )}
         {isPublished && (
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-green-600 mr-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-2 text-green-600 sm:mr-4">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
               <span className="text-[14px] font-semibold">公開中</span>
             </div>
             <button
               onClick={handleUnpublish}
               disabled={state.publishing}
-              className="px-6 py-2.5 border border-red-200 text-red-600 rounded-lg text-[14px] font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 border border-red-200 text-red-600 rounded-lg text-[14px] font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
             >
               {state.publishing ? "処理中..." : "非公開にする"}
             </button>
-            <Link href={`/movie/${id}`} target="_blank" className="px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
+            <Link href={`/movie/${id}`} target="_blank" className="w-full sm:w-auto text-center px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors">
               フロントで確認 ↗
             </Link>
           </div>

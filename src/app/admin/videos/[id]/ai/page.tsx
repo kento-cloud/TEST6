@@ -36,7 +36,7 @@ export default async function AIResultPage({ params }: Props) {
         <Link href={`/admin/videos/${id}`} className="text-[13px] text-gray-400 hover:text-gray-600">← 動画詳細</Link>
       </div>
 
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">AI生成結果</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">AI生成結果</h1>
 
       {!aiContent ? (
         <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
@@ -52,7 +52,7 @@ export default async function AIResultPage({ params }: Props) {
       ) : (
         <div className="space-y-6">
           {/* Stats */}
-          <div className="flex gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white rounded-xl border border-gray-100 px-5 py-3">
               <p className="text-[12px] text-gray-400">処理時間</p>
               <p className="text-[20px] font-bold text-gray-900">{aiContent.processing_ms ? `${(aiContent.processing_ms / 1000).toFixed(1)}秒` : "—"}</p>

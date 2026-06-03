@@ -41,7 +41,7 @@ export default function NewArticlePage() {
 
   return (
     <div>
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">新規記事</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">新規記事</h1>
       <div className="bg-white rounded-xl border border-gray-100 p-6 max-w-[800px]">
         <div className="space-y-4">
           <div>
@@ -78,18 +78,18 @@ export default function NewArticlePage() {
             />
           </div>
           {error && <p className="text-red-500 text-[13px]">{error}</p>}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               onClick={() => handleSave(true)}
               disabled={saving}
-              className="px-6 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] disabled:opacity-50 cursor-pointer"
             >
               {saving ? "保存中..." : "公開する"}
             </button>
             <button
               onClick={() => handleSave(false)}
               disabled={saving}
-              className="px-6 py-2 border border-gray-200 text-gray-700 rounded-lg text-[14px] font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2 border border-gray-200 text-gray-700 rounded-lg text-[14px] font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
             >
               下書き保存
             </button>

@@ -84,7 +84,7 @@ export default function NewProgramPage() {
         <Link href="/admin/programs" className="text-[13px] text-gray-400 hover:text-gray-600">← 番組一覧</Link>
       </div>
 
-      <h1 className="text-[24px] font-bold text-gray-900 mb-6">新規番組</h1>
+      <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">新規番組</h1>
 
       <div className="bg-white rounded-xl border border-gray-100 p-6 max-w-[600px]">
         {form.error && (
@@ -160,17 +160,17 @@ export default function NewProgramPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
             <button
               type="submit"
               disabled={form.submitting || !form.name.trim()}
-              className="px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-2.5 bg-[#16a34a] text-white rounded-lg text-[14px] font-semibold hover:bg-[#15803d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {form.submitting ? "作成中..." : "番組を作成"}
             </button>
             <Link
               href="/admin/programs"
-              className="px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-[14px] font-semibold hover:bg-gray-50 transition-colors"
             >
               キャンセル
             </Link>

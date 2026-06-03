@@ -59,7 +59,7 @@ export default function GenerationLogsPage() {
       <h1 className="text-[20px] md:text-[24px] font-bold text-gray-900 mb-6">AI生成ログ</h1>
 
       {/* Status Filter Tabs */}
-      <div className="flex gap-1 mb-4">
+      <div className="flex flex-wrap gap-1 mb-4">
         {STATUS_TABS.map((tab) => {
           const count = tab.key === "all" ? logs.length : logs.filter((l) => l.status === tab.key).length
           return (
