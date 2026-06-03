@@ -2,7 +2,9 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
+import { createBrowserClient } from "@/lib/supabase-browser"
 
 const menuItems = [
   { label: "アカウント設定", href: "/account/setting" },
@@ -27,11 +29,47 @@ function PaddockLogoFull() {
 
 export default function AccountPage() {
   const router = useRouter()
-  const { user, loading, signOut } = useAuth()
+  const { user, session, loading, signOut } = useAuth()
+  const [cmsLoading, setCmsLoading] = useState(false)
+  const [cmsError, setCmsError] = useState("")
+
+  // JWTが古いと app_metadata が未反映なため、サーバーに最新ユーザー情報を問い合わせて判定
+  const [isAdmin, setIsAdmin] = useState(
+    (user?.app_metadata as { role?: string } | undefined)?.role === "admin"
+  )
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return }
+    const supabase = createBrowserClient()
+    supabase.auth.getUser().then(({ data }) => {
+      setIsAdmin((data.user?.app_metadata as { role?: string } | undefined)?.role === "admin")
+    }).catch(() => {})
+  }, [user])
 
   async function handleSignOut() {
     await signOut()
     router.push("/")
+  }
+
+  /** 管理者: Supabaseセッションを検証してCMS用Cookieを発行し、管理画面へ */
+  async function enterCms(href: string) {
+    if (!session?.access_token) { setCmsError("セッションが見つかりません。再ログインしてください"); return }
+    setCmsLoading(true)
+    setCmsError("")
+    try {
+      const res = await fetch("/api/account/admin-access", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken: session.access_token }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d.error ?? "CMSへのアクセスに失敗しました")
+      }
+      router.push(href)
+    } catch (e) {
+      setCmsError(e instanceof Error ? e.message : "CMSへのアクセスに失敗しました")
+      setCmsLoading(false)
+    }
   }
 
   return (
@@ -69,6 +107,35 @@ export default function AccountPage() {
               >
                 新規登録
               </Link>
+            </div>
+          )}
+
+          {/* 管理者専用: CMS導線 */}
+          {isAdmin && (
+            <div className="mb-8 p-4 rounded-xl bg-[#16a34a]/10 border border-[#16a34a]/40">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-2 py-0.5 bg-[#16a34a] text-white text-[11px] font-bold rounded">ADMIN</span>
+                <span className="text-[13px] text-[#a9abb8]">管理メニュー</span>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={() => enterCms("/admin")}
+                  disabled={cmsLoading}
+                  className="flex items-center justify-between px-5 h-[48px] bg-[#16a34a] rounded-lg hover:bg-[#15803d] transition-colors disabled:opacity-60 cursor-pointer"
+                >
+                  <span className="text-[15px] font-bold text-white">{cmsLoading ? "認証中..." : "管理画面（CMS）を開く"}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                </button>
+                <button
+                  onClick={() => enterCms("/admin/videos/upload")}
+                  disabled={cmsLoading}
+                  className="flex items-center justify-between px-5 h-[48px] bg-[#2b4034]/60 rounded-lg hover:bg-[#2b4034] transition-colors disabled:opacity-60 cursor-pointer"
+                >
+                  <span className="text-[15px] font-semibold">＋ 動画を投稿</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#5e6e63"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>
+                </button>
+              </div>
+              {cmsError && <p className="text-[12px] text-red-400 mt-2">{cmsError}</p>}
             </div>
           )}
 
