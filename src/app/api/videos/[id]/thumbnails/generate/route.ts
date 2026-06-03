@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase"
 import { ulid } from "ulid"
 import { generateThumbnailImages } from "@/lib/ai/images"
 import { getDefaultThumbnailPrompt } from "@/lib/ai/thumbnail-prompt"
+import { buildTemplatePrompt } from "@/lib/ai/thumbnail-templates"
 import path from "path"
 import { requireAdmin } from "@/lib/auth"
 
@@ -30,9 +31,29 @@ export async function POST(
   const body = await req.json().catch(() => ({})) as {
     prompt?: string
     stylePresetId?: string
+    templateId?: string
+    slots?: Record<string, string>
     count?: number
   }
-  const prompt = body.prompt?.trim() || getDefaultThumbnailPrompt(video.title)
+
+  // 優先順位: デザインテンプレート > 明示プロンプト > デフォルト
+  let prompt: string
+  let templateId: string | null = null
+  if (body.templateId) {
+    const built = buildTemplatePrompt(body.templateId, {
+      title: video.title,
+      summary: (video.summary as string | undefined) ?? undefined,
+      slots: body.slots ?? {},
+    })
+    if (!built) {
+      return NextResponse.json({ error: "指定されたデザインテンプレートが見つかりません" }, { status: 400 })
+    }
+    prompt = built
+    templateId = body.templateId
+  } else {
+    prompt = body.prompt?.trim() || getDefaultThumbnailPrompt(video.title)
+  }
+
   const stylePresetId = body.stylePresetId ?? null
   const count = Math.min(Math.max(body.count ?? DEFAULT_COUNT, 1), MAX_BATCH_SIZE)
 
@@ -46,6 +67,7 @@ export async function POST(
     file_path: null,
     source: "ai",
     prompt,
+    style_preset: templateId,
     style_preset_id: stylePresetId,
     is_primary: false,
     status: "generating",

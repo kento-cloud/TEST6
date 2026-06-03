@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { importYouTube } from "@/lib/admin-api"
+import { ThumbnailDesignField, type ThumbnailDesignHandle } from "@/components/ThumbnailDesignField"
 
 function useCategories() {
   const [categories, setCategories] = useState<{ code: string; label: string }[]>([])
@@ -63,6 +64,7 @@ function LocalUploadForm() {
   const [error, setError] = useState("")
   const [progress, setProgress] = useState(0)
   const [statusText, setStatusText] = useState("")
+  const thumbRef = useRef<ThumbnailDesignHandle>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -82,6 +84,16 @@ function LocalUploadForm() {
       if (!res.ok) { const d = await res.json(); throw new Error(d.error ?? "アップロード失敗") }
       const data = await res.json()
       setProgress(100)
+
+      // タイトル/説明に沿って組んだサムネを合成・アップロード（失敗しても続行）
+      try {
+        if (thumbRef.current?.isEnabled()) {
+          setStatusText("サムネイルを生成中...")
+          await thumbRef.current.uploadFor(data.id)
+        }
+      } catch (e) {
+        console.warn("thumbnail compose failed:", e)
+      }
 
       if (autoProcess) {
         setStatusText("文字起こし・AI生成を開始中...")
@@ -111,6 +123,10 @@ function LocalUploadForm() {
           <option value="">カテゴリを選択</option>
           {categories.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
         </select>
+      </div>
+      <div className="mb-5">
+        <label className="block text-[13px] font-semibold text-gray-700 mb-1">サムネイル</label>
+        <ThumbnailDesignField ref={thumbRef} title={title} />
       </div>
       <div className="mb-6">
         <label htmlFor="local-file" className="block text-[13px] font-semibold text-gray-700 mb-1">動画ファイル *</label>

@@ -11,6 +11,31 @@ interface GenerateImageResult {
   readonly fileSize: number
 }
 
+interface ImageModelParams {
+  readonly size: string
+  readonly width: number
+  readonly height: number
+  readonly quality: string | null
+  readonly responseFormat: boolean
+}
+
+/**
+ * モデル別の有効な画像生成パラメータ（16:9寄りの横長を選択）。
+ * - gpt-image-1 / gpt-image-2: size=1536x1024、quality=low|medium|high、response_format非対応
+ * - dall-e-3: size=1792x1024、quality=standard|hd、response_format対応
+ * - dall-e-2: size=1024x1024、quality指定不可、response_format対応
+ */
+function imageParamsFor(model: string): ImageModelParams {
+  if (model.startsWith("dall-e-3")) {
+    return { size: "1792x1024", width: 1792, height: 1024, quality: "hd", responseFormat: true }
+  }
+  if (model.startsWith("dall-e-2")) {
+    return { size: "1024x1024", width: 1024, height: 1024, quality: null, responseFormat: true }
+  }
+  // gpt-image-1 / gpt-image-2（既定）
+  return { size: "1536x1024", width: 1536, height: 1024, quality: "medium", responseFormat: false }
+}
+
 /**
  * OpenAI Images API でサムネイル画像を生成（複数枚対応）
  * モデルは管理画面設定で切り替え可能（gpt-image-1 / gpt-image-2）
@@ -45,19 +70,19 @@ export async function generateThumbnailImages(
     await mkdir(outputDir, { recursive: true })
   }
 
+  const cfg = imageParamsFor(models.image)
+
   const generateOne = async (fileName: string): Promise<GenerateImageResult> => {
-    // gpt-image-1はresponse_format対応、gpt-image-2は非対応
-    const useResponseFormat = models.image.includes("gpt-image-1")
     const params: Record<string, unknown> = {
       model: models.image,
       prompt,
       n: 1,
-      size: "1792x1024",
-      quality: "medium",
+      size: cfg.size,
     }
-    if (useResponseFormat) {
-      params.response_format = "b64_json"
-    }
+    // gpt-image系: quality=low/medium/high、response_format非対応（既定でb64_json返却）
+    // dall-e系: quality=standard/hd（dall-e-2は指定不可）、response_formatでb64_json取得
+    if (cfg.quality) params.quality = cfg.quality
+    if (cfg.responseFormat) params.response_format = "b64_json"
 
     const response = await openai.images.generate(params as unknown as Parameters<typeof openai.images.generate>[0]) as unknown as { data: Array<{ b64_json?: string; url?: string }> }
 
@@ -82,8 +107,8 @@ export async function generateThumbnailImages(
 
     return {
       filePath: `/api/uploads/thumbnails/${fileName}`,
-      width: 1792,
-      height: 1024,
+      width: cfg.width,
+      height: cfg.height,
       fileSize: buffer.length,
     }
   }

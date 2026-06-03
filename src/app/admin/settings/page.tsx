@@ -39,6 +39,7 @@ const TEXT_MODELS = [
 ]
 
 const IMAGE_MODELS = [
+  { id: "gpt-image-2", label: "GPT Image 2.0（最新・推奨）" },
   { id: "gpt-image-1", label: "GPT Image 1（高品質）" },
   { id: "dall-e-3", label: "DALL-E 3（標準）" },
   { id: "dall-e-2", label: "DALL-E 2（軽量）" },

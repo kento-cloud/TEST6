@@ -120,11 +120,17 @@ export async function resetVideo(id: string) {
 
 // === Thumbnails ===
 
-export async function generateThumbnail(id: string, prompt: string, count: number = 5, stylePresetId?: string) {
+export async function generateThumbnail(
+  id: string,
+  prompt: string,
+  count: number = 5,
+  stylePresetId?: string,
+  opts?: { templateId?: string; slots?: Record<string, string> }
+) {
   const res = await fetch(`/api/videos/${id}/thumbnails/generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, count, stylePresetId }),
+    body: JSON.stringify({ prompt, count, stylePresetId, templateId: opts?.templateId, slots: opts?.slots }),
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
